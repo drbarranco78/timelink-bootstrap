@@ -1,0 +1,200 @@
+/* Resetea los estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+body{
+    background-color: #232D4B;
+}
+
+/* Estilo de la cabecera  */
+header {
+    background-color:#ccc;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+}
+
+/* Contenedores del logo y el usuario en la cabecera  */
+.logotipo,
+.usuario {
+    display: flex;
+    flex-direction: row;
+    margin: 0px 30px;
+}
+
+/* Texto con el nombre de la página  */
+.logotipo h3 {
+    align-content: center;
+    margin-left: 30px;
+    font-size: 20px;
+    font-style: italic;
+}
+
+/* Iconos de logo y usuario  */
+.icono-cabecera {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.titulo{
+    text-align: center;
+    margin-top: 50px;
+    color: #00AA9B;
+}
+/* Estilos generales de los formularios de login y registro  */
+fieldset{       
+    border: none;   
+}
+legend{
+    font-size: 1.2rem;
+    font-weight: bold;    
+    color:whitesmoke;
+    margin: 0 auto 20px auto;
+    background-color: #232D4B;
+    border-radius: 10px;
+    padding: 0 20px;
+    border: 2px solid whitesmoke;
+}
+#formulario-login,
+#formulario-registro {
+    display: flex;
+    flex-direction: column;
+    width: 25vw;
+    background-color: #ccc;
+    margin: 0 auto;
+    border-radius: 15px;
+    padding: 20px;
+    font-size: 20px;
+    border: 2px solid #00AA9B;
+    /* color: whitesmoke; */
+}
+/* Contenedor del formulario de login  */
+.login {
+    
+    text-align: center;
+    padding: 100px 0;
+    /* display: none;     */
+}
+
+/* Campos de entrada del formulario de login  */
+#formulario-login input {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 10px;    
+}
+/* Botón de acceso en el formulario de login  */
+.boton-login {
+    margin-top: 1.5em;
+    font-size: 20px;
+    font-weight: bold;
+    width: 50%;
+    align-self: center;
+}
+/* Contenedor del formulario de registro  */
+.registro {
+    
+    /* filter: blur(50%); */
+    display: none;
+    height: 100vh ;
+    text-align: center;    
+    align-content: center;
+}
+/* Estilo de los campos del formulario de registro  */
+.registro input,
+.registro select {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 5px;
+}
+.nuevoPassword, .repetirPassword {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 5px; 
+    align-items: center; 
+}
+.nuevoPassword label, .repetirPassword label {
+    grid-column: span 2; 
+}
+.nuevoPassword input, .repetirPassword input {
+    grid-column: 1 / 2; /* Coloca el input en la primera columna */  
+}
+.nuevoPassword i, .repetirPassword i {
+    grid-column: 2 / 3;
+    cursor: pointer;
+    margin-bottom: 20px;
+    justify-self: end; /* Alinea la imagen a la derecha */
+}
+.radio-genero {
+    display: grid;
+    grid-template-areas:
+        "lbGenero lbGenero"
+        "rd1 rd2";
+    border: 1px solid white;
+    border-radius: 20px;
+    margin-bottom: 10px;  
+}
+#lbGenero {
+    grid-area: lbGenero;    
+}
+.rd1{
+    grid-area: rd1;
+}
+.rd2{
+    grid-area: rd2;
+}
+/* Contenedor de los botones del formulario de registro  */
+.botones-registro{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+/* Botones de limpiar y enviar del formulario de registro  */
+#limpiar, #enviar{
+    font-size: 18px;
+    display: inline;
+    width: 30%;
+    font-weight: bold;
+}
+/* Texto debajo de los formularios  */
+.pie-formularios {
+    color: whitesmoke;
+    width: fit-content;    
+    font-weight: bold;
+    margin: 20px auto; 
+    background-color: #232D4B;
+    padding: 5px 30px;
+    border-radius: 15px;
+}
+.pie-formularios a{
+    margin-left: 10px;
+    color: #eea509;
+}
+/* Mensajes de éxito y error de los formularios  */
+.error-login, .error-registro, .exito-login, .exito-registro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #333;
+    border: 2px solid whitesmoke;
+    padding: 15px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+    display:none;
+}
+.error-login h3, .error-registro h3{
+    color:red;
+}
+.exito-login h3, .exito-registro h3 {
+    color:v#00AA9B;
+}
