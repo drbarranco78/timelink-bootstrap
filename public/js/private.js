@@ -67,6 +67,7 @@ $("#btn-comenzar").click(function () {
 
             // Cambiar icono
             $("#icono-estado").attr("class", "fas fa-briefcase"); // Icono de "trabajando"
+            registrarFichaje("entrada");
         })
         .catch(() => {
             // Si el usuario cancela la acción, registra un mensaje en la consola
@@ -96,6 +97,7 @@ $("#btn-detener").click(function () {
 
             // Cambiar icono
             $("#icono-estado").attr("class", "fas fa-times-circle");
+            registrarFichaje("salida");
         })
         .catch(() => {
             console.log("Acción cancelada");
@@ -123,6 +125,7 @@ $("#btn-descanso").click(function () {
 
             // Cambiar icono
             $("#icono-estado").attr("class", "fas fa-coffee"); // Icono de "descanso"
+            registrarFichaje("inicio_descanso");
         })
         .catch(() => {
             // Si el usuario cancela la acción, registra un mensaje en la consola
@@ -150,6 +153,7 @@ $("#btn-terminar-descanso").click(function () {
 
             // Cambiar icono
             $("#icono-estado").attr("class", "fas fa-briefcase");
+            registrarFichaje("fin_descanso");
 
         })
         .catch(() => {
@@ -240,5 +244,11 @@ function mostrarDialogo(pregunta) {
  */
 function mostrarMensaje(mensaje, selector) {
     $(selector).html(`<h3>${mensaje}</h3>`).fadeIn(500).delay(2000).fadeOut(500);
+}
+
+function registrarFichaje(tipo){
+
+
+
 }
 
