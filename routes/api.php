@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmpresaController;
-use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\FichajeController;
 use App\Http\Controllers\CredencialController;
 
@@ -13,11 +13,13 @@ Route::get('/empresas/{id}', [EmpresaController::class, 'show']);
 Route::put('/empresas/{id}', [EmpresaController::class, 'update']);
 Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy']);
 
-Route::get('/usuarios', [UsuarioController::class, 'index']);
-Route::post('/usuarios', [UsuarioController::class, 'store']);
-Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
-Route::put('/usuarios/{id}', [UsuarioController::class, 'update']);
-Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']);
+Route::get('/usuarios', [UserController::class, 'index']);
+Route::post('/usuarios', [UserController::class, 'store']);
+Route::get('/usuarios/{id}', [UserController::class, 'show']);
+Route::put('/usuarios/{id}', [UserController::class, 'update']);
+Route::delete('/usuarios/{id}', [UserController::class, 'destroy']);
+Route::post('/login', [UserController::class, 'login']);
+Route::post('/logout', [UserController::class, 'logout']);
 
 Route::get('/credenciales', [CredencialController::class, 'index']);
 Route::post('/credenciales', [CredencialController::class, 'store']);
@@ -31,3 +33,5 @@ Route::get('/fichajes/{id}', [FichajeController::class, 'show']);
 Route::put('/fichajes/{id}', [FichajeController::class, 'update']);
 Route::delete('/fichajes/{id}', [FichajeController::class, 'destroy']);
 Route::post('/fichajes/filtrar', [FichajeController::class, 'obtenerPorTrabajadorYRango']);
+
+

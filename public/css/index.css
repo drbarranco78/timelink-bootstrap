@@ -61,8 +61,7 @@ legend{
     padding: 0 20px;
     border: 2px solid whitesmoke;
 }
-#formulario-login,
-#formulario-registro {
+#formulario-login{
     display: flex;
     flex-direction: column;
     width: 25vw;
@@ -96,73 +95,28 @@ legend{
     width: 50%;
     align-self: center;
 }
-/* Contenedor del formulario de registro  */
-.registro {
-    
-    /* filter: blur(50%); */
-    display: none;
-    height: 100vh ;
-    text-align: center;    
-    align-content: center;
-}
-/* Estilo de los campos del formulario de registro  */
-.registro input,
-.registro select {
-    margin-bottom: 20px;
-    border-radius: 10px;
-    padding: 5px;
-}
-.nuevoPassword, .repetirPassword {
+
+.password {
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
     gap: 5px; 
     align-items: center; 
 }
-.nuevoPassword label, .repetirPassword label {
+.password label {
     grid-column: span 2; 
 }
-.nuevoPassword input, .repetirPassword input {
+.password input {
     grid-column: 1 / 2; /* Coloca el input en la primera columna */  
 }
-.nuevoPassword i, .repetirPassword i {
+.password i {
     grid-column: 2 / 3;
     cursor: pointer;
     margin-bottom: 20px;
     justify-self: end; /* Alinea la imagen a la derecha */
 }
-.radio-genero {
-    display: grid;
-    grid-template-areas:
-        "lbGenero lbGenero"
-        "rd1 rd2";
-    border: 1px solid white;
-    border-radius: 20px;
-    margin-bottom: 10px;  
-}
-#lbGenero {
-    grid-area: lbGenero;    
-}
-.rd1{
-    grid-area: rd1;
-}
-.rd2{
-    grid-area: rd2;
-}
-/* Contenedor de los botones del formulario de registro  */
-.botones-registro{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    margin-top: 10px;
-}
-/* Botones de limpiar y enviar del formulario de registro  */
-#limpiar, #enviar{
-    font-size: 18px;
-    display: inline;
-    width: 30%;
-    font-weight: bold;
-}
+
+
 /* Texto debajo de los formularios  */
 .pie-formularios {
     color: whitesmoke;
@@ -178,7 +132,7 @@ legend{
     color: #eea509;
 }
 /* Mensajes de éxito y error de los formularios  */
-.error-login, .error-registro, .exito-login, .exito-registro {
+.error-login, .exito-login{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -196,5 +150,5 @@ legend{
     color:red;
 }
 .exito-login h3, .exito-registro h3 {
-    color:v#00AA9B;
+    color:#00AA9B;
 }

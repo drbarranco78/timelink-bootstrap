@@ -2,7 +2,10 @@ const $historialList = $('.lista-historial');
 const $historialHeader = $('.historial h2');
 const $mostrarHistorial = $('#mostrar-historial');
 const $borrarHistorial = $('#borrar-historial');
+let usuario = JSON.parse(localStorage.getItem('usuario'));
+$('#mensaje-bienvenida h3').html("Trabajador: " + usuario.nombre + " " + usuario.apellidos);
 $(document).ready(function () {
+    
     // Obtener la fecha actual
     let fechaActual = new Date();
 
@@ -180,6 +183,22 @@ $('#borrar-historial').click(function () {
     $historialList.html(''); // Borra todos los elementos de la lista
 });
 
+$('#cerrar-sesion').click(function () {
+    $.ajax({
+        url: '/api/logout',
+        method: 'POST',
+        success: function(response) {
+            localStorage.removeItem('usuario');
+            // Redirigir a la página de login
+            window.location.href = '/';
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText); // Verifica el error detallado
+            mostrarMensaje("Hubo un problema al cerrar sesión, por favor intente más tarde.", '.error-logout');
+        }
+    });
+});
+
 /**
  * Muestra un cuadro de diálogo de confirmación con una promesa.
  * @param {string} pregunta - La pregunta a mostrar en el cuadro de diálogo.
@@ -214,3 +233,12 @@ function mostrarDialogo(pregunta) {
         });
     });
 }
+/**
+ * Muestra un mensaje temporal en un elemento seleccionado, animándolo con fadeIn y fadeOut.
+ * @param {string} mensaje - El mensaje a mostrar.
+ * @param {string} selector - El selector del elemento donde mostrar el mensaje.
+ */
+function mostrarMensaje(mensaje, selector) {
+    $(selector).html(`<h3>${mensaje}</h3>`).fadeIn(500).delay(2000).fadeOut(500);
+}
+

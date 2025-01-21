@@ -14,15 +14,20 @@
     <section class="login">
         <fieldset>
             <legend>Inicio de Sesión</legend>
-            <form id="formulario-login" action="{{ route('login') }}" method="post">
+            <form id="formulario-login" action="" method="post">
                 @csrf
                 <label for="userid">Nº de DNI / NIE</label>
                 <input type="text" name="userid" id="userid" maxlength="10" required />
-                <label for="current-password">Contraseña:</label>
-                <input type="password" name="current-password" id="current-password" maxlength="20" required />
+                <div class="password">
+                    <label for="current-password">Contraseña:</label>
+                    <input type="password" name="current-password" id="current-password" maxlength="20" required />
+                    <i class="fa-solid fa-eye" id="mostrarPassword"></i>
+                </div>
                 <input type="submit" class="boton-login" value="Acceder" />
             </form>
         </fieldset>
+        <div class="exito-login"></div>
+        <div class="error-login"></div>
     </section>
 @endsection
 

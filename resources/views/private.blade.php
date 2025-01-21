@@ -12,7 +12,10 @@
             <h3>Bienvenido, Usuario</h3>
             <img src="{{ asset('img/ico_usuario_activo.png') }}" id="icono-usuario" class="icono-cabecera" alt="Icono de usuario">
         </div>
-    </div>
+            <div class="opciones-usuario">                
+                <div id="cerrar-sesion" class="cerrar-sesion">Cerrar Sesión</div>
+            </div>
+        </div>
 @endsection
 
 @section('content')
@@ -58,7 +61,8 @@
             <ul class="lista-historial"></ul>
         </div>
     </div>
-
+    <div class="exito-login"></div>
+    <div class="error-login"></div>
     <div id="confirmar-accion" class="confirmar-accion">
         <p class="texto-confirmar-accion">¿Estás seguro?</p>
         <div class="botones-accion">

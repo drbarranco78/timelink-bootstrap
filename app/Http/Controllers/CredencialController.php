@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Credencial;
 
 class CredencialController extends Controller
 {
@@ -16,12 +17,18 @@ class CredencialController extends Controller
     // Crear una nueva credencial
     public function store(Request $request)
     {
+        // TODO: Implementar Bcrypt para almacenar contraseñas
         $request->validate([
-            'id_usuario' => 'required|exists:usuario,id_usuario',
+            'id_usuario' => 'required|exists:usuarios,id_usuario',
             'password' => 'required',
         ]);
 
-        return Credencial::create($request->all());
+        $credencial = Credencial::create([
+            'id_usuario' => $request->id_usuario,
+            'password' => $request->password, 
+        ]);
+
+        return response()->json($credencial, 201);
     }
 
     // Obtener una credencial por ID
