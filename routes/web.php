@@ -3,21 +3,25 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RedirectIfNotAuthenticated;
 
+
+Route::get('/private', function () {
+    return view('private');
+})->middleware(RedirectIfNotAuthenticated::class);
 Route::get('/', function () {
     return view('index');
 });
 
-Route::middleware([RedirectIfNotAuthenticated::class])->group(function () {
+// Route::middleware([RedirectIfNotAuthenticated::class])->group(function () {
 
-    Route::get('/private', function () {
-        return view('private'); // Cambia 'Contenido privado' si necesitas devolver una vista específica
-    });
+//     Route::get('/private', function () {
+//         return view('private'); // Cambia 'Contenido privado' si necesitas devolver una vista específica
+//     });
 
-    Route::get('/admin', function () {
-        return 'Panel de administración';
-    });
+//     Route::get('/admin', function () {
+//         return 'Panel de administración';
+//     });
 
-});
+// });
 
 
 // Route::middleware('auth')->get('/private', function () {
