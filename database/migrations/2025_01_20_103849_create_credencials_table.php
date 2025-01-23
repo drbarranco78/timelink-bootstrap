@@ -18,7 +18,10 @@ return new class extends Migration
                 $table->string('password', 255);
                 $table->string('reset_code', 100)->nullable();
                 $table->dateTime('reset_code_expires')->nullable();
-                $table->foreign('id_usuario')->references('id_usuario')->on('usuarios')->onUpdate('cascade')->onDelete('cascade');
+                $table->foreign('id_usuario')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+                $table->timestamp('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
+                $table->timestamp('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+                //$table->timestamps(); //Necesario para el ORM Eloquent
             });
         }
     }

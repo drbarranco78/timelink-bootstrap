@@ -19,7 +19,7 @@ class CredencialController extends Controller
     {
         // TODO: Implementar Bcrypt para almacenar contraseñas
         $request->validate([
-            'id_usuario' => 'required|exists:usuarios,id_usuario',
+            'id_usuario' => 'required|exists:usuarios,id',
             'password' => 'required',
         ]);
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 use App\Models\User;
 use App\Models\Credencial;
@@ -58,8 +59,9 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
+        
         // Validar los datos recibidos
-        $request->validate([
+        $datos_acceso = $request->validate([
             'dni' => 'required|string',
             'password' => 'required|string',
         ]);
@@ -70,40 +72,39 @@ class UserController extends Controller
         if (!$usuario) {
             return response()->json(['message' => 'DNI no encontrado'], 404);
         }
-
         // Obtener el ID del usuario
-        $idUsuario = $usuario->id_usuario;
-
+        $idUsuario = $usuario->id;
         // Comprobar la contraseña asociada al ID de usuario
         $credencial = Credencial::where('id_usuario', $idUsuario)->first();
 
         if (!$credencial || $credencial->password !== $request->password) {
             return response()->json(['message' => 'Contraseña incorrecta'], 401);
+        }  
+        if (Session::isStarted()) {
+            $request->session()->regenerate();
+        } else {
+            $request->session()->start();
         }
         Auth::login($usuario);
-        // Redirigir según el rol del usuario
-        if ($usuario->rol === 'trabajador') {
-            return response()->json([
-                'message' => 'Inicio de sesión exitoso',
-                'usuario' => $usuario,
-                'redirect' => '/private',
-            ]);
-        } elseif ($usuario->rol === 'maestro') {
-            return response()->json([
-                'message' => 'Inicio de sesión exitoso',
-                'usuario' => $usuario,
-                'redirect' => '/admin',
-            ]);
-        }
+        
+        $redirects = [
+            'trabajador' => '/private',
+            'maestro' => '/admin',
+        ];
+    
+        return response()->json([
+            'message' => 'Inicio de sesión exitoso',
+            'usuario' => $usuario,
+            'redirect' => $redirects[$usuario->rol] ?? '/',
+        ]);
 
     }
 
     public function logout(Request $request)
     {
         // Cerrar la sesión del usuario
-        Auth::logout();
-
-        
+        Auth::logout();  
+        $request->session()->invalidate();          
         return response()->json(['message' => 'Sesión cerrada correctamente']);
     }
 }

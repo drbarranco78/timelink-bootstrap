@@ -35,3 +35,5 @@ Route::delete('/fichajes/{id}', [FichajeController::class, 'destroy']);
 Route::post('/fichajes/filtrar', [FichajeController::class, 'obtenerPorTrabajadorYRango']);
 
 
+
+

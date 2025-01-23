@@ -12,18 +12,11 @@ class RedirectIfNotAuthenticated
 {
     public function handle($request, Closure $next)
     {
-        
-        if (!Auth::check() && !$this->isPublicRoute($request)) {
-            return redirect('/'); // Redirige a la raíz si no está autenticado
+        $user = Auth::user();
+        if ($user->rol == 'trabajador') {
+            return $next($request);
         }
-
-        return $next($request);
+        abort(401);       
     }
 
-    private function isPublicRoute(Request $request)
-    {
-        
-        $publicRoutes = ['/', '/login'];
-        return in_array($request->path(), $publicRoutes);
-    }
 }

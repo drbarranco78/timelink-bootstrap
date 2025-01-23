@@ -6,7 +6,7 @@ CREATE DATABASE IF NOT EXISTS timelink DEFAULT CHARACTER SET utf8;
 USE timelink;
 
 -- Tabla Empresa
-CREATE TABLE IF NOT EXISTS empresa (
+CREATE TABLE IF NOT EXISTS empresas (
 	id_empresa INT AUTO_INCREMENT PRIMARY KEY,
     cif VARCHAR(15) UNIQUE NOT NULL,
     nombre_empresa VARCHAR(100) NOT NULL,
@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS empresa (
 );
 
 -- Tabla Usuario
-CREATE TABLE IF NOT EXISTS usuario (    
-	id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS usuarios (    
+	id INT AUTO_INCREMENT PRIMARY KEY,
     dni VARCHAR(9) UNIQUE NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS usuario (
     cif_empresa VARCHAR(15) NOT NULL,
     cargo VARCHAR(50),
     rol ENUM('maestro', 'trabajador') NOT NULL,
-    FOREIGN KEY (cif_empresa) REFERENCES empresa(cif)
+    FOREIGN KEY (cif_empresa) REFERENCES empresas(cif)
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -36,18 +36,18 @@ CREATE TABLE IF NOT EXISTS credenciales (
     password VARCHAR(255) NOT NULL,
 	reset_code VARCHAR(100),
     reset_code_expires DATETIME,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Tabla Fichaje
-CREATE TABLE IF NOT EXISTS fichaje (
+CREATE TABLE IF NOT EXISTS fichajes (
     id_fichaje INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
     tipo_fichaje ENUM('entrada', 'salida', 'inicio_descanso', 'fin_descanso') NOT NULL,
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
     ubicacion VARCHAR(255),
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
 	ON UPDATE CASCADE ON DELETE CASCADE
 );

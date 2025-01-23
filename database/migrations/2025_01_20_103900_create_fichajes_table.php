@@ -19,7 +19,10 @@ return new class extends Migration
                 $table->date('fecha');
                 $table->time('hora');
                 $table->string('ubicacion', 255)->nullable();
-                $table->foreign('id_usuario')->references('id_usuario')->on('usuarios')->onUpdate('cascade')->onDelete('cascade');
+                $table->foreign('id_usuario')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+                $table->timestamp('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
+                $table->timestamp('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+                //$table->timestamps(); //Necesario para el ORM Eloquent
             });
         }
     }

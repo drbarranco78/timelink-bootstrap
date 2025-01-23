@@ -67,9 +67,9 @@ $("#formulario-login").submit(function (event) {
             },
             success: function(response) {
                 if (response.redirect) {
+                    console.log("Redirigiendo a:", response.redirect);
                     localStorage.setItem('usuario', JSON.stringify(response.usuario));
                     mostrarMensaje(response.message, '.exito-login');
-                    // Redirigir según el rol
                     window.location.href = response.redirect; 
                 } else {
                     
@@ -77,8 +77,8 @@ $("#formulario-login").submit(function (event) {
                 }
             },
             error: function(xhr, status, error) {
-                
-                mostrarMensaje("Hubo un problema con el servidor, por favor intente más tarde.", '.error-login');
+                console.error("Error del servidor: ", xhr.responseText);
+                mostrarMensaje("Hubo un problema con el servidor, por favor intente más tarde. " + xhr.responseText, '.error-login');
             }
         });
 

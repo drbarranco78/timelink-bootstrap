@@ -19,6 +19,9 @@ return new class extends Migration
                 $table->string('direccion', 255)->nullable();
                 $table->string('telefono', 15)->nullable();
                 $table->string('email', 100)->nullable();
+                $table->timestamp('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
+                $table->timestamp('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+                //$table->timestamps(); //Necesario para el ORM Eloquent
             });
         }
     }

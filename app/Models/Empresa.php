@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\User;
 class Empresa extends Model
 {
     use HasFactory;
@@ -24,6 +24,6 @@ class Empresa extends Model
     // Una empresa tiene muchos usuarios
     public function usuarios()
     {
-        return $this->hasMany(Usuario::class, 'cif_empresa', 'cif');
+        return $this->hasMany(User::class, 'cif_empresa', 'cif');
     }
 }
