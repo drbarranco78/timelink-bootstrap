@@ -18,14 +18,32 @@ class FichajeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_usuario' => 'required|exists:usuario,id_usuario',
+            'id_usuario' => 'required|exists:users,id',
             'tipo_fichaje' => 'required|in:entrada,salida,inicio_descanso,fin_descanso',
             'fecha' => 'required|date',
             'hora' => 'required|date_format:H:i:s',
+            'ubicacion' => 'nullable|string'
         ]);
 
-        return Fichaje::create($request->all());
+        try {
+            // Crear el registro de fichaje
+            $fichaje = Fichaje::create($request->all());
+
+            // Respuesta JSON con éxito
+            return response()->json([
+                'ok' => true,
+                'message' => 'Fichaje registrado correctamente'                
+            ], 201);
+
+        } catch (\Exception $e) {
+            // Respuesta JSON en caso de error
+            return response()->json([
+                'ok' => false,
+                'message' => 'Error al registrar el fichaje: ' . $e->getMessage()
+            ], 500);
+        }
     }
+
 
     // Obtener un fichaje por ID
     public function show($id)

@@ -5,7 +5,7 @@ const $borrarHistorial = $('#borrar-historial');
 let usuario = JSON.parse(localStorage.getItem('usuario'));
 $('#mensaje-bienvenida h3').html("Trabajador: " + usuario.nombre + " " + usuario.apellidos);
 $(document).ready(function () {
-    
+
     // Obtener la fecha actual
     let fechaActual = new Date();
 
@@ -191,13 +191,13 @@ $('#cerrar-sesion').click(function () {
     $.ajax({
         url: '/api/logout',
         method: 'POST',
-        success: function(response) {
+        success: function (response) {
             localStorage.removeItem('usuario');
             // Redirigir a la página de login
             window.location.href = '/';
         },
-        error: function(xhr, status, error) {
-            console.log(xhr.responseText); // Verifica el error detallado
+        error: function (xhr, status, error) {
+            console.log(xhr.responseText);
             mostrarMensaje("Hubo un problema al cerrar sesión, por favor intente más tarde.", '.error-logout');
         }
     });
@@ -246,9 +246,89 @@ function mostrarMensaje(mensaje, selector) {
     $(selector).html(`<h3>${mensaje}</h3>`).fadeIn(500).delay(2000).fadeOut(500);
 }
 
-function registrarFichaje(tipo){
+function registrarFichaje(tipo) {
 
+    // Obtener la fecha y hora actuales 
+    let fecha = new Date();
+    let horas = String(fecha.getHours()).padStart(2, '0');
+    let minutos = String(fecha.getMinutes()).padStart(2, '0');
+    let segundos = String(fecha.getSeconds()).padStart(2, '0');
 
+    let fechaActual = fecha.toISOString().split('T')[0];
+    let horaActual = `${horas}:${minutos}:${segundos}`;
 
+    navigator.geolocation.getCurrentPosition(async position => {
+        let lat = position.coords.latitude;
+        let lng = position.coords.longitude;
+
+        // Obtener la dirección de forma asíncrona
+        let ubicacion = await obtenerDireccion(lat, lng);
+        console.log("Ubicación para mandar: " + ubicacion);
+
+        // Realizar la solicitud AJAX después de obtener la ubicación
+        $.ajax({
+            url: '/api/fichajes',
+            method: 'POST',
+            data: {
+                id_usuario: usuario.id,
+                tipo_fichaje: tipo,
+                fecha: fechaActual,
+                hora: horaActual,
+                ubicacion: ubicacion
+            },
+            success: function(response) {
+                if (response.ok) {
+                    console.log(response.message);
+                } else {
+                    mostrarMensaje(response.message, '.error-login');
+                }
+            },
+            error: function(xhr, status, error) {
+                let mensajeError;
+                try {
+                    let respuesta = JSON.parse(xhr.responseText);
+                    if (respuesta.message) {
+                        mensajeError = respuesta.message;
+                    }
+                } catch (e) {
+                    console.error("Error al procesar la respuesta del servidor: ", e);
+                }
+                console.log(mensajeError);
+                mostrarMensaje(mensajeError, '.error-login');
+            }
+        });
+    }, e => {
+        console.error("Error al obtener la ubicación: ", e);
+    });
 }
+
+
+async function obtenerDireccion(lat, lng) {
+    // Obtiene la dirección de Openstreetmap a partir de las coordenadas
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Concatena la dirección y la devuelve     
+        if (data.address) {
+            let direccion = [
+                (data.address.road ? data.address.road + ', ' : '') + 
+                (data.address.city || data.address.town || data.address.village || ''),                     
+                data.address.province || '', 
+                data.address.state || data.address.region || '', 
+            ].filter(Boolean).join(', ');
+           
+            return direccion;
+        } else {
+            console.error("No se encontró una dirección para estas coordenadas.");
+            return '';
+        }
+    } catch (error) {
+        console.error("Error al llamar a la API de Openstreetmap", error);
+        return '';
+    }
+}
+
 

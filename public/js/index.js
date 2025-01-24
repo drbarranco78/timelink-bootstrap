@@ -50,7 +50,7 @@ $('#mostrarPassword').click(function () {
  * @param {Event} event - El evento de envío del formulario
  */
 $("#formulario-login").submit(function (event) {
-    
+
     event.preventDefault();
     if (validarLogin()) {
         // Obtenemos los valores del formulario
@@ -59,26 +59,38 @@ $("#formulario-login").submit(function (event) {
 
         // Petición AJAX para autenticar
         $.ajax({
-            url: '/api/login', 
+            url: '/api/login',
             method: 'POST',
             data: {
-                dni: identificador,  
+                dni: identificador,
                 password: passwordLogin
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.redirect) {
                     console.log("Redirigiendo a:", response.redirect);
                     localStorage.setItem('usuario', JSON.stringify(response.usuario));
                     mostrarMensaje(response.message, '.exito-login');
-                    window.location.href = response.redirect; 
+                    window.location.href = response.redirect;
                 } else {
-                    
+
                     mostrarMensaje(response.message, '.error-login');
                 }
             },
-            error: function(xhr, status, error) {
-                console.error("Error del servidor: ", xhr.responseText);
-                mostrarMensaje("Hubo un problema con el servidor, por favor intente más tarde. " + xhr.responseText, '.error-login');
+            error: function (xhr, status, error) {
+                // console.error("Error del servidor: ", error.message);
+                // mostrarMensaje("Hubo un problema con el servidor, por favor intente más tarde. " + xhr.responseText, '.error-login');
+                // Parsear la respuesta para obtener solo el mensaje
+                let mensajeError = "Hubo un problema con el servidor, por favor intente más tarde.";
+                try {
+                    const respuesta = JSON.parse(xhr.responseText);
+                    if (respuesta.message) {
+                        mensajeError = respuesta.message; // Extraer el mensaje si está disponible
+                    }
+                } catch (e) {
+                    console.error("Error al procesar la respuesta del servidor: ", e);
+                }
+
+                mostrarMensaje(mensajeError, '.error-login');
             }
         });
 

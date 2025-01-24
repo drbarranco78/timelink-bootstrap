@@ -80,11 +80,11 @@ class UserController extends Controller
         if (!$credencial || $credencial->password !== $request->password) {
             return response()->json(['message' => 'Contraseña incorrecta'], 401);
         }  
-        if (Session::isStarted()) {
-            $request->session()->regenerate();
-        } else {
-            $request->session()->start();
-        }
+        // if (Session::isStarted()) {
+        //     $request->session()->regenerate();
+        // } else {
+        //     $request->session()->start();
+        // }
         Auth::login($usuario);
         
         $redirects = [
@@ -104,7 +104,7 @@ class UserController extends Controller
     {
         // Cerrar la sesión del usuario
         Auth::logout();  
-        $request->session()->invalidate();          
+        // $request->session()->invalidate();          
         return response()->json(['message' => 'Sesión cerrada correctamente']);
     }
 }
