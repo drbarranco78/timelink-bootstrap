@@ -12,7 +12,7 @@ class EmpresaController extends Controller
     public function index()
     {        
         $empresas = Empresa::all(); 
-        return response()->json($empresas);
+        return response()->json(['array' => $empresas]);
     }
 
     // Crea una nueva empresa

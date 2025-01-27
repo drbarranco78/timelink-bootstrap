@@ -246,9 +246,13 @@ function mostrarMensaje(mensaje, selector) {
     $(selector).html(`<h3>${mensaje}</h3>`).fadeIn(500).delay(2000).fadeOut(500);
 }
 
+/**
+ * Función para registrar los datos de un fichaje
+ * @param {string} tipo - Tipo de fichaje (entrada, salida, etc.)
+ * 
+ */
 function registrarFichaje(tipo) {
-
-    // Obtener la fecha y hora actuales 
+    // Obtener la fecha y hora actuales
     let fecha = new Date();
     let horas = String(fecha.getHours()).padStart(2, '0');
     let minutos = String(fecha.getMinutes()).padStart(2, '0');
@@ -257,51 +261,68 @@ function registrarFichaje(tipo) {
     let fechaActual = fecha.toISOString().split('T')[0];
     let horaActual = `${horas}:${minutos}:${segundos}`;
 
-    navigator.geolocation.getCurrentPosition(async position => {
-        let lat = position.coords.latitude;
-        let lng = position.coords.longitude;
+    navigator.geolocation.getCurrentPosition(
+        async position => {
+            let lat = position.coords.latitude;
+            let lng = position.coords.longitude;
 
-        // Obtener la dirección de forma asíncrona
-        let ubicacion = await obtenerDireccion(lat, lng);
-        console.log("Ubicación para mandar: " + ubicacion);
+            // Obtener la dirección de forma asíncrona
+            let ubicacion = await obtenerDireccion(lat, lng);
+            console.log("Ubicación para mandar: " + ubicacion);
 
-        // Realizar la solicitud AJAX después de obtener la ubicación
-        $.ajax({
-            url: '/api/fichajes',
-            method: 'POST',
-            data: {
-                id_usuario: usuario.id,
-                tipo_fichaje: tipo,
-                fecha: fechaActual,
-                hora: horaActual,
-                ubicacion: ubicacion
-            },
-            success: function(response) {
-                if (response.ok) {
-                    console.log(response.message);
-                } else {
-                    mostrarMensaje(response.message, '.error-login');
-                }
-            },
-            error: function(xhr, status, error) {
-                let mensajeError;
-                try {
-                    let respuesta = JSON.parse(xhr.responseText);
-                    if (respuesta.message) {
-                        mensajeError = respuesta.message;
-                    }
-                } catch (e) {
-                    console.error("Error al procesar la respuesta del servidor: ", e);
-                }
-                console.log(mensajeError);
-                mostrarMensaje(mensajeError, '.error-login');
-            }
-        });
-    }, e => {
-        console.error("Error al obtener la ubicación: ", e);
-    });
+            // Realizar la solicitud AJAX con la ubicación
+            enviarFichaje(tipo, fechaActual, horaActual, ubicacion);
+        },
+        error => {
+            console.error("Error al obtener la ubicación: ", error);
+
+            // Registrar el fichaje sin ubicación
+            let ubicacion = "Ubicación no disponible";
+            enviarFichaje(tipo, fechaActual, horaActual, ubicacion);
+        }
+    );
 }
 
+/**
+ * Función para enviar los datos del fichaje al servidor
+ * @param {string} tipo - Tipo de fichaje (entrada, salida, etc.)
+ * @param {string} fecha - Fecha del fichaje en formato YYYY-MM-DD
+ * @param {string} hora - Hora del fichaje en formato HH:mm:ss
+ * @param {string} ubicacion - Ubicación o mensaje en caso de no obtenerla
+ */
+function enviarFichaje(tipo, fecha, hora, ubicacion) {
+    $.ajax({
+        url: '/api/fichajes',
+        method: 'POST',
+        data: {
+            id_usuario: usuario.id,
+            tipo_fichaje: tipo,
+            fecha: fecha,
+            hora: hora,
+            ubicacion: ubicacion
+        },
+        success: function (response) {
+            if (response.ok) {
+                console.log(response.message);
+            } else {
+                mostrarMensaje(response.message, '.error-login');
+            }
+        },
+        error: function (xhr, status, error) {
+            let mensajeError;
+            try {
+                let respuesta = JSON.parse(xhr.responseText);
+                if (respuesta.message) {
+                    mensajeError = respuesta.message;
+                }
+            } catch (e) {
+                console.error("Error al procesar la respuesta del servidor: ", e);
+            }
+            console.log(mensajeError || "Error al registrar el fichaje.");
+            mostrarMensaje(mensajeError || "Error al registrar el fichaje.", '.error-login');
+        }
+    });
+}
 
 async function obtenerDireccion(lat, lng) {
     // Obtiene la dirección de Openstreetmap a partir de las coordenadas
@@ -314,12 +335,12 @@ async function obtenerDireccion(lat, lng) {
         // Concatena la dirección y la devuelve     
         if (data.address) {
             let direccion = [
-                (data.address.road ? data.address.road + ', ' : '') + 
-                (data.address.city || data.address.town || data.address.village || ''),                     
-                data.address.province || '', 
-                data.address.state || data.address.region || '', 
+                (data.address.road ? data.address.road + ', ' : '') +
+                (data.address.city || data.address.town || data.address.village || ''),
+                data.address.province || '',
+                data.address.state || data.address.region || '',
             ].filter(Boolean).join(', ');
-           
+
             return direccion;
         } else {
             console.error("No se encontró una dirección para estas coordenadas.");

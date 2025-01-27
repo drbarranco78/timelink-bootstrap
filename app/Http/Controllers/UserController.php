@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
 use App\Models\Credencial;
@@ -25,15 +26,42 @@ class UserController extends Controller
     {
         $request->validate([
             'dni' => 'required|unique:usuarios,dni',
+            'password' => 'required',
             'nombre' => 'required',
             'apellidos' => 'required',
             'email' => 'required|email|unique:usuarios,email',
-            'cif_empresa' => 'required',
+            'empresa' => 'required',
             'cargo' => 'required',
-            'rol' => 'required|in:maestro,trabajador',
+            'rol' => 'required|in:maestro,empleado',
         ]);
 
-        return User::create($request->all());
+        DB::beginTransaction();
+
+        try {
+            // Crear el usuario en la tabla usuarios
+            $usuario = User::create([
+                'dni' => $request->dni,
+                'nombre' => $request->nombre,
+                'apellidos' => $request->apellidos,
+                'email' => $request->email,
+                'empresa' => $request->empresa,
+                'cargo' => $request->cargo,
+                'rol' => $request->rol,
+            ]);
+
+            // Crear la entrada en la tabla credenciales
+            DB::table('credenciales')->insert([
+                'user_id' => $usuario->id, 
+                'password' => Hash::make($request->password),
+            ]);
+            // Confirmar la transacción
+            DB::commit();
+            return response()->json(['message' => 'Usuario registrado correctamente'], 201);
+        } catch (\Exception $e) {
+            // Revertir cambios en caso de error
+            DB::rollBack(); 
+            return response()->json(['error' => 'Error al registrar usuario: ' . $e->getMessage()], 500);
+        }
     }
 
     // Obtener un usuario por ID

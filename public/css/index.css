@@ -6,17 +6,29 @@
     user-select: none;
 }
 body{
-    background-color: #232D4B;
+    background-color: #E3E7EB !important;
+    height: 100vh;
 }
-
 /* Estilo de la cabecera  */
 header {
-    background-color:#ccc;
-    display: flex;
+    background-color:#1278A4;
+    display: flex !important;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
+}
+/* h3{
+    font-size: 1.2rem !important;
+} */
+
+.contenedor-principal{
+    height: 80% ;    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2%;
 }
 
 /* Contenedores del logo y el usuario en la cabecera  */
@@ -33,6 +45,7 @@ header {
     margin-left: 30px;
     font-size: 20px;
     font-style: italic;
+    color: whitesmoke;
 }
 
 /* Iconos de logo y usuario  */
@@ -47,74 +60,7 @@ header {
     margin-top: 50px;
     color: #00AA9B;
 }
-/* Estilos generales de los formularios de login y registro  */
-fieldset{       
-    border: none;   
-}
-legend{
-    font-size: 1.2rem;
-    font-weight: bold;    
-    color:whitesmoke;
-    margin: 0 auto 20px auto;
-    background-color: #232D4B;
-    border-radius: 10px;
-    padding: 0 20px;
-    border: 2px solid whitesmoke;
-}
-#formulario-login{
-    display: flex;
-    flex-direction: column;
-    width: 25vw;
-    background-color: #ccc;
-    margin: 0 auto;
-    border-radius: 15px;
-    padding: 20px;
-    font-size: 20px;
-    border: 2px solid #00AA9B;
-    /* color: whitesmoke; */
-}
-/* Contenedor del formulario de login  */
-.login {
-    
-    text-align: center;
-    padding: 100px 0;
-    /* display: none;     */
-}
 
-/* Campos de entrada del formulario de login  */
-#formulario-login input {
-    margin-bottom: 20px;
-    border-radius: 10px;
-    padding: 10px;    
-}
-/* Botón de acceso en el formulario de login  */
-.boton-login {
-    margin-top: 1.5em;
-    font-size: 20px;
-    font-weight: bold;
-    width: 50%;
-    align-self: center;
-}
-
-.password {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
-    gap: 5px; 
-    align-items: center; 
-}
-.password label {
-    grid-column: span 2; 
-}
-.password input {
-    grid-column: 1 / 2; /* Coloca el input en la primera columna */  
-}
-.password i {
-    grid-column: 2 / 3;
-    cursor: pointer;
-    margin-bottom: 20px;
-    justify-self: end; /* Alinea la imagen a la derecha */
-}
 
 
 /* Texto debajo de los formularios  */
@@ -151,4 +97,144 @@ legend{
 }
 .exito-login h3, .exito-registro h3 {
     color:#00AA9B;
+}
+
+.container{
+    border-radius: 10px;
+    padding-right: 5% !important;    
+
+}
+/* #register{
+    display: none;
+} */
+
+#login{
+    display: none;
+}
+
+.register {
+    background: -webkit-linear-gradient(left, #232D4B, #00c6ff);
+    margin-top: 3%;
+    padding: 3%;
+    /* display: none; */
+}
+
+.register-left {
+    text-align: center;
+    color: #fff;
+    /* margin-top: 4%; */
+}
+
+.register-left input {
+    border: none;
+    border-radius: 1.5rem;
+    padding: 2%;
+    width: 60%;
+    background: #f8f9fa;
+    font-weight: bold;
+    color: #383d41;
+    margin-top: 30%;
+    margin-bottom: 3%;
+    cursor: pointer;
+}
+
+.register-right {
+    background: #f8f9fa;
+    border-top-left-radius: 10% 50%;
+    border-bottom-left-radius: 10% 50%;
+}
+
+.register-left i,  .register-left img{
+    margin-top: 10%;
+    margin-bottom: 15%;
+    width: 25%;
+    -webkit-animation: mover 2s infinite alternate;
+    animation: mover 1s infinite alternate;
+}
+
+.register-left img{
+    width: 50%;
+    border-radius: 50%;
+
+}
+
+@-webkit-keyframes mover {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes mover {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-20px);
+    }
+}
+
+.register-left p {
+    font-weight: lighter;
+    padding: 12%;
+    margin-top: -9%;
+}
+
+.register .register-form {
+    padding: 10%;
+    margin-top: 10%;
+}
+
+.btnRegister {
+    float: right;
+    margin-top: 10%;
+    border: none;
+    border-radius: 1.5rem;
+    padding: 2%;
+    background: #0062cc;
+    color: #fff;
+    font-weight: 600;
+    width: 50%;
+    cursor: pointer;
+}
+
+.register .nav-tabs {
+    margin-top: 3%;
+    border: none;
+    background: #0062cc;
+    border-radius: 1.5rem;
+    width: 28%;
+    float: right;
+}
+
+.register .nav-tabs .nav-link {
+    padding: 2%;
+    height: 34px;
+    font-weight: 600;
+    color: #fff;
+    border-top-right-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+}
+
+.register .nav-tabs .nav-link:hover {
+    border: none;
+}
+
+.register .nav-tabs .nav-link.active {
+    width: 100px;
+    color: #0062cc;
+    border: 2px solid #0062cc;
+    border-top-left-radius: 1.5rem;
+    border-bottom-left-radius: 1.5rem;
+}
+
+.register-heading {
+    text-align: center;
+    margin-top: 8%;
+    margin-bottom: -15%;
+    color: #495057;
 }
