@@ -15,6 +15,7 @@ use App\Models\Credencial;
 class UserController extends Controller
 {
     
+    
     // Obtener todos los usuarios
     public function index()
     {
@@ -24,43 +25,71 @@ class UserController extends Controller
     // Crear un nuevo usuario
     public function store(Request $request)
     {
-        $request->validate([
-            'dni' => 'required|unique:usuarios,dni',
-            'password' => 'required',
-            'nombre' => 'required',
-            'apellidos' => 'required',
-            'email' => 'required|email|unique:usuarios,email',
-            'empresa' => 'required',
-            'cargo' => 'required',
-            'rol' => 'required|in:maestro,empleado',
-        ]);
-
-        DB::beginTransaction();
+        $redirects = [
+            'empleado' => '/private',
+            'maestro' => '/admin',
+        ];
 
         try {
+            $request->validate([
+                'dni' => 'required|string|unique:usuarios,dni',
+                'password' => 'required|string',
+                'nombre' => 'required|string|max:50',
+                'apellidos' => 'required|string|max:100',
+                'email' => 'required|email|unique:usuarios,email',
+                'id_empresa' => 'nullable|integer',
+                'cargo' => 'required|string|max:50',
+                'rol' => 'required|in:maestro,empleado',
+            ], [
+                'dni.unique' => 'El DNI ya está registrado.',
+                'email.unique' => 'El email ya está registrado.',
+            ]);
+
+            DB::beginTransaction();
+
             // Crear el usuario en la tabla usuarios
             $usuario = User::create([
                 'dni' => $request->dni,
                 'nombre' => $request->nombre,
                 'apellidos' => $request->apellidos,
                 'email' => $request->email,
-                'empresa' => $request->empresa,
+                'id_empresa' => $request->id_empresa,
                 'cargo' => $request->cargo,
                 'rol' => $request->rol,
             ]);
 
             // Crear la entrada en la tabla credenciales
             DB::table('credenciales')->insert([
-                'user_id' => $usuario->id, 
-                'password' => Hash::make($request->password),
+                'id_usuario' => $usuario->id,
+                'password' => $request->password,
             ]);
-            // Confirmar la transacción
+
             DB::commit();
-            return response()->json(['message' => 'Usuario registrado correctamente'], 201);
+
+            Auth::login($usuario);
+
+            return response()->json([
+                'message' => 'Usuario registrado correctamente',
+                'redirect' => $redirects[$usuario->rol] ?? '/',
+                'usuario' => $usuario,
+            ], 201);
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Si el error es una violación de clave única (DNI o email duplicado)
+            if ($e->getCode() == '23000') {  
+                return response()->json([
+                    'error' => 'El DNI o el email ya están registrados.',
+                ], 422);  
+            }    
+            
+            return response()->json([
+                'error' => 'Error de base de datos: ' . $e->getMessage(),
+            ], 500);
         } catch (\Exception $e) {
-            // Revertir cambios en caso de error
-            DB::rollBack(); 
-            return response()->json(['error' => 'Error al registrar usuario: ' . $e->getMessage()], 500);
+           
+            return response()->json([
+                'error' => 'Error al registrar usuario: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -113,10 +142,10 @@ class UserController extends Controller
         // } else {
         //     $request->session()->start();
         // }
-        Auth::login($usuario);
+        Auth::login($usuario);    
         
         $redirects = [
-            'trabajador' => '/private',
+            'empleado' => '/private',
             'maestro' => '/admin',
         ];
     

@@ -17,18 +17,31 @@ class EmpresaController extends Controller
 
     // Crea una nueva empresa
     public function store(Request $request)
-    {
-        $request->validate([
-            'cif' => 'required|string|max:15',
-            'nombre_empresa' => 'required|string|max:100',
-            'direccion' => 'nullable|string|max:255',
-            'telefono' => 'nullable|string|max:15',
-            'email' => 'nullable|string|email|max:100',
-        ]);
-        
-        $empresa = Empresa::create($request->all()); 
-        return response()->json($empresa, 201);
+{
+    // Validar los datos de entrada
+    $request->validate([
+        'cif' => 'required|string|max:15',
+        'nombre_empresa' => 'required|string|max:100',
+        'direccion' => 'nullable|string|max:255',
+        'telefono' => 'nullable|string|max:15',
+        'email' => 'nullable|string|email|max:100',
+    ]);
+
+    // Comprobar si ya existe una empresa con el mismo CIF
+    if (Empresa::where('cif', $request->cif)->exists()) {
+        return response()->json([
+            'error' => true,
+            'message' => 'La empresa con el CIF proporcionado ya existe.'
+        ], 400); 
     }
+
+    // Crear la nueva empresa
+    $empresa = Empresa::create($request->all());
+
+    // Retornar la respuesta en formato JSON
+    return response()->json($empresa, 201);
+}
+
 
     // Busca una empresa por su id
     public function show($id)

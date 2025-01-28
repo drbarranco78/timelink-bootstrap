@@ -14,8 +14,8 @@ class UsuarioSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->insert([
-            ['dni' => '12345678A', 'nombre' => 'Juan', 'apellidos' => 'Pérez López', 'email' => 'juan.perez@techsolutions.com', 'cif_empresa' => 'A12345678', 'cargo' => 'Desarrollador', 'rol' => 'trabajador'],
-            ['dni' => '87654321B', 'nombre' => 'María', 'apellidos' => 'Gómez Sánchez', 'email' => 'maria.gomez@innovatech.com', 'cif_empresa' => 'B87654321', 'cargo' => 'Gerente', 'rol' => 'maestro'],
+            ['dni' => '12345678A', 'nombre' => 'Juan', 'apellidos' => 'Pérez López', 'email' => 'juan.perez@techsolutions.com', 'id_empresa' => '1', 'cargo' => 'Desarrollador', 'rol' => 'empleado'],
+            ['dni' => '87654321B', 'nombre' => 'María', 'apellidos' => 'Gómez Sánchez', 'email' => 'maria.gomez@innovatech.com', 'id_empresa' => '2', 'cargo' => 'Gerente', 'rol' => 'maestro'],
         ]);
     }
 }

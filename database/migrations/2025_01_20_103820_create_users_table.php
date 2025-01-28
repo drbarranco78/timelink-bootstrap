@@ -18,10 +18,10 @@ return new class extends Migration
                 $table->string('nombre', 50);
                 $table->string('apellidos', 100);
                 $table->string('email', 100)->unique();
-                $table->string('cif_empresa', 15);
+                $table->unsignedBigInteger('id_empresa');
                 $table->string('cargo', 50)->nullable();
-                $table->enum('rol', ['maestro', 'trabajador']);
-                $table->foreign('cif_empresa')->references('cif')->on('empresas')->onUpdate('cascade')->onDelete('cascade');
+                $table->enum('rol', ['maestro', 'empleado']);
+                $table->foreign('id_empresa')->references('id_empresa')->on('empresas')->onUpdate('cascade')->onDelete('cascade');
                 $table->timestamp('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
                 $table->timestamp('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
                 //$table->timestamps(); //Necesario para el ORM Eloquent

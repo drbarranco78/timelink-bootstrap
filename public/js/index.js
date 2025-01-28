@@ -9,14 +9,11 @@ const patronDni = /^(?:\d{8}[A-Z]|[XYZ]\d{7}[A-Z])$/i;
 
 let identificador;
 let passwordLogin;
+let empresas = [];
+let idEmpresa;
 
 $(document).ready(function () {
     cargarEmpresas();
-    console.log(patronPassword.test("Password1")); // Debería devolver true
-console.log(patronPassword.test("password1")); // Debería devolver false (falta una mayúscula)
-console.log(patronPassword.test("PASSWORD1")); // Debería devolver false (falta una minúscula)
-console.log(patronPassword.test("Passw1"));    // Debería devolver false (menos de 8 caracteres)
-
 });
 
 /**
@@ -89,7 +86,7 @@ $("#btnLogin").click(function (event) {
                 try {
                     const respuesta = JSON.parse(xhr.responseText);
                     if (respuesta.message) {
-                        mensajeError = respuesta.message; // Extraer el mensaje si está disponible
+                        mensajeError = respuesta.message; 
                     }
                 } catch (e) {
                     console.error("Error al procesar la respuesta del servidor: ", e);
@@ -106,6 +103,8 @@ function cargarEmpresas() {
         url: '/api/empresas',
         method: 'GET',
         success: function (data) {
+            // Guarda las empresas en una variable global
+            empresas = data.array;  
             let selectEmpresas = $("#company-selection");
             selectEmpresas.empty();
 
@@ -113,7 +112,7 @@ function cargarEmpresas() {
             selectEmpresas.append('<option class="hidden" selected disabled>Selecciona tu empresa</option>');
 
             // Rellenar con las empresas obtenidas del backend
-            data.array.forEach(empresa => {
+            empresas.forEach(empresa => {
                 selectEmpresas.append(`<option value="${empresa.id_empresa}">${empresa.nombre_empresa}</option>`);
             });
         },
@@ -122,7 +121,7 @@ function cargarEmpresas() {
             try {
                 const respuesta = JSON.parse(xhr.responseText);
                 if (respuesta.message) {
-                    mensajeError = respuesta.message; // Extraer el mensaje si está disponible
+                    mensajeError = respuesta.message; 
                 }
             } catch (e) {
                 console.error("Error al procesar la respuesta del servidor: ", e);
@@ -132,32 +131,17 @@ function cargarEmpresas() {
         }
     });
 }
-
+$("#company-selection").change(function () {
+    idEmpresa = $(this).val();   
+});
 
 /**
  * Función para validar el formulario de registro
  * @returns {boolean} true si todos los campos son válidos, false si hay errores
  */
 function validarRegistro(datos) {
-    //fechaActual = new Date();
-    // Obtener año, mes y día
-    //let anio = fechaActual.getFullYear();
-    //let mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
-    //let dia = String(fechaActual.getDate()).padStart(2, '0');
 
-    // Formatear la fecha como DD-MM-YYYY
-    //fechaFormateada = `${dia}/${mes}/${anio}`;
-    // dni = $("#dni").val();
-    // nombre = $("#nombre").val();
-    // emailRegistro = $("#email-registro").val();
-    // password1 = $("#password1").val();
-    // password2 = $("#password2").val();
-    // nivel = $("#nivel").val();
-    // fechaNac = $("#fechaNac").val();
-    // let [anioNac, mesNac, diaNac] = fechaNac.split('-');
-    // fechaNac = `${diaNac}/${mesNac}/${anioNac}`;
-    // genero = $("input[name='genero']:checked").val();
-    let repetirPassword= datos["rol"]==="maestro"?$("#admin-password2").val() : $("#employee-password2").val();
+    let repetirPassword = datos["rol"] === "maestro" ? $("#admin-password2").val() : $("#employee-password2").val();
 
     // Validación del DNI/NIE
     if (!patronDni.test(datos["dni"])) {
@@ -191,24 +175,29 @@ function validarRegistro(datos) {
     return true;
 }
 $(".btnRegister").on("click", function (e) {
+    if ($(this).attr("id") === "btnLogin") {        
+        return;
+    }
     e.preventDefault();
 
     let datos = {};
     const rol = $(this).attr("id") === "employee-register" ? "empleado" : "maestro";
-
+    let num_empresa = idEmpresa;
     console.log("Rol: " + rol);
 
     if (rol === "empleado") {
+        console.log("ID de la empresa seleccionada al pulsar el boton: ", idEmpresa);
         datos = {
             dni: $('#employee-dni').val(),
             password: $("#employee-password1").val().trim(),
             nombre: $("#employee-name").val(),
             apellidos: $("#employee-surname").val(),
             email: $("#employee-email").val(),
-            empresa: $("#company-selection").val(),
+            id_empresa: num_empresa,
             cargo: $("#employee-job").val(),
             rol: rol,
         };
+        registrarUsuario(datos);
     } else {
         datos = {
             dni: $('#admin-dni').val(),
@@ -220,14 +209,53 @@ $(".btnRegister").on("click", function (e) {
             cargo: "Administrador",
             rol: rol,
         };
+        if (!validarRegistro(datos)) {
+            return;
+        }
+        let empresa = {
+            nombre_empresa: $("#admin-company").val(),
+            cif: $("#admin-cif").val(),
+        };
+
+        // Hacer un POST para crear la empresa
+        $.ajax({
+            url: '/api/empresas',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(empresa),
+            success: function (response) {
+                // Obtener el id_empresa de la respuesta
+                const idEmpresa = response.id_empresa;
+                const datosAdmin = {
+                    dni: $('#admin-dni').val(),
+                    password: $("#admin-password1").val().trim(),
+                    nombre: $("#admin-name").val(),
+                    apellidos: $("#admin-surname").val(),
+                    email: $("#admin-email").val(),
+                    id_empresa: idEmpresa,
+                    cargo: "Administrador",
+                    rol: rol,
+                };
+
+                // Registrar al usuario administrador
+                registrarUsuario(datosAdmin);
+            },
+            error: function (xhr, status, error) {
+                let mensajeError = "Hubo un problema con el servidor.";
+                try {
+                    const respuesta = JSON.parse(xhr.responseText);
+                    if (respuesta.error && respuesta.message) {
+                        mensajeError = respuesta.message;
+                    }
+                } catch (e) {
+                    console.error("Error al procesar la respuesta del servidor: ", e);
+                }
+        
+                mostrarMensaje(mensajeError, '.error-login');
+            }
+        });
     }
 
-    console.log("DNI: " + datos.dni);
-    console.log("Email: " + datos.email);
-    console.log("Email: " + datos.password);
-
-    // Enviar al backend
-    registrarUsuario(datos);
 });
 
 
@@ -244,27 +272,37 @@ function registrarUsuario(datos) {
             contentType: 'application/json',
             data: JSON.stringify(datos),
             success: function (response) {
-                console.log('Success:', response);
-                mostrarMensaje("Usuario registrado con éxito", ".exito-login");
-                // Redirige al área privada
-                setTimeout(function () {
-                    window.location.href = 'private';
-                }, 2000);
+                console.log(response);
+                if (response.redirect) {
+                    console.log("Redirigiendo a:", response.redirect);
+                    localStorage.setItem('usuario', JSON.stringify(response.usuario));
+                    mostrarMensaje(response.message, '.exito-login');
+                    window.location.href = response.redirect;
+                } else {
+                    mostrarMensaje(response.message, '.error-login');
+                }
             },
             error: function (xhr) {
-                console.error('Error:', xhr);
-                if (xhr.status === 409) {
-                    mostrarMensaje("El email ya está registrado", ".error-login");
-                } else {
-                    mostrarMensaje("Error en el registro. Por favor, inténtalo de nuevo", ".error-login");
+                let mensajeError = "Hubo un problema al registrar el usuario.";
+                try {
+                    const respuesta = JSON.parse(xhr.responseText);
+    
+                    // Si hay errores de validación, los mostramos
+                    if (respuesta.errors) {
+                        mensajeError = Object.values(respuesta.errors).flat()[0]; // Muestra el primer mensaje de error
+                    } else if (respuesta.error) {
+                        mensajeError = respuesta.error; // Error general
+                    }
+                } catch (e) {
+                    console.error("Error al procesar la respuesta del servidor: ", e);
                 }
+    
+                mostrarMensaje(mensajeError, '.error-login');
             }
         });
     }
-
+    
 }
-
-
 
 /**
  * Muestra un mensaje temporal en un elemento seleccionado, animándolo con fadeIn y fadeOut.

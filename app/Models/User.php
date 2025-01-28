@@ -24,7 +24,7 @@ class User extends Authenticatable
         'nombre',
         'apellidos',
         'email',
-        'cif_empresa',
+        'id_empresa',
         'cargo',
         'rol',
     ];
@@ -54,7 +54,7 @@ class User extends Authenticatable
     // Un usuario pertenece a una empresa
     public function empresa()
     {
-        return $this->belongsTo(Empresa::class, 'cif_empresa', 'cif');
+        return $this->belongsTo(Empresa::class, 'id_empresa', 'cif');
     }
 
     // Un usuario tiene una credencial

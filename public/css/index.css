@@ -18,9 +18,9 @@ header {
     align-items: center;
     padding: 20px 40px;
 }
-/* h3{
+h3{
     font-size: 1.2rem !important;
-} */
+}
 
 .contenedor-principal{
     height: 80% ;    
@@ -237,4 +237,5 @@ header {
     margin-top: 8%;
     margin-bottom: -15%;
     color: #495057;
+    font-size: 1.75rem !important;
 }
