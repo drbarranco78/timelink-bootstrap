@@ -28,7 +28,7 @@ function validarLogin() {
         return true;
     } else {
         if (!patronDni.test(identificador)) {
-            // Cambiamos el texto del div de error antes de mostrarlo
+            
             mostrarMensaje("Introduzca un número de identificador válido", ".error-login");
         } else if (!patronPassword.test(passwordLogin)) {
             mostrarMensaje("La contraseña debe tener entre 8 y 20 caracteres, y al menos una mayúscula, una minúscula y un número", ".error-login");
@@ -58,6 +58,28 @@ $('#mostrarPassword').click(function () {
  * @param {Event} event - El evento de envío del formulario
  */
 $("#btnLogin").click(function (event) {
+    $.ajax({
+        url: '/api/enviar-solicitud',
+        method: 'GET',
+        success: function (data) {
+            console.log('Correo enviado con éxito:', data.message);
+            
+        },
+        error: function (xhr, status, error) {
+            let mensajeError = "Hubo un problema con el servidor, por favor intente más tarde.";
+            try {
+                const respuesta = JSON.parse(xhr.responseText);
+                if (respuesta.message) {
+                    mensajeError = respuesta.message; 
+                }
+            } catch (e) {
+                console.error("Error al procesar la respuesta del servidor: ", e);
+            }
+
+            mostrarMensaje(mensajeError, '.error-login');
+        }
+    });
+    
 
     event.preventDefault();
     if (validarLogin()) {
@@ -197,7 +219,7 @@ $(".btnRegister").on("click", function (e) {
             cargo: $("#employee-job").val(),
             rol: rol,
         };
-        registrarUsuario(datos);
+        solicitarUnion(datos);
     } else {
         datos = {
             dni: $('#admin-dni').val(),
@@ -258,6 +280,71 @@ $(".btnRegister").on("click", function (e) {
 
 });
 
+function solicitarUnion(datos){
+    if (!validarRegistro(datos)) {
+        return;        
+    }
+    idEmpresa=datos['id_empresa'];
+    $.ajax({
+        url: `/api/empresa/${idEmpresa}/maestro`,
+        method: 'GET',
+        success: function (response) {
+            const emailMaestro = response.email;
+
+            // Llama a la función para enviar el correo
+            enviarCorreoSolicitud(datos, emailMaestro);
+        },
+        error: function (xhr) {
+            let mensajeError = "No se pudo obtener el email del maestro de la empresa.";
+            try {
+                const respuesta = JSON.parse(xhr.responseText);
+                if (respuesta.message) {
+                    mensajeError = respuesta.message;
+                }
+            } catch (e) {
+                console.error("Error al procesar la respuesta del servidor: ", e);
+            }
+            mostrarMensaje(mensajeError, '.error-login');
+        }
+    });
+}
+
+function enviarCorreoSolicitud(datos, emailMaestro) {
+    console.log(emailMaestro);
+    let datosCorreo = {
+        nombre: datos['nombre'],
+        apellidos: datos['apellidos'],
+        dni: datos['dni'],
+        email: emailMaestro
+    };
+    $.ajax({
+        url: '/api/enviar-solicitud',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(datosCorreo),
+        success: function (data) {
+            console.log('Correo enviado con éxito:', data.message);
+            mostrarMensaje("Se ha enviado la solicitud al administrador de la empresa", '.exito-login');
+            
+        },
+        error: function (xhr, status, error) {
+            let mensajeError = "Hubo un problema con el servidor, por favor intente más tarde.";
+            try {
+                const respuesta = JSON.parse(xhr.responseText);
+                if (respuesta.message) {
+                    mensajeError = respuesta.message; 
+                }
+            } catch (e) {
+                console.error("Error al procesar la respuesta del servidor: ", e);
+            }
+            console.log(mensajeError);
+            mostrarMensaje(mensajeError, '.error-login');
+        }
+    });
+    
+    
+}
+
 
 /**
  * Envia el formulario de registro
@@ -287,11 +374,11 @@ function registrarUsuario(datos) {
                 try {
                     const respuesta = JSON.parse(xhr.responseText);
     
-                    // Si hay errores de validación, los mostramos
+                    
                     if (respuesta.errors) {
-                        mensajeError = Object.values(respuesta.errors).flat()[0]; // Muestra el primer mensaje de error
+                        mensajeError = Object.values(respuesta.errors).flat()[0]; 
                     } else if (respuesta.error) {
-                        mensajeError = respuesta.error; // Error general
+                        mensajeError = respuesta.error; 
                     }
                 } catch (e) {
                     console.error("Error al procesar la respuesta del servidor: ", e);
@@ -315,7 +402,7 @@ function mostrarMensaje(mensaje, selector) {
 
 $("#enlace-login, #pie-formularios-registro").click(function (event) {
 
-    event.preventDefault(); // Previene el comportamiento por defecto del enlace
+    event.preventDefault();
     //if ($("#register").css("display") !== "none") {
     $(".register").css("display", "none"); // Oculta la sección de registro si está visible
     //}
@@ -326,7 +413,7 @@ $("#enlace-login, #pie-formularios-registro").click(function (event) {
 
 $("#enlace-registro, #pie-formularios-login").click(function () {
 
-    event.preventDefault(); // Previene el comportamiento por defecto del enlace
+    event.preventDefault(); 
     //if ($("#login").css("display") !== "none") {
     $("#login").css("display", "none"); // Oculta la sección de registro si está visible
     //}

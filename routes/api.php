@@ -6,12 +6,14 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FichajeController;
 use App\Http\Controllers\CredencialController;
+use App\Http\Controllers\MailController;
 
 Route::get('/empresas', [EmpresaController::class, 'index']);
 Route::post('/empresas', [EmpresaController::class, 'store']);
 Route::get('/empresas/{id}', [EmpresaController::class, 'show']);
 Route::put('/empresas/{id}', [EmpresaController::class, 'update']);
 Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy']);
+Route::get('/empresa/{idEmpresa}/maestro', [UserController::class, 'obtenerEmailMaestro']);
 
 Route::get('/usuarios', [UserController::class, 'index']);
 Route::post('/usuarios', [UserController::class, 'store']);
@@ -33,6 +35,10 @@ Route::get('/fichajes/{id}', [FichajeController::class, 'show']);
 Route::put('/fichajes/{id}', [FichajeController::class, 'update']);
 Route::delete('/fichajes/{id}', [FichajeController::class, 'destroy']);
 Route::post('/fichajes/filtrar', [FichajeController::class, 'obtenerPorTrabajadorYRango']);
+
+
+Route::post('/enviar-solicitud', [MailController::class, 'enviarSolicitud']);
+
 
 
 

@@ -164,4 +164,19 @@ class UserController extends Controller
         // $request->session()->invalidate();          
         return response()->json(['message' => 'Sesión cerrada correctamente']);
     }
+
+    public function obtenerEmailMaestro($idEmpresa)
+    {
+        // Busca el usuario con rol "maestro" asociado a la empresa
+        $maestro = DB::table('users')
+            ->where('id_empresa', $idEmpresa)
+            ->where('rol', 'maestro')
+            ->first();
+
+        if ($maestro) {
+            return response()->json(['email' => $maestro->email]);
+        } else {
+            return response()->json(['message' => 'No se encontró un usuario maestro para esta empresa.'], 404);
+        }
+    }
 }
