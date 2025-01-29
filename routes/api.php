@@ -14,6 +14,8 @@ Route::get('/empresas/{id}', [EmpresaController::class, 'show']);
 Route::put('/empresas/{id}', [EmpresaController::class, 'update']);
 Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy']);
 Route::get('/empresa/{idEmpresa}/maestro', [UserController::class, 'obtenerEmailMaestro']);
+Route::get('/empresa/{idEmpresa}/usuarios', [UserController::class, 'obtenerUsuariosPorEmpresa']);
+
 
 Route::get('/usuarios', [UserController::class, 'index']);
 Route::post('/usuarios', [UserController::class, 'store']);

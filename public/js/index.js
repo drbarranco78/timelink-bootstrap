@@ -58,32 +58,9 @@ $('#mostrarPassword').click(function () {
  * @param {Event} event - El evento de envío del formulario
  */
 $("#btnLogin").click(function (event) {
-    $.ajax({
-        url: '/api/enviar-solicitud',
-        method: 'GET',
-        success: function (data) {
-            console.log('Correo enviado con éxito:', data.message);
-            
-        },
-        error: function (xhr, status, error) {
-            let mensajeError = "Hubo un problema con el servidor, por favor intente más tarde.";
-            try {
-                const respuesta = JSON.parse(xhr.responseText);
-                if (respuesta.message) {
-                    mensajeError = respuesta.message; 
-                }
-            } catch (e) {
-                console.error("Error al procesar la respuesta del servidor: ", e);
-            }
-
-            mostrarMensaje(mensajeError, '.error-login');
-        }
-    });
     
-
     event.preventDefault();
     if (validarLogin()) {
-
         // Petición AJAX para autenticar
         $.ajax({
             url: '/api/login',
@@ -93,30 +70,25 @@ $("#btnLogin").click(function (event) {
                 password: passwordLogin
             },
             success: function (response) {
-                if (response.redirect) {
-                    console.log("Redirigiendo a:", response.redirect);
-                    localStorage.setItem('usuario', JSON.stringify(response.usuario));
+                if (response.redirect) {                    
+                    // Guardar datos del usuario en localStorage
+                    localStorage.setItem('usuario', JSON.stringify(response.usuario));                    
+                    // Guardar datos de la empresa                    
+                    localStorage.setItem('empresa', JSON.stringify(response.empresa));                  
+        
                     mostrarMensaje(response.message, '.exito-login');
+        
+                    // Redirigir a la página correspondiente
                     window.location.href = response.redirect;
                 } else {
-
                     mostrarMensaje(response.message, '.error-login');
                 }
             },
-            error: function (xhr, status, error) {
-                let mensajeError = "Hubo un problema con el servidor, por favor intente más tarde.";
-                try {
-                    const respuesta = JSON.parse(xhr.responseText);
-                    if (respuesta.message) {
-                        mensajeError = respuesta.message; 
-                    }
-                } catch (e) {
-                    console.error("Error al procesar la respuesta del servidor: ", e);
-                }
-
-                mostrarMensaje(mensajeError, '.error-login');
+            error: function (xhr) {
+                mostrarMensaje(xhr.responseJSON.message, '.error-login');
             }
         });
+        
     }
 });
 
@@ -139,17 +111,7 @@ function cargarEmpresas() {
             });
         },
         error: function (xhr, status, error) {
-            let mensajeError = "Hubo un problema con el servidor, por favor intente más tarde.";
-            try {
-                const respuesta = JSON.parse(xhr.responseText);
-                if (respuesta.message) {
-                    mensajeError = respuesta.message; 
-                }
-            } catch (e) {
-                console.error("Error al procesar la respuesta del servidor: ", e);
-            }
-
-            mostrarMensaje(mensajeError, '.error-login');
+            mostrarMensaje(xhr.responseJSON.message, '.error-login');
         }
     });
 }
@@ -207,8 +169,7 @@ $(".btnRegister").on("click", function (e) {
     let num_empresa = idEmpresa;
     console.log("Rol: " + rol);
 
-    if (rol === "empleado") {
-        console.log("ID de la empresa seleccionada al pulsar el boton: ", idEmpresa);
+    if (rol === "empleado") {        
         datos = {
             dni: $('#employee-dni').val(),
             password: $("#employee-password1").val().trim(),
@@ -262,18 +223,8 @@ $(".btnRegister").on("click", function (e) {
                 // Registrar al usuario administrador
                 registrarUsuario(datosAdmin);
             },
-            error: function (xhr, status, error) {
-                let mensajeError = "Hubo un problema con el servidor.";
-                try {
-                    const respuesta = JSON.parse(xhr.responseText);
-                    if (respuesta.error && respuesta.message) {
-                        mensajeError = respuesta.message;
-                    }
-                } catch (e) {
-                    console.error("Error al procesar la respuesta del servidor: ", e);
-                }
-        
-                mostrarMensaje(mensajeError, '.error-login');
+            error: function (xhr) {
+                mostrarMensaje(xhr.responseJSON.message, '.error-login');
             }
         });
     }
@@ -295,16 +246,7 @@ function solicitarUnion(datos){
             enviarCorreoSolicitud(datos, emailMaestro);
         },
         error: function (xhr) {
-            let mensajeError = "No se pudo obtener el email del maestro de la empresa.";
-            try {
-                const respuesta = JSON.parse(xhr.responseText);
-                if (respuesta.message) {
-                    mensajeError = respuesta.message;
-                }
-            } catch (e) {
-                console.error("Error al procesar la respuesta del servidor: ", e);
-            }
-            mostrarMensaje(mensajeError, '.error-login');
+            mostrarMensaje(xhr.responseJSON.message, '.error-login');
         }
     });
 }
@@ -327,24 +269,11 @@ function enviarCorreoSolicitud(datos, emailMaestro) {
             mostrarMensaje("Se ha enviado la solicitud al administrador de la empresa", '.exito-login');
             
         },
-        error: function (xhr, status, error) {
-            let mensajeError = "Hubo un problema con el servidor, por favor intente más tarde.";
-            try {
-                const respuesta = JSON.parse(xhr.responseText);
-                if (respuesta.message) {
-                    mensajeError = respuesta.message; 
-                }
-            } catch (e) {
-                console.error("Error al procesar la respuesta del servidor: ", e);
-            }
-            console.log(mensajeError);
-            mostrarMensaje(mensajeError, '.error-login');
+        error: function (xhr) {
+            mostrarMensaje(xhr.responseJSON.message, '.error-login');
         }
-    });
-    
-    
+    });     
 }
-
 
 /**
  * Envia el formulario de registro
@@ -370,25 +299,10 @@ function registrarUsuario(datos) {
                 }
             },
             error: function (xhr) {
-                let mensajeError = "Hubo un problema al registrar el usuario.";
-                try {
-                    const respuesta = JSON.parse(xhr.responseText);
-    
-                    
-                    if (respuesta.errors) {
-                        mensajeError = Object.values(respuesta.errors).flat()[0]; 
-                    } else if (respuesta.error) {
-                        mensajeError = respuesta.error; 
-                    }
-                } catch (e) {
-                    console.error("Error al procesar la respuesta del servidor: ", e);
-                }
-    
-                mostrarMensaje(mensajeError, '.error-login');
+                mostrarMensaje(xhr.responseJSON.message, '.error-login');
             }
         });
-    }
-    
+    }    
 }
 
 /**
@@ -402,22 +316,16 @@ function mostrarMensaje(mensaje, selector) {
 
 $("#enlace-login, #pie-formularios-registro").click(function (event) {
 
-    event.preventDefault();
-    //if ($("#register").css("display") !== "none") {
-    $(".register").css("display", "none"); // Oculta la sección de registro si está visible
-    //}
-
+    event.preventDefault();    
+    $(".register").css("display", "none"); 
     $("#login").fadeIn(1000).css("display", "block");
 
 });
 
 $("#enlace-registro, #pie-formularios-login").click(function () {
 
-    event.preventDefault(); 
-    //if ($("#login").css("display") !== "none") {
-    $("#login").css("display", "none"); // Oculta la sección de registro si está visible
-    //}
-
+    event.preventDefault();     
+    $("#login").css("display", "none"); 
     $("#register").fadeIn(1000).css("display", "block");
 
 });

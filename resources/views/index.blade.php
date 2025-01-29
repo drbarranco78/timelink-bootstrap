@@ -41,7 +41,7 @@
                     <i class="fa-solid fa-handshake fa-3x"></i>
                     <!-- <img src="https://image.ibb.co/n7oTvU/logo_white.png" alt="" /> -->
                     <h3>Bienvenido</h3>
-                    <p>Registrate gratis y empieza a gestionar tus fichajes de manera sencilla y eficaz</p>
+                    <p>Registrate gratis y empieza a gestionar tus horarios de manera sencilla y eficaz</p>
                     <input id="enlace-login" type="submit" name="" value="Login" /><br />
                 </div>
                 <div class="col-md-9 register-right">

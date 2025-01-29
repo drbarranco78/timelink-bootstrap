@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
 
 use App\Models\User;
 use App\Models\Credencial;
+use App\Models\Empresa;
 
 class UserController extends Controller
 {
@@ -31,12 +34,12 @@ class UserController extends Controller
         ];
 
         try {
-            $request->validate([
-                'dni' => 'required|string|unique:usuarios,dni',
+            $validator = Validator::make($request->all(), [
+                'dni' => 'required|string|unique:users,dni',
                 'password' => 'required|string',
                 'nombre' => 'required|string|max:50',
                 'apellidos' => 'required|string|max:100',
-                'email' => 'required|email|unique:usuarios,email',
+                'email' => 'required|email|unique:users,email',
                 'id_empresa' => 'nullable|integer',
                 'cargo' => 'required|string|max:50',
                 'rol' => 'required|in:maestro,empleado',
@@ -44,6 +47,11 @@ class UserController extends Controller
                 'dni.unique' => 'El DNI ya está registrado.',
                 'email.unique' => 'El email ya está registrado.',
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'error' => $validator->errors()->first() 
+                ], 422);
+            }
 
             DB::beginTransaction();
 
@@ -74,17 +82,7 @@ class UserController extends Controller
                 'usuario' => $usuario,
             ], 201);
 
-        } catch (\Illuminate\Database\QueryException $e) {
-            // Si el error es una violación de clave única (DNI o email duplicado)
-            if ($e->getCode() == '23000') {  
-                return response()->json([
-                    'error' => 'El DNI o el email ya están registrados.',
-                ], 422);  
-            }    
-            
-            return response()->json([
-                'error' => 'Error de base de datos: ' . $e->getMessage(),
-            ], 500);
+        
         } catch (\Exception $e) {
            
             return response()->json([
@@ -143,6 +141,9 @@ class UserController extends Controller
         //     $request->session()->start();
         // }
         Auth::login($usuario);    
+
+        // Cargar la empresa asociada al usuario
+        $empresa = Empresa::where('id_empresa', $usuario->id_empresa)->first();
         
         $redirects = [
             'empleado' => '/private',
@@ -152,6 +153,7 @@ class UserController extends Controller
         return response()->json([
             'message' => 'Inicio de sesión exitoso',
             'usuario' => $usuario,
+            'empresa' => $empresa,
             'redirect' => $redirects[$usuario->rol] ?? '/',
         ]);
 
@@ -178,5 +180,18 @@ class UserController extends Controller
         } else {
             return response()->json(['message' => 'No se encontró un usuario maestro para esta empresa.'], 404);
         }
+    }
+    public function obtenerUsuariosPorEmpresa($idEmpresa) {
+        $usuarios = User::where('id_empresa', $idEmpresa)->get();
+
+        // Verificar si hay usuarios en esa empresa
+        if ($usuarios->isEmpty()) {
+            return response()->json([
+                'message' => 'No hay usuarios registrados en esta empresa.'
+            ], 404);
+        }
+
+        return response()->json($usuarios);
+        
     }
 }

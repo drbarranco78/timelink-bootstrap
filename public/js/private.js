@@ -2,8 +2,9 @@ const $historialList = $('.lista-historial');
 const $historialHeader = $('.historial h2');
 const $mostrarHistorial = $('#mostrar-historial');
 const $borrarHistorial = $('#borrar-historial');
-let usuario = JSON.parse(localStorage.getItem('usuario'));
-$('#mensaje-bienvenida h3').html("Trabajador: " + usuario.nombre + " " + usuario.apellidos);
+let empleado = localStorage.getItem('usuario') ? JSON.parse(localStorage.getItem('usuario')) : null;
+
+$('#mensaje-bienvenida h3').html("Trabajador: " + empleado.nombre + " " + empleado.apellidos);
 $(document).ready(function () {
 
     // Obtener la fecha actual
@@ -193,6 +194,7 @@ $('#cerrar-sesion').click(function () {
         method: 'POST',
         success: function (response) {
             localStorage.removeItem('usuario');
+            localStorage.removeItem('empresa');
             // Redirigir a la página de login
             window.location.href = '/';
         },
@@ -295,7 +297,7 @@ function enviarFichaje(tipo, fecha, hora, ubicacion) {
         url: '/api/fichajes',
         method: 'POST',
         data: {
-            id_usuario: usuario.id,
+            id_usuario: empleado.id,
             tipo_fichaje: tipo,
             fecha: fecha,
             hora: hora,

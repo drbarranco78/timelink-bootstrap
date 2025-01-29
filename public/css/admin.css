@@ -1,4 +1,10 @@
-body{
-    background-color: #F8FAFC;
+.logo-timelink{
+    width: 50px;
+    margin-top: 5px;
+    margin-left: 30px;
+    margin-right: 80px;
+    border-radius: 50%;
 }
-
+.heigth100{
+    height: 70px;
+}
