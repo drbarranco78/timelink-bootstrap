@@ -7,9 +7,26 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Dashboard - SB Admin</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        
+        <!-- Estilos -->
+        <link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/boxicons.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/quill.snow.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/quill.bubble.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/remixicon.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
+        
+
+
+        
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
+
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -33,10 +50,10 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">Settings</a></li>
+                        <li><a id="enlace-perfil" class="dropdown-item" href="#!">Mi Perfil</a></li>
                         <li><a class="dropdown-item" href="#!">Activity Log</a></li>
                         <li><hr class="dropdown-divider" /></li>
-                        <li><a id="cerrar-sesion" class="dropdown-item" href="#!">Logout</a></li>
+                        <li><a class="dropdown-item" href="#!">Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -47,31 +64,31 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading"></div>
-                            <a class="nav-link" href="index.html">
+                            <a id="dashboard-inicio" class="nav-link" href="#">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
                             <div class="sb-sidenav-menu-heading">Interface</div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Layouts
+                                Empresa
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="layout-static.html">Static Navigation</a>
+                                    <a id="perfil-empresa" class="nav-link" href="#">Datos de la empresa</a>
                                     <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                Pages
+                                Empleados
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                        Authentication
+                                        Solicitudes de Acceso
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
@@ -82,7 +99,7 @@
                                         </nav>
                                     </div>
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-                                        Error
+                                        Enviar Invitación
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
@@ -97,7 +114,7 @@
                             <div class="sb-sidenav-menu-heading">Addons</div>
                             <a class="nav-link" href="charts.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Charts
+                                Informes
                             </a>
                             <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
@@ -113,7 +130,298 @@
             </div>
             <div id="layoutSidenav_content">
                 <main>
-                    <div class="container-fluid px-4">
+                <!-- <div class="pagetitle">
+                    <h1>Profile</h1>
+                    <nav>
+                        <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item">Users</li>
+                        <li class="breadcrumb-item active">Profile</li>
+                        </ol>
+                    </nav>
+                </div> -->
+                <section id="seccion-perfil" class="section profile">
+                    <h3>Perfil</h3>
+                    <div class="row">
+                        <div class="col-xl-4">
+
+                        <div class="card">
+                            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+                            <img src="img/ico_usuario_activo.png" alt="Profile" class="rounded-circle">
+                            <h2>Daniel Rodríguez</h2>
+                            <h3>Web Designer</h3>
+                            <div class="social-links mt-2">
+                                <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                                <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                                <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                                <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                            </div>
+                            </div>
+                        </div>
+
+                        </div>
+
+                        <div class="col-xl-8">
+
+                        <div class="card">
+                            <div class="card-body pt-3">
+                            <!-- Bordered Tabs -->
+                            <ul class="nav nav-tabs nav-tabs-bordered">
+
+                                <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+                                </li>
+
+                                <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
+                                </li>
+
+                                <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Settings</button>
+                                </li>
+
+                                <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
+                                </li>
+
+                            </ul>
+                            <div class="tab-content pt-2">
+
+                                <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                                <h5 class="card-title">About</h5>
+                                <p class="small fst-italic">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</p>
+
+                                <h5 class="card-title">Profile Details</h5>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label ">Full Name</div>
+                                    <div class="col-lg-9 col-md-8">Kevin Anderson</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Company</div>
+                                    <div class="col-lg-9 col-md-8">Lueilwitz, Wisoky and Leuschke</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Job</div>
+                                    <div class="col-lg-9 col-md-8">Web Designer</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Country</div>
+                                    <div class="col-lg-9 col-md-8">USA</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Address</div>
+                                    <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Phone</div>
+                                    <div class="col-lg-9 col-md-8">(436) 486-3538 x29071</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Email</div>
+                                    <div class="col-lg-9 col-md-8">k.anderson@example.com</div>
+                                </div>
+
+                                </div>
+
+                                <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+
+                                <!-- Profile Edit Form -->
+                                <form>
+                                    <div class="row mb-3">
+                                    <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <img src="img/ico_usuario_activo.png" alt="Profile">
+                                        <div class="pt-2">
+                                        <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                                        <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+                                        </div>
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="fullName" type="text" class="form-control" id="fullName" value="Kevin Anderson">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <textarea name="about" class="form-control" id="about" style="height: 100px">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</textarea>
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="company" class="col-md-4 col-lg-3 col-form-label">Company</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="company" type="text" class="form-control" id="company" value="Lueilwitz, Wisoky and Leuschke">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="job" type="text" class="form-control" id="Job" value="Web Designer">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="country" type="text" class="form-control" id="Country" value="USA">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="address" type="text" class="form-control" id="Address" value="A108 Adam Street, New York, NY 535022">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="phone" type="text" class="form-control" id="Phone" value="(436) 486-3538 x29071">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="email" type="email" class="form-control" id="Email" value="k.anderson@example.com">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">Twitter Profile</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="twitter" type="text" class="form-control" id="Twitter" value="https://twitter.com/#">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">Facebook Profile</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="facebook" type="text" class="form-control" id="Facebook" value="https://facebook.com/#">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Instagram Profile</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="instagram" type="text" class="form-control" id="Instagram" value="https://instagram.com/#">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="Linkedin" class="col-md-4 col-lg-3 col-form-label">Linkedin Profile</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="linkedin" type="text" class="form-control" id="Linkedin" value="https://linkedin.com/#">
+                                    </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form><!-- End Profile Edit Form -->
+
+                                </div>
+
+                                <div class="tab-pane fade pt-3" id="profile-settings">
+
+                                <!-- Settings Form -->
+                                <form>
+
+                                    <div class="row mb-3">
+                                    <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="changesMade" checked>
+                                        <label class="form-check-label" for="changesMade">
+                                            Changes made to your account
+                                        </label>
+                                        </div>
+                                        <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="newProducts" checked>
+                                        <label class="form-check-label" for="newProducts">
+                                            Information on new products and services
+                                        </label>
+                                        </div>
+                                        <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="proOffers">
+                                        <label class="form-check-label" for="proOffers">
+                                            Marketing and promo offers
+                                        </label>
+                                        </div>
+                                        <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="securityNotify" checked disabled>
+                                        <label class="form-check-label" for="securityNotify">
+                                            Security alerts
+                                        </label>
+                                        </div>
+                                    </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form><!-- End settings Form -->
+
+                                </div>
+
+                                <div class="tab-pane fade pt-3" id="profile-change-password">
+                                <!-- Change Password Form -->
+                                <form>
+
+                                    <div class="row mb-3">
+                                    <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="password" type="password" class="form-control" id="currentPassword">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="newpassword" type="password" class="form-control" id="newPassword">
+                                    </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                    <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="renewpassword" type="password" class="form-control" id="renewPassword">
+                                    </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Change Password</button>
+                                    </div>
+                                </form><!-- End Change Password Form -->
+
+                                </div>
+
+                            </div><!-- End Bordered Tabs -->
+
+                            </div>
+                        </div>
+
+                        </div>
+                    </div>
+                </section>       
+
+                    
+                    <div id="contenedor-principal" class="container-fluid px-4">
                         <h2 id="nombre-empresa" class="mt-4">Administración</h2>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">Dashboard</li>
@@ -121,37 +429,54 @@
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Primary Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    <div class="card-body">Actividad</div>
+                                    <div id="tarjeta-actividad" class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link toggle-detalles" href="#">Ver Detalles</a>
+                                        <div class="small text-white"><i id="icono" class="fas fa-angle-down"></i></div>
+                                    </div>
+                                    <div class="detalles-actividad" class="card-body bg-light p-3" >
+                                        <p>Ana García ficha entrada a las 8:00</p>
+                                        <p>Jesús Gómez ha tomado un descanso a las 12:30</p>
+                                        <p>Ana García ficha salida a las 8:00</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Warning Card</div>
+                                    <div class="card-body">Retrasos</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                        <a class="small text-white stretched-link toggle-detalles" href="#">Ver Detalles</a>
+                                        <div class="small text-white"><i class="fas fa-angle-down"></i></div>
+                                    </div>
+                                    <div class="detalles-actividad" class="card-body bg-light p-3" >
+                                        <p>Aquí van los retrasos</p>
+                                        
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">Success Card</div>
+                                    <div class="card-body">Fichajes</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                        <a class="small text-white stretched-link toggle-detalles" href="#">Ver Detalles</a>
+                                        <div class="small text-white"><i class="fas fa-angle-down"></i></div>
+                                    </div>
+                                    <div class="detalles-actividad" class="card-body bg-light p-3" >
+                                        <p>Aquí van los fichajes buenos</p>
+                                        
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">Danger Card</div>
+                                    <div class="card-body">Ausencias</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                        <a class="small text-white stretched-link toggle-detalles" href="#">Ver Detalles</a>
+                                        <div class="small text-white"><i class="fas fa-angle-down"></i></div>
+                                    </div>
+                                    <div class="detalles-actividad" class="card-body bg-light p-3" >
+                                        <p>Aquí van las ausencias</p>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -179,71 +504,44 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                DataTable Example
+                                Tabla de empleados
                             </div>
                             <div class="card-body">
-                                <table id="datatablesSimple">
-                                    <thead>
-                                        <tr>
-                                            <th>Nombre</th>
-                                            <th>Apellidos</th>
-                                            <th>DNI</th>
-                                            <th>Email</th>
-                                            <th>Puesto</th>
-                                            <th>Fecha de alta</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Nombre</th>
-                                            <th>Apellidos</th>
-                                            <th>DNI</th>
-                                            <th>Email</th>
-                                            <th>Puesto</th>
-                                            <th>Fecha de alta</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td>2011/04/25</td>
-                                            <td>$320,800</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Garrett Winters</td>
-                                            <td>Accountant</td>
-                                            <td>Tokyo</td>
-                                            <td>63</td>
-                                            <td>2011/07/25</td>
-                                            <td>$170,750</td>
-                                        </tr>
-                                      
-                                       
+                            <table id="example" class="table table-striped nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellidos</th>
+                                        <th>DNI</th>
+                                        <th>Email</th>
+                                        <th>Posición</th>
+                                        <th>Fecha de alta</th>
+                                        <!-- <th>Salary</th>
+                                        <th>Extn.</th>
+                                        <th>E-mail</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody>
                                    
-                                       
-                                     
-                                       
-                                       
-                                     
-                                       
-                                      
-                                       
-                                      
-                                       
-                                      
-                                     
-                              
-                                        
-                                    </tbody>
-                                </table>
+                                </tbody>
+                            </table>
                             </div>
                         </div>
                     </div>
                 </main>
-                <footer class="py-4 bg-light mt-auto">
+                <footer id="footer" class="footer">
+                    <div class="copyright">
+                    &copy; Copyright <strong><span>TimeLink</span></strong>. All Rights Reserved
+                    </div>
+                    <div class="credits">
+                    <!-- All the links in the footer should remain intact. -->
+                    <!-- You can delete the links only if you purchased the pro version. -->
+                    <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                    <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
+                    Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+                    </div>
+                </footer>
+                <!-- <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
                             <div class="text-muted">Copyright &copy; Your Website 2023</div>
@@ -254,7 +552,7 @@
                             </div>
                         </div>
                     </div>
-                </footer>
+                </footer> -->
             </div>
         </div>
         <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
@@ -263,12 +561,26 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         <script src="{{ asset('js/chart-area-demo.js') }}"></script>
         <script src="{{ asset('js/chart-bar-demo.js') }}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+        <script src="{{ asset('js/admin.js') }}"></script>
+        <script src="{{ asset('js/private.js') }}"></script>
+        <script src="{{ asset('js/tinymce.min.js') }}"></script>
+        <script src="{{ asset('js/main.js') }}"></script>
+        
+        
+        <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+        
+        <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
+
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
+        <!-- <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script> -->
         <!-- <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script> -->
         <!-- <script src="{{ asset('js/datatables-demo.js') }}"></script> -->
         <!-- <script src="{{ asset('js/datatables-simple-demo.js') }}"></script> -->
-        <script src="https://cdn.datatables.net/plug-ins/2.2.1/i18n/es-ES.json"></script>
-        <script src="{{ asset('js/admin.js') }}"></script>
-        <script src="{{ asset('js/private.js') }}"></script>
+        <!-- <script src="https://cdn.datatables.net/plug-ins/2.2.1/i18n/es-ES.json"></script> -->
+
+        
     </body>
 </html>

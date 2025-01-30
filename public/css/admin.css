@@ -8,3 +8,17 @@
 .heigth100{
     height: 70px;
 }
+
+#seccion-perfil{
+    display: none;
+    padding: 50px;
+}
+
+.detalles-actividad {
+    display: none;
+    background: #f8f9fa;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    color: black;
+    
+}

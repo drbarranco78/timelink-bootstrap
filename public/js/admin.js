@@ -4,41 +4,39 @@ let idEmpresa;
 let empleados = [];
 let dataTable;
 window.addEventListener('DOMContentLoaded', event => {
-    const datatablesSimple = document.getElementById('datatablesSimple');
 
-    if (datatablesSimple) {
-        dataTable = new simpleDatatables.DataTable(datatablesSimple, {
-            language: {
-                url: '//cdn.datatables.net/plug-ins/2.2.1/i18n/es-ES.json',
-            }
-        });
+    if (empresa) {
+        $('#nombre-empresa').html(empresa.nombre_empresa);
+        idEmpresa = empresa.id_empresa;
     }
-        if (empresa) {
-            $('#nombre-empresa').html(empresa.nombre_empresa);
-            idEmpresa = empresa.id_empresa;
+    $.ajax({
+        url: `/api/empresa/${idEmpresa}/usuarios`,
+        method: 'GET',
+        success: function (response) {
+            empleados = response; // Guardamos los empleados en la variable
+            console.log("Lista de empleados:", empleados);
+
+            // Llenar la tabla con los empleados
+            actualizarTablaEmpleados(empleados);
+        },
+        error: function (xhr) {
+            mostrarMensaje(xhr.responseJSON.message, '.error-login');
         }
+    });
 
-
-        $.ajax({
-            url: `/api/empresa/${idEmpresa}/usuarios`,
-            method: 'GET',
-            success: function (response) {
-                empleados = response; // Guardamos los empleados en la variable
-                console.log("Lista de empleados:", empleados);
-
-                // Llenar la tabla con los empleados
-                actualizarTablaEmpleados(empleados);
+    function actualizarTablaEmpleados(empleados) {
+        dataTable = new DataTable('#example', {
+            language: {
+                "url": "/js/es-ES.json"
             },
-            error: function (xhr) {
-                mostrarMensaje(xhr.responseJSON.message, '.error-login');
-            }
+            responsive: true
         });
 
-        function actualizarTablaEmpleados(empleados) {
-            let tabla = $("#datatablesSimple tbody");
-            tabla.empty(); // Limpiamos la tabla antes de insertar datos
+        let tabla = $("#example tbody");
+        tabla.empty(); // Limpiamos la tabla antes de insertar datos
 
-            empleados.forEach(empleado => {
+        empleados.forEach(empleado => {
+            if (empleado.rol === "empleado") {
                 let fila = `<tr>
                         <td>${empleado.nombre}</td>
                         <td>${empleado.apellidos}</td>
@@ -48,8 +46,41 @@ window.addEventListener('DOMContentLoaded', event => {
                         <td>${empleado.created_at}</td>
                     </tr>`;
                 tabla.append(fila);
-            });
-            dataTable.update();
-        }
+            }
+        });
+        // tabla.clear().draw();
+        // table.ajax.reload();
 
+    }
+
+    $('#enlace-perfil , #perfil-empresa').click(function () {
+        $('#contenedor-principal').hide();
+        $('#seccion-perfil').show();
+        
     });
+    $('#dashboard-inicio').click(function () {
+        $('#contenedor-principal').show();
+        $('#seccion-perfil').hide();
+        
+    });
+    $(".toggle-detalles").click(function (event) {
+        event.preventDefault();
+
+        // Encuentra la tarjeta más cercana
+        let tarjeta = $(this).closest(".card");
+
+        // Encuentra la sección de detalles dentro de esta tarjeta
+        let detalles = tarjeta.find(".detalles-actividad");
+
+        // Encuentra el icono dentro de esta tarjeta
+        let icono = tarjeta.find(".fa-angle-down, .fa-angle-up");
+
+        // Alternar visibilidad
+        detalles.slideToggle();
+
+        // Alternar icono
+        icono.toggleClass("fa-angle-down fa-angle-up");
+    });
+    
+
+});
