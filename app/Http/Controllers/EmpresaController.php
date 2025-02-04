@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Empresa;
+use Illuminate\Support\Facades\Validator;
 
 class EmpresaController extends Controller
 {
@@ -56,17 +57,17 @@ class EmpresaController extends Controller
     }
 
     // Actualiza los datos de una empresa
-    public function update(Request $request, $id)
-    {
-        $empresa = Empresa::find($id);
+    // public function update(Request $request, $id)
+    // {
+    //     $empresa = Empresa::find($id);
 
-        if (!$empresa) {
-            return response()->json(['message' => 'Empresa no encontrada'], 404);
-        }
+    //     if (!$empresa) {
+    //         return response()->json(['message' => 'Empresa no encontrada'], 404);
+    //     }
 
-        $empresa->update($request->all()); 
-        return response()->json($empresa);
-    }
+    //     $empresa->update($request->all()); 
+    //     return response()->json($empresa);
+    // }
 
     // Elimina una empresa por su id 
     public function destroy($id)
@@ -80,4 +81,41 @@ class EmpresaController extends Controller
         $empresa->delete(); // Elimina la empresa
         return response()->json(['message' => 'Empresa eliminada']);
     }
+
+    public function update(Request $request)
+    {
+        // Validar los datos recibidos
+        $request->validate([
+            'id_empresa' => 'required|exists:empresas,id_empresa',
+            'cif' => 'required|string|max:20',
+            'nombre_empresa' => 'required|string|max:255',
+            'direccion' => 'nullable|string|max:255',
+            'telefono' => 'nullable|string|max:15',
+            'email' => 'required|email:rfc|max:255',
+            
+        ], [
+            'email.email' => 'El formato de email no es válido'    
+        ]);
+        
+        // Buscar la empresa por su ID
+        
+        $empresa = Empresa::find($request->id_empresa);
+        if (!$empresa) {
+            return response()->json(['message' => 'Empresa no encontrada'], 404);
+        }
+
+        // Asignar nuevos valores
+        $empresa->cif = $request->input('cif');
+        $empresa->nombre_empresa = $request->input('nombre_empresa');
+        $empresa->direccion = $request->input('direccion');
+        $empresa->telefono = $request->input('telefono');
+        $empresa->email = $request->input('email');
+        
+
+        // Guardar los cambios
+        $empresa->save();
+
+        return response()->json(['message' => 'Empresa actualizada con éxito']);
+    }
+
 }

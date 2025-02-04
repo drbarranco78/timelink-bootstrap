@@ -1,13 +1,39 @@
 .logo-timelink{
-    width: 50px;
-    margin-top: 5px;
+    width: 100px;
+    margin-top: 150px;
     margin-left: 30px;
     margin-right: 80px;
+    margin-bottom: 50px;
     border-radius: 50%;
+}
+.cabecera{
+    display: flex !important;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.div-fecha{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.fecha-actual{
+    font-size: 1.5rem !important;
+}
+.reloj *{
+    color: whitesmoke;
 }
 .heigth100{
     height: 70px;
 }
+
+.sb-nav-link-icon{
+    color: rgb(211, 208, 208) !important;
+}
+/* .nav-link{
+    color: whitesmoke !important;
+} */
 
 #seccion-perfil{
     display: none;
@@ -16,9 +42,62 @@
 
 .detalles-actividad {
     display: none;
-    background: #f8f9fa;
+    /* background: #f8f9fa; */
+    background-color: rgba(var(--bs-success-rgb)) !important;
     padding: 15px;
     border-top: 1px solid #ddd;
-    color: black;
+    border: 2px solid black;
+    max-height: 40vh;
+    overflow-y: scroll;
+    /* color: black !important; */
+    font-weight: 500 !important;
+    z-index: 3000;
+    position: absolute; /* Hace que flote sobre los demás */
+    left: 0;
+    top: 100%;
+    width: 100%; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     
 }
+.card-body{
+    font-weight: bolder;
+}
+.card-body span{
+    float: right;    
+}
+#selector-fecha{
+    padding: 0 !important;
+    height: 30px !important;
+    padding: 10px !important;
+    border-radius: 5px;
+}
+.ver-perfil{
+    text-align: center !important;
+    border: none;
+}
+.ver-perfil button{    
+    border: none;
+}
+#dashboard-inicio{
+    margin-top: 50px;
+}
+
+th{      
+    text-align: left !important;
+    padding-right: 0 !important;
+    padding-left: 20px !important;
+}
+.dt-type-date{
+    text-align: left !important;
+}
+.dt-column-order{
+    left: 0px;
+    right: 0 !important;    
+}
+.table-body{
+    padding: 20px !important;
+    color: var(--bs-card-color);
+    
+}
+
+

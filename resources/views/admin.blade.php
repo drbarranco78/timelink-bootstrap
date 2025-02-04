@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
         <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/index.css') }}">
         
         <!-- Estilos -->
         <link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
@@ -32,16 +33,21 @@
     <body class="sb-nav-fixed">
         <nav class="sb-topnav heigth100 navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-
+            
            
             <!-- <a class="navbar-brand ps-3" href="index.html">Start Bootstrap</a> -->
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-            <img class="logo-timelink" src="img/timelink.webp" alt="">
+            <img id="logo-timelink" class="logo-timelink" src="img/timelink.webp" alt="">
+            <div class="reloj">
+                <i class="fas fa-clock"></i>
+                <span id="hora"></span>
+            </div>
             <!-- Navbar Search-->
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+               
                 <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <input class="form-control" type="text" placeholder="Buscar..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
                     <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
                 </div>
             </form>
@@ -51,9 +57,9 @@
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li><a id="enlace-perfil" class="dropdown-item" href="#!">Mi Perfil</a></li>
-                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                        {{-- <li><a class="dropdown-item" href="#!">Activity Log</a></li> --}}
                         <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#!">Logout</a></li>
+                        <li><a id="enlace-logout" class="dropdown-item" href="#!">Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -77,7 +83,7 @@
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a id="perfil-empresa" class="nav-link" href="#">Datos de la empresa</a>
-                                    <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
+                                    {{-- <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a> --}}
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
@@ -91,27 +97,27 @@
                                         Solicitudes de Acceso
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
-                                    <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                    {{-- <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
                                             <a class="nav-link" href="login.html">Login</a>
                                             <a class="nav-link" href="register.html">Register</a>
                                             <a class="nav-link" href="password.html">Forgot Password</a>
                                         </nav>
-                                    </div>
+                                    </div> --}}
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
                                         Enviar Invitación
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
-                                    <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                    {{-- <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
                                             <a class="nav-link" href="401.html">401 Page</a>
                                             <a class="nav-link" href="404.html">404 Page</a>
                                             <a class="nav-link" href="500.html">500 Page</a>
                                         </nav>
-                                    </div>
+                                    </div> --}}
                                 </nav>
                             </div>
-                            <div class="sb-sidenav-menu-heading">Addons</div>
+                            {{-- <div class="sb-sidenav-menu-heading">Addons</div> --}}
                             <a class="nav-link" href="charts.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Informes
@@ -170,19 +176,19 @@
                             <ul class="nav nav-tabs nav-tabs-bordered">
 
                                 <li class="nav-item">
-                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Resumen</button>
                                 </li>
 
                                 <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Editar Perfil</button>
                                 </li>
 
                                 <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Settings</button>
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Configuración</button>
                                 </li>
 
-                                <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
+                                <li id="li_change-password" class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Cambiar Password</button>
                                 </li>
 
                             </ul>
@@ -192,42 +198,41 @@
                                 <h5 class="card-title">About</h5>
                                 <p class="small fst-italic">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</p>
 
-                                <h5 class="card-title">Profile Details</h5>
+                                <h5 class="card-title">Detalles</h5>
+                                {{-- <div class="row">
+                                    <div id="lb-id-empleado" class="col-lg-3 col-md-4 label">ID de empleado</div>
+                                    <div id="id-empleado" class="col-lg-9 col-md-8"></div>
+                                </div> --}}
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label ">Full Name</div>
-                                    <div class="col-lg-9 col-md-8">Kevin Anderson</div>
+                                    <div id="lb-profile-name" class="col-lg-3 col-md-4 label ">Nombre</div>
+                                    <div id="profile-name" class="col-lg-9 col-md-8"></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Company</div>
-                                    <div class="col-lg-9 col-md-8">Lueilwitz, Wisoky and Leuschke</div>
+                                    <div id="lb-profile-surname" class="col-lg-3 col-md-4 label">Apellidos</div>
+                                    <div id="profile-surname" class="col-lg-9 col-md-8"></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Job</div>
-                                    <div class="col-lg-9 col-md-8">Web Designer</div>
+                                    <div id="lb-profile-dni" class="col-lg-3 col-md-4 label">DNI</div>
+                                    <div id="profile-dni" class="col-lg-9 col-md-8"></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Country</div>
-                                    <div class="col-lg-9 col-md-8">USA</div>
+                                    <div id="lb-profile-email" class="col-lg-3 col-md-4 label">Email</div>
+                                    <div id="profile-email" class="col-lg-9 col-md-8"></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Address</div>
-                                    <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
+                                    <div id="lb-profile-role" class="col-lg-3 col-md-4 label">Puesto</div>
+                                    <div id="profile-role" class="col-lg-9 col-md-8"></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Phone</div>
-                                    <div class="col-lg-9 col-md-8">(436) 486-3538 x29071</div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Email</div>
-                                    <div class="col-lg-9 col-md-8">k.anderson@example.com</div>
-                                </div>
+                                    <div id="lb-profile-joindate" class="col-lg-3 col-md-4 label">Fecha de alta</div>
+                                    <div id="profile-joindate" class="col-lg-9 col-md-8"></div>
+                                </div>                               
 
                                 </div>
 
@@ -236,7 +241,7 @@
                                 <!-- Profile Edit Form -->
                                 <form>
                                     <div class="row mb-3">
-                                    <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                                    <label id="lb-profile" for="profileImage" class="col-md-4 col-lg-3 col-form-label">Imagen de Perfil</label>
                                     <div class="col-md-8 col-lg-9">
                                         <img src="img/ico_usuario_activo.png" alt="Profile">
                                         <div class="pt-2">
@@ -247,91 +252,79 @@
                                     </div>
 
                                     <div class="row mb-3">
-                                    <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                                    <label id="lb-fullname" for="fullname" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <input name="fullName" type="text" class="form-control" id="fullName" value="Kevin Anderson">
+                                        <input name="fullname" type="text" class="form-control" id="fullname" value="">
                                     </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                    <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
+                                    <label id="lb-surname" for="surname" class="col-md-4 col-lg-3 col-form-label">Apellidos</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <textarea name="about" class="form-control" id="about" style="height: 100px">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</textarea>
+                                        <input name="surname" type="text" class="form-control" id="surname" value="">
+                                        {{-- <textarea name="about" class="form-control" id="about" style="height: 100px">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</textarea> --}}
                                     </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                    <label for="company" class="col-md-4 col-lg-3 col-form-label">Company</label>
+                                    <label id="lb-dni" for="dni" class="col-md-4 col-lg-3 col-form-label">DNI</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <input name="company" type="text" class="form-control" id="company" value="Lueilwitz, Wisoky and Leuschke">
+                                        <input name="dni" type="text" class="form-control" id="dni" value="">
                                     </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                    <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
+                                    <label id="lb-email" for="email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <input name="job" type="text" class="form-control" id="Job" value="Web Designer">
+                                        <input name="email" type="email" class="form-control" id="email" value="">
                                     </div>
+                                    </div>    
+
+                                    <div class="row mb-3">
+                                    <label id="lb-job" for="Job" class="col-md-4 col-lg-3 col-form-label">Puesto</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="job" type="text" class="form-control" id="job" value="Web Designer">
+                                    </div>
+                                    </div>                                    
+
+                                    
+                                    <div class="row mb-3">
+                                        <label id="lb-join-date" for="join-date" class="col-md-4 col-lg-3 col-form-label">Fecha de Alta</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="join-date" type="text" class="form-control" id="join-date" value="">
+                                        </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                    <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input name="country" type="text" class="form-control" id="Country" value="USA">
-                                    </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                    <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input name="address" type="text" class="form-control" id="Address" value="A108 Adam Street, New York, NY 535022">
-                                    </div>
+                                        <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">Twitter</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="twitter" type="text" class="form-control" id="Twitter" value="https://twitter.com/#">
+                                        </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                    <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input name="phone" type="text" class="form-control" id="Phone" value="(436) 486-3538 x29071">
-                                    </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                    <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input name="email" type="email" class="form-control" id="Email" value="k.anderson@example.com">
-                                    </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                    <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">Twitter Profile</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input name="twitter" type="text" class="form-control" id="Twitter" value="https://twitter.com/#">
-                                    </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                    <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">Facebook Profile</label>
+                                    <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">Facebook</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="facebook" type="text" class="form-control" id="Facebook" value="https://facebook.com/#">
                                     </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                    <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Instagram Profile</label>
+                                    <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Instagram</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="instagram" type="text" class="form-control" id="Instagram" value="https://instagram.com/#">
                                     </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                    <label for="Linkedin" class="col-md-4 col-lg-3 col-form-label">Linkedin Profile</label>
+                                    <label for="Linkedin" class="col-md-4 col-lg-3 col-form-label">Linkedin</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="linkedin" type="text" class="form-control" id="Linkedin" value="https://linkedin.com/#">
                                     </div>
                                     </div>
 
                                     <div class="text-center">
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button id="btn-save-changes" type="submit" class="btn btn-primary">Guardar cambios</button>
                                     </div>
                                 </form><!-- End Profile Edit Form -->
 
@@ -343,7 +336,7 @@
                                 <form>
 
                                     <div class="row mb-3">
-                                    <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
+                                    <label for="fullname" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
                                     <div class="col-md-8 col-lg-9">
                                         <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="changesMade" checked>
@@ -384,28 +377,28 @@
                                 <form>
 
                                     <div class="row mb-3">
-                                    <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                                    <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Password actual</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="password" type="password" class="form-control" id="currentPassword">
                                     </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                                    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">Nuevo Password</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="newpassword" type="password" class="form-control" id="newPassword">
                                     </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                    <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
+                                    <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Repetir Password</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="renewpassword" type="password" class="form-control" id="renewPassword">
                                     </div>
                                     </div>
 
                                     <div class="text-center">
-                                    <button type="submit" class="btn btn-primary">Change Password</button>
+                                    <button id="change-password" type="submit" class="btn btn-primary">Cambiar Password</button>
                                     </div>
                                 </form><!-- End Change Password Form -->
 
@@ -418,64 +411,72 @@
 
                         </div>
                     </div>
-                </section>       
-
-                    
+                </section>                      
                     <div id="contenedor-principal" class="container-fluid px-4">
-                        <h2 id="nombre-empresa" class="mt-4">Administración</h2>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Dashboard</li>
-                        </ol>
+                        
+                        <div class="cabecera mb-4">
+                            <h2 id="nombre-empresa" class="mt-4"></h2>
+                            <div class="div-fecha">
+                                <h3 class="fecha-actual mt-4"></h3>
+                                <span id="span-fecha"></span>
+                            </div>
+                            
+                            {{-- <li class="breadcrumb-item active">Dashboard</li> --}}
+                            <div class="div-calendar">
+                                <span class="mt-4">Mostrar datos del dia: </span>
+                                <input id="selector-fecha" class="mt-4" type="date">                                
+                            </div>
+                        </div>
+                        
                         <div class="row">
                             <div class="col-xl-3 col-md-6">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body">Entradas <span></span></div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link toggle-detalles" href="#" data-tipo="entrada">Ver Detalles</a>
+                                        <div class="small text-white"><i class="fas fa-angle-down"></i></div>
+                                    </div>
+                                    <div id="ficha-entradas" class="card-body bg-success p-3 detalles-actividad" >
+                                        <ul></ul>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Actividad</div>
+                                    <div class="card-body">Descansos <span></span></div>
                                     <div id="tarjeta-actividad" class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link toggle-detalles" href="#">Ver Detalles</a>
+                                        <a class="small text-white stretched-link toggle-detalles" href="#" data-tipo="inicio_descanso">Ver Detalles</a>
                                         <div class="small text-white"><i id="icono" class="fas fa-angle-down"></i></div>
                                     </div>
-                                    <div class="detalles-actividad" class="card-body bg-light p-3" >
-                                        <p>Ana García ficha entrada a las 8:00</p>
-                                        <p>Jesús Gómez ha tomado un descanso a las 12:30</p>
-                                        <p>Ana García ficha salida a las 8:00</p>
+                                    <div id="ficha-descansos" class="card-body bg-primary p-3 detalles-actividad" >
+                                        <ul></ul>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Retrasos</div>
+                                    <div class="card-body">Salidas <span></span></div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link toggle-detalles" href="#">Ver Detalles</a>
+                                        <a class="small text-white stretched-link toggle-detalles" href="#" data-tipo="salida">Ver Detalles</a>
                                         <div class="small text-white"><i class="fas fa-angle-down"></i></div>
                                     </div>
-                                    <div class="detalles-actividad" class="card-body bg-light p-3" >
-                                        <p>Aquí van los retrasos</p>
+                                    <div id="ficha-salidas" class="card-body bg-warning p-3 detalles-actividad" >
+                                        <ul></ul>
                                         
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">Fichajes</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link toggle-detalles" href="#">Ver Detalles</a>
-                                        <div class="small text-white"><i class="fas fa-angle-down"></i></div>
-                                    </div>
-                                    <div class="detalles-actividad" class="card-body bg-light p-3" >
-                                        <p>Aquí van los fichajes buenos</p>
-                                        
-                                    </div>
-                                </div>
-                            </div>
+                            
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">Ausencias</div>
+                                    <div class="card-body">Ausencias <span></span></div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link toggle-detalles" href="#">Ver Detalles</a>
+                                        <a class="small text-white stretched-link toggle-detalles" href="#" data-tipo="ausencia">Ver Detalles</a>
                                         <div class="small text-white"><i class="fas fa-angle-down"></i></div>
                                     </div>
-                                    <div class="detalles-actividad" class="card-body bg-light p-3" >
-                                        <p>Aquí van las ausencias</p>
+                                    <div id="ficha-ausencias" class="card-body bg-danger p-3 detalles-actividad" >
+                                        <ul></ul>
                                         
                                     </div>
                                 </div>
@@ -506,7 +507,7 @@
                                 <i class="fas fa-table me-1"></i>
                                 Tabla de empleados
                             </div>
-                            <div class="card-body">
+                            <div class="table-body">
                             <table id="example" class="table table-striped nowrap" style="width:100%">
                                 <thead>
                                     <tr>
@@ -516,9 +517,7 @@
                                         <th>Email</th>
                                         <th>Posición</th>
                                         <th>Fecha de alta</th>
-                                        <!-- <th>Salary</th>
-                                        <th>Extn.</th>
-                                        <th>E-mail</th> -->
+                                        <th class="ver-perfil">Ver perfil</th>                                       
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -554,6 +553,8 @@
                     </div>
                 </footer> -->
             </div>
+            <div class="exito-msg"></div>
+            <div class="error-msg"></div>
         </div>
         <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
@@ -563,6 +564,7 @@
         <script src="{{ asset('js/chart-bar-demo.js') }}"></script>
         <script src="{{ asset('js/admin.js') }}"></script>
         <script src="{{ asset('js/private.js') }}"></script>
+        <script src="{{ asset('js/index.js') }}"></script>
         <script src="{{ asset('js/tinymce.min.js') }}"></script>
         <script src="{{ asset('js/main.js') }}"></script>
         
@@ -577,8 +579,7 @@
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
         <!-- <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script> -->
         <!-- <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script> -->
-        <!-- <script src="{{ asset('js/datatables-demo.js') }}"></script> -->
-        <!-- <script src="{{ asset('js/datatables-simple-demo.js') }}"></script> -->
+        
         <!-- <script src="https://cdn.datatables.net/plug-ins/2.2.1/i18n/es-ES.json"></script> -->
 
         

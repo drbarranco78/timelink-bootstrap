@@ -29,9 +29,9 @@ function validarLogin() {
     } else {
         if (!patronDni.test(identificador)) {
             
-            mostrarMensaje("Introduzca un número de identificador válido", ".error-login");
+            mostrarMensaje("Introduzca un número de identificador válido", ".error-msg");
         } else if (!patronPassword.test(passwordLogin)) {
-            mostrarMensaje("La contraseña debe tener entre 8 y 20 caracteres, y al menos una mayúscula, una minúscula y un número", ".error-login");
+            mostrarMensaje("La contraseña debe tener entre 8 y 20 caracteres, y al menos una mayúscula, una minúscula y un número", ".error-msg");
         }
         return false;
     }
@@ -76,16 +76,16 @@ $("#btnLogin").click(function (event) {
                     // Guardar datos de la empresa                    
                     localStorage.setItem('empresa', JSON.stringify(response.empresa));                  
         
-                    mostrarMensaje(response.message, '.exito-login');
+                    mostrarMensaje(response.message, '.exito-msg');
         
                     // Redirigir a la página correspondiente
                     window.location.href = response.redirect;
                 } else {
-                    mostrarMensaje(response.message, '.error-login');
+                    mostrarMensaje(response.message, '.error-msg');
                 }
             },
             error: function (xhr) {
-                mostrarMensaje(xhr.responseJSON.message, '.error-login');
+                mostrarMensaje(xhr.responseJSON.message, '.error-msg');
             }
         });
         
@@ -111,7 +111,7 @@ function cargarEmpresas() {
             });
         },
         error: function (xhr, status, error) {
-            mostrarMensaje(xhr.responseJSON.message, '.error-login');
+            mostrarMensaje(xhr.responseJSON.message, '.error-msg');
         }
     });
 }
@@ -128,31 +128,31 @@ function validarRegistro(datos) {
     let repetirPassword = datos["rol"] === "maestro" ? $("#admin-password2").val() : $("#employee-password2").val();
 
     // Validación del DNI/NIE
-    if (!patronDni.test(datos["dni"])) {
-        mostrarMensaje("El DNI o NIE no tiene un formato válido", ".error-login");
+    if (datos["dni"] && !patronDni.test(datos["dni"])) {
+        mostrarMensaje("El DNI o NIE no tiene un formato válido", ".error-msg");
         return false;
     }
     // Validación del nombre
     if (!patronNombre.test(datos["nombre"])) {
-        mostrarMensaje("El campo Nombre no puede contener caracteres especiales ni espacios consecutivos, y debe tener una longitud entre 2 y 50", ".error-login");
+        mostrarMensaje("El campo Nombre no puede contener caracteres especiales ni espacios consecutivos, y debe tener una longitud entre 2 y 50", ".error-msg");
         return false;
     }
 
     // Validación del email
-    if (!patronEmail.test(datos["email"])) {
-        mostrarMensaje("Introduzca una dirección de correo válida de 60 caracteres máximo", ".error-login");
+    if (datos["email"] && !patronEmail.test(datos["email"])) {
+        mostrarMensaje("Introduzca una dirección de correo válida de 60 caracteres máximo", ".error-msg");
         return false;
     }
 
     // Validación de la contraseña
-    if (!patronPassword.test(datos["password"])) {
-        mostrarMensaje("La contraseña debe tener entre 8 y 20 caracteres, y al menos una mayúscula, una minúscula y un número", ".error-login");
+    if (datos["password"] && !patronPassword.test(datos["password"])) {
+        mostrarMensaje("La contraseña debe tener entre 8 y 20 caracteres, y al menos una mayúscula, una minúscula y un número", ".error-msg");
         return false;
     }
 
     // Validación de la confirmación de la contraseña
     if (datos["password"] !== repetirPassword) {
-        mostrarMensaje("La contraseña tiene que coincidir en los 2 campos", ".error-login");
+        mostrarMensaje("La contraseña tiene que coincidir en los 2 campos", ".error-msg");
         return false;
     }
 
@@ -224,7 +224,7 @@ $(".btnRegister").on("click", function (e) {
                 registrarUsuario(datosAdmin);
             },
             error: function (xhr) {
-                mostrarMensaje(xhr.responseJSON.message, '.error-login');
+                mostrarMensaje(xhr.responseJSON.message, '.error-msg');
             }
         });
     }
@@ -246,7 +246,7 @@ function solicitarUnion(datos){
             enviarCorreoSolicitud(datos, emailMaestro);
         },
         error: function (xhr) {
-            mostrarMensaje(xhr.responseJSON.message, '.error-login');
+            mostrarMensaje(xhr.responseJSON.message, '.error-msg');
         }
     });
 }
@@ -266,11 +266,11 @@ function enviarCorreoSolicitud(datos, emailMaestro) {
         data: JSON.stringify(datosCorreo),
         success: function (data) {
             console.log('Correo enviado con éxito:', data.message);
-            mostrarMensaje("Se ha enviado la solicitud al administrador de la empresa", '.exito-login');
+            mostrarMensaje("Se ha enviado la solicitud al administrador de la empresa", '.exito-msg');
             
         },
         error: function (xhr) {
-            mostrarMensaje(xhr.responseJSON.message, '.error-login');
+            mostrarMensaje(xhr.responseJSON.message, '.error-msg');
         }
     });     
 }
@@ -292,14 +292,14 @@ function registrarUsuario(datos) {
                 if (response.redirect) {
                     console.log("Redirigiendo a:", response.redirect);
                     localStorage.setItem('usuario', JSON.stringify(response.usuario));
-                    mostrarMensaje(response.message, '.exito-login');
+                    mostrarMensaje(response.message, '.exito-msg');
                     window.location.href = response.redirect;
                 } else {
-                    mostrarMensaje(response.message, '.error-login');
+                    mostrarMensaje(response.message, '.error-msg');
                 }
             },
             error: function (xhr) {
-                mostrarMensaje(xhr.responseJSON.message, '.error-login');
+                mostrarMensaje(xhr.responseJSON.message, '.error-msg');
             }
         });
     }    

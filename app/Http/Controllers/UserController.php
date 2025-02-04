@@ -98,12 +98,12 @@ class UserController extends Controller
     }
 
     // Actualizar un usuario
-    public function update(Request $request, $id)
-    {
-        $usuario = User::findOrFail($id);
-        $usuario->update($request->all());
-        return $usuario;
-    }
+    // public function update(Request $request, $id)
+    // {
+    //     $usuario = User::findOrFail($id);
+    //     $usuario->update($request->all());
+    //     return $usuario;
+    // }
 
     // Eliminar un usuario
     public function destroy($id)
@@ -181,7 +181,8 @@ class UserController extends Controller
             return response()->json(['message' => 'No se encontró un usuario maestro para esta empresa.'], 404);
         }
     }
-    public function obtenerUsuariosPorEmpresa($idEmpresa) {
+    public function obtenerUsuariosPorEmpresa($idEmpresa) 
+    {
         $usuarios = User::where('id_empresa', $idEmpresa)->get();
 
         // Verificar si hay usuarios en esa empresa
@@ -191,7 +192,58 @@ class UserController extends Controller
             ], 404);
         }
 
-        return response()->json($usuarios);
-        
+        return response()->json($usuarios);        
     }
+
+    public function obtenerUsuarioPorId($idUsuario)
+    {
+        $usuario = User::where('id', $idUsuario)->first();
+
+        if (!$usuario) {
+            return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
+        }
+
+        return response()->json($usuario);
+    }
+
+    public function update(Request $request)
+    {
+
+        // Validar los datos recibidos
+        $request->validate([
+            'id' => 'required|exists:users,id',
+            'nombre' => 'required|string|max:255',
+            'apellidos' => 'required|string|max:255',
+            'dni' => 'required|string|max:20',
+            'email' => 'required|email|unique:users,email,' . $request->id . '|max:255',
+            'cargo' => 'required|string|max:255',
+        ], [
+            'email.email' => 'El formato de email no es válido',
+            'id.exists' => 'El usuario no existe en la base de datos'   
+        ]);
+
+        // Buscar el empleado por el ID
+        
+        $empleado = User::find($request->id);
+
+        if (!$empleado) {
+            return response()->json(['message' => 'Empleado no encontrado'], 404);
+        }
+
+        // Asignar nuevos valores
+        $empleado->nombre = $request->input('nombre');
+        $empleado->apellidos = $request->input('apellidos');
+        $empleado->dni = $request->input('dni');
+        $empleado->email = $request->input('email');
+        $empleado->cargo = $request->input('cargo');
+        
+
+        // Guardar los cambios
+        $empleado->save();
+
+        return response()->json(['message' => 'Empleado actualizado con éxito']);
+    }
+
+
+
 }

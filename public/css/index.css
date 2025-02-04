@@ -78,13 +78,13 @@ h3{
     color: #eea509;
 }
 /* Mensajes de éxito y error de los formularios  */
-.error-login, .exito-login{
+.error-msg, .exito-msg{
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #333;
-    border: 2px solid whitesmoke;
+    background-color: whitesmoke;
+    border: 2px solid black;
     padding: 15px;
     border-radius: 10px;
     width: 80%;
@@ -92,11 +92,13 @@ h3{
     text-align: center;
     display:none;
 }
-.error-login h3, .error-registro h3{
-    color:red;
+.error-msg h3{
+    color:rgb(202, 68, 68);
+    font-weight: bold;
 }
-.exito-login h3, .exito-registro h3 {
+.exito-msg h3{
     color:#00AA9B;
+    font-weight: bold;
 }
 
 .container{

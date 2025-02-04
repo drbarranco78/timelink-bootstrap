@@ -61,8 +61,8 @@
             <ul class="lista-historial"></ul>
         </div>
     </div>
-    <div class="exito-login"></div>
-    <div class="error-login"></div>
+    <div class="exito-msg"></div>
+    <div class="error-msg"></div>
     <div id="confirmar-accion" class="confirmar-accion">
         <p class="texto-confirmar-accion">¿Estás seguro?</p>
         <div class="botones-accion">

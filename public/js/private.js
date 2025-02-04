@@ -6,7 +6,7 @@ let empleado = localStorage.getItem('usuario') ? JSON.parse(localStorage.getItem
 
 $('#mensaje-bienvenida h3').html("Trabajador: " + empleado.nombre + " " + empleado.apellidos);
 $(document).ready(function () {
-
+    
     // Obtener la fecha actual
     let fechaActual = new Date();
 
@@ -23,7 +23,7 @@ $(document).ready(function () {
     let fechaFormateada = fechaActual.toLocaleDateString('es-ES', opcionesFecha);
 
     // Inserta la fecha en el HTML
-    $('.fecha-actual').html(fechaFormateada);
+    $('.fecha-actual').html("Hoy es " + fechaFormateada);
 
     // Función para actualizar el reloj
     function actualizarReloj() {
@@ -189,6 +189,9 @@ $('#borrar-historial').click(function () {
 });
 
 $('#cerrar-sesion').click(function () {
+    cerrarSesion();
+});
+function cerrarSesion() {
     $.ajax({
         url: '/api/logout',
         method: 'POST',
@@ -203,7 +206,7 @@ $('#cerrar-sesion').click(function () {
             mostrarMensaje("Hubo un problema al cerrar sesión, por favor intente más tarde.", '.error-logout');
         }
     });
-});
+}
 
 /**
  * Muestra un cuadro de diálogo de confirmación con una promesa.
@@ -258,10 +261,10 @@ function registrarFichaje(tipo) {
     let fecha = new Date();
     let horas = String(fecha.getHours()).padStart(2, '0');
     let minutos = String(fecha.getMinutes()).padStart(2, '0');
-    let segundos = String(fecha.getSeconds()).padStart(2, '0');
+    //let segundos = String(fecha.getSeconds()).padStart(2, '0');
 
     let fechaActual = fecha.toISOString().split('T')[0];
-    let horaActual = `${horas}:${minutos}:${segundos}`;
+    let horaActual = `${horas}:${minutos}`;
 
     navigator.geolocation.getCurrentPosition(
         async position => {
@@ -307,7 +310,7 @@ function enviarFichaje(tipo, fecha, hora, ubicacion) {
             if (response.ok) {
                 console.log(response.message);
             } else {
-                mostrarMensaje(response.message, '.error-login');
+                mostrarMensaje(response.message, '.error-msg');
             }
         },
         error: function (xhr, status, error) {
@@ -321,7 +324,7 @@ function enviarFichaje(tipo, fecha, hora, ubicacion) {
                 console.error("Error al procesar la respuesta del servidor: ", e);
             }
             console.log(mensajeError || "Error al registrar el fichaje.");
-            mostrarMensaje(mensajeError || "Error al registrar el fichaje.", '.error-login');
+            mostrarMensaje(mensajeError || "Error al registrar el fichaje.", '.error-msg');
         }
     });
 }
