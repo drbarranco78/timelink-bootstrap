@@ -34,23 +34,23 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
-.estado-actual, 
+/* .estado-actual, 
 .reloj {
     display: flex;
     align-items: center;
     gap: 10px;
     font-size: 20px; 
     font-weight: bold;
-}
+} */
 
-.fecha-actual {    
-    background-color: #232D4B;
+/* .fecha-actual {    
+    background-color: #33517D;
     color: whitesmoke;
     padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 24px; 
+    border-radius: 5px;
+    
     text-align: center; 
-}
+} */
 
 
 /* Botón para cerrar la sesión del administrador */
@@ -195,29 +195,34 @@
     gap: 10px;
     border-radius: 10px;
     text-align: center;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
-    background-color: #333;
-    color: whitesmoke;
-    border: 2px solid whitesmoke;
+    background-color: whitesmoke;
+    border: 2px solid black;
+    /* color: whitesmoke;     */
     padding: 20px;
     z-index: 2;
 }
+.botones-accion{
+    display: flex;
+    flex-direction: row;
+}
 .aceptar-accion,
 .cancelar-accion {
-    width: 70%;
-    height: auto;
+    padding: 5px 10px;
+    /* width: 50%;
+    height: 30px; */
     margin: 20px;
-    font-size: 16px;
+    /* font-size: 16px; */
     font-weight: bold;
-    border-radius: 10px;
-    padding: 10px;
+    border-radius: 5px;
+    
     color: whitesmoke;
 }
 .aceptar-accion {
-    background-color: #28a745;
+    background-color:#198754;
 }
 .cancelar-accion {
-    background-color: #dc3545;
+    background-color: #DC3545;
 }
 

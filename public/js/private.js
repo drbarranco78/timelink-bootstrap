@@ -188,24 +188,32 @@ $('#borrar-historial').click(function () {
     $historialList.html(''); // Borra todos los elementos de la lista
 });
 
-$('#cerrar-sesion').click(function () {
+$('#cerrar-sesion , #logo-timelink').click(function () {
     cerrarSesion();
 });
 function cerrarSesion() {
-    $.ajax({
-        url: '/api/logout',
-        method: 'POST',
-        success: function (response) {
-            localStorage.removeItem('usuario');
-            localStorage.removeItem('empresa');
-            // Redirigir a la página de login
-            window.location.href = '/';
-        },
-        error: function (xhr, status, error) {
-            console.log(xhr.responseText);
-            mostrarMensaje("Hubo un problema al cerrar sesión, por favor intente más tarde.", '.error-logout');
-        }
-    });
+    mostrarDialogo("¿Cerrar la sesión y volver al inicio?")
+        .then(() => {
+            $.ajax({
+                url: '/api/logout',
+                method: 'POST',
+                success: function (response) {
+                    localStorage.removeItem('usuario');
+                    localStorage.removeItem('empresa');
+                    // Redirigir a la página de login
+                    window.location.href = '/';
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText);
+                    mostrarMensaje("Hubo un problema al cerrar sesión, por favor intente más tarde.", '.error-logout');
+                }
+            });
+            
+        })
+        .catch(() => {            
+            console.log("Acción cancelada");
+        });
+    
 }
 
 /**

@@ -4,8 +4,12 @@ let empresa = JSON.parse(localStorage.getItem('empresa'));
 let empleados = [];
 let dataTable;
 let selectorFecha;
+let fechaSeleccionada;
 
 window.addEventListener('DOMContentLoaded', event => {
+
+    actualizarNotificaciones();
+
     let fecha = new Date();
     let dia = String(fecha.getDate()).padStart(2, '0');
     let mes = String(fecha.getMonth() + 1).padStart(2, '0');
@@ -21,9 +25,11 @@ window.addEventListener('DOMContentLoaded', event => {
 
     // Llamada para obtener los fichajes de hoy
     obtenerNumFichajes(fechaHoy);
+    console.log("Hoy " + fechaHoy);
+    fechaSeleccionada = fechaHoy;
 
     $('#selector-fecha').change(function () {
-        let fechaSeleccionada = $(this).val();
+        fechaSeleccionada = $(this).val();
 
         // Convertir la fecha al formato dd/mm/yyyy
         let partesFecha = fechaSeleccionada.split("-");
@@ -31,47 +37,114 @@ window.addEventListener('DOMContentLoaded', event => {
 
         // Actualizar el texto del span
         $('#span-fecha').text(fechaHoy === fechaSeleccionada ? "Mostrando datos de hoy" : "Mostrando datos del día " + fechaFormateadaSeleccionada);
+        console.log("Seleccionada " + fechaSeleccionada);
 
-       
         obtenerNumFichajes(fechaSeleccionada);
     });
     // Se actualizan los fichajes cada media hora
     // setInterval(() => {
     //     obtenerNumFichajes(fechaSeleccionada);
     // }, 1800000);
+    // setInterval(actualizarNotificaciones, 30000);
 
     if (empresa) {
         $('#nombre-empresa').html(empresa.nombre_empresa);
         idEmpresa = empresa.id_empresa;
     }
-    $.ajax({
-        url: `/api/empresa/${idEmpresa}/usuarios`,
-        method: 'GET',
-        success: function (response) {
-            empleados = response; 
-            console.log("Lista de empleados:", empleados);
+    obtenerEmpleados();
 
-            // Llenar la tabla con los empleados
-            actualizarTablaEmpleados(empleados);
-        },
-        error: function (xhr) {
-            mostrarMensaje(xhr.responseJSON.message, '.error-msg');
-        }
-    });
+    function obtenerEmpleados() {
+        $.ajax({
+            url: `/api/empresa/${idEmpresa}/usuarios`,
+            method: 'GET',
+            success: function (response) {
+                empleados = response;
+                console.log("Lista de empleados:", empleados);
 
-    function actualizarTablaEmpleados(empleados) {
-        dataTable = new DataTable('#example', {
-            language: {
-                "url": "/js/es-ES.json"
+                // Llenar la tabla con los empleados
+                actualizarTablaEmpleados(empleados);
             },
-            responsive: true
+            error: function (xhr) {
+                mostrarMensaje(xhr.responseJSON.message, '.error-msg');
+            }
+        });
+    }
+    $('#link-excluded').click(function () {
+        obtenerExcluidos();
+    });
+    function obtenerExcluidos() {
+        $.ajax({
+            url: '/api/usuarios/excluidos',
+            method: 'POST',
+            data: { id_empresa: empresa.id_empresa },
+            success: function (response) {
+                if (response.excluidos.length > 0) {
+                    mostrarListaExcluidos(response.excluidos);
+                } else {
+                    mostrarMensaje("No hay empleados excluidos", ".exito-msg");
+                }
+
+                console.log("Lista de excluidos:", response.excluidos);
+            },
+            error: function (xhr, message) {
+                console.log("Error:", message);
+                if (xhr.responseJSON) {
+                    mostrarMensaje(xhr.responseJSON.message, '.error-msg');
+                }
+            }
+        });
+    }
+    function mostrarListaExcluidos(excluidos) {       
+
+        let html = `
+                        <div class="header-solicitudes">
+                            <h3>Empleados Excluidos</h3>
+                            <span id="cerrar-solicitudes">&times;</span>
+                        </div>
+                    `;
+        excluidos.forEach(excluido => {
+            html += `
+                    <div class="solicitud" data-id="${excluido.id}">
+                        <p><strong>${excluido.nombre} ${excluido.apellidos}</strong></p>
+                        <p>Email: ${excluido.email}</p>
+                        <!-- Solo pasamos el 'id' del usuario -->
+                        <button class="btn-ver-perfil" data-id="${excluido.id}">Ver Perfil</button>                                 
+                    </div>
+                `;
         });
 
-        let tabla = $("#example tbody");
+        $('#div-solicitudes-acceso').html(html);
+        $('#div-solicitudes-acceso').show();
+
+        // Cerrar ventana al hacer clic en la "X"
+        $('#cerrar-solicitudes').click(function () {
+            $('#div-solicitudes-acceso').hide();
+        });
+
+        // Evento click en el botón "Ver Perfil"
+        $(document).on('click', '.btn-ver-perfil', function () {
+            $('#div-solicitudes-acceso').hide();
+            // Obtenemos el ID del empleado desde el botón
+            let idEmpleado = $(this).data('id');
+            
+            consultarEmpleado(idEmpleado);
+        });
+    }
+
+
+
+
+    function actualizarTablaEmpleados(empleados) {
+        // Destruir la instancia actual de DataTable si ya existe
+        if ($.fn.DataTable.isDataTable('#tabla-empleados')) {
+            $('#tabla-empleados').DataTable().destroy();
+        }
+
+        let tabla = $("#tabla-empleados tbody");
         tabla.empty(); // Limpiamos la tabla antes de insertar datos
 
         empleados.forEach(empleado => {
-            if (empleado.rol === "empleado") {
+            if (empleado.rol === "empleado" && empleado.estado === "aceptada") {
                 let fila = `<tr>
                         <td>${empleado.nombre}</td>
                         <td>${empleado.apellidos}</td>
@@ -88,18 +161,23 @@ window.addEventListener('DOMContentLoaded', event => {
                 tabla.append(fila);
             }
         });
-        $('.btn-ver-perfil').click(function () {
 
+        // Volver a inicializar DataTable
+        $('#tabla-empleados').DataTable({
+            language: {
+                "url": "/js/es-ES.json"
+            },
+            responsive: true
+        });
+
+        // Asociar eventos a los botones de ver perfil
+        $('.btn-ver-perfil').click(function () {
             let idEmpleado = $(this).data("id");
             console.log(idEmpleado);
             consultarEmpleado(idEmpleado);
-
-
         });
-        // tabla.clear().draw();
-        // table.ajax.reload();
-
     }
+
     function consultarEmpresa(idEmpresa) {
         $.ajax({
             url: `/api/empresas/${idEmpresa}`,
@@ -268,6 +346,7 @@ window.addEventListener('DOMContentLoaded', event => {
                     data: JSON.stringify(datos),
                     success: function (response) {
                         mostrarMensaje(response.message, ".exito-msg");
+                        obtenerEmpleados();
                     },
                     error: function (error) {
                         mostrarMensaje("Error al guardar cambios", ".error-msg");
@@ -345,7 +424,8 @@ window.addEventListener('DOMContentLoaded', event => {
         let icono = tarjeta.find(".fa-angle-down, .fa-angle-up");
 
         // Alternar visibilidad
-        detalles.slideToggle();
+        detalles.slideToggle(200);
+        //detalles.toggleClass("mostrar");
 
         // Alternar icono
         icono.toggleClass("fa-angle-down fa-angle-up");
@@ -360,7 +440,6 @@ window.addEventListener('DOMContentLoaded', event => {
             detalles.addClass("loaded");
         }
     });
-
 
     // Función para cargar fichajes y ausentes desde el backend
     function cargarFichajesYAusentes(fecha) {
@@ -403,7 +482,7 @@ window.addEventListener('DOMContentLoaded', event => {
             let numeroDescansos = fichajes.filter(f => f.tipo_fichaje === "inicio_descanso").length;
             let numeroEntradas = fichajes.filter(f => f.tipo_fichaje === "entrada").length;
             let numeroSalidas = fichajes.filter(f => f.tipo_fichaje === "salida").length;
-            let numeroAusentes = ausentes.length;
+            let numeroAusentes = ausentes.filter(f => f.rol !== "maestro" && f.estado === "aceptada").length;
 
             // Actualizar los contadores de fichajes
             $('.bg-primary .card-body span').text(numeroDescansos);
@@ -412,9 +491,13 @@ window.addEventListener('DOMContentLoaded', event => {
             $('.bg-danger .card-body span').text(numeroAusentes);
 
             // Mostrar los ausentes
-            $('#ficha-ausencias ul').html(ausentes.length > 0 ?
-                ausentes.map(a => `<li>${a.nombre} ${a.apellidos}</li>`).join('') :
-                "No hay ausencias registradas");
+            $('#ficha-ausencias ul').html(
+                ausentes
+                    // Excluye al administrador y pendientes de aceptar
+                    .filter(a => a.rol !== "maestro" && a.estado === "aceptada")
+                    .map(a => `<li>${a.nombre} ${a.apellidos}</li>`)
+                    .join('') || "No hay ausencias registradas"
+            );
 
             // Llamar a la función para rellenar las fichas con los datos de los fichajes
             rellenarFichas(fichajes);
@@ -455,6 +538,178 @@ window.addEventListener('DOMContentLoaded', event => {
         contenedorEntradas.html(contenidoEntradas || "No hay ninguna entrada registrada");
         contenedorSalidas.html(contenidoSalidas || "No hay ninguna salida registrada");
     }
+
+    function actualizarNotificaciones() {
+        $.ajax({
+            url: "/api/solicitudes-pendientes",
+            method: "GET",
+            success: function (data) {
+                if (data.pendientes.length > 0) {
+                    $('#ico-users').addClass('fa-user-plus').removeClass('fa-users');
+                    $("#notificacion-solicitudes").text(data.pendientes.length).show();
+
+                    $('#access-request-number').text(data.pendientes.length);
+                    $('#div-solicitudes-acceso').html('');
+                    // Construimos el contenido del div
+                    let html = `
+                        <div class="header-solicitudes">
+                            <h3>Solicitudes de acceso</h3>
+                            <span id="cerrar-solicitudes">&times;</span>
+                        </div>
+                    `;
+
+                    data.pendientes.forEach(solicitud => {
+                        html += `
+                                <div class="solicitud" data-id="${solicitud.id}">
+                                    <p><strong>${solicitud.nombre} ${solicitud.apellidos}</strong></p>
+                                    <p>Email: ${solicitud.email}</p>
+                                    <button class="btn-aceptar" data-id="${solicitud.id}" data-nombre="${solicitud.nombre}" data-apellidos="${solicitud.apellidos}">Aceptar</button>
+                                    <button class="btn-rechazar" data-id="${solicitud.id}" data-nombre="${solicitud.nombre}" data-apellidos="${solicitud.apellidos}">Rechazar</button>
+                                </div>
+                            `;
+                    });
+
+                    $('#div-solicitudes-acceso').html(html);
+
+                    // Asignar eventos a los botones 
+                    $(document).on('click', '.btn-aceptar', function () {
+                        mostrarDialogo("Aceptar la solicitud de " + $(this).data('nombre') + " " + $(this).data('apellidos') + "?")
+                            .then(() => {
+                                let userId = $(this).data('id');
+                                actualizarEstado(userId, "aceptada");
+
+                            })
+                            .catch(() => {
+                                // Si el usuario cancela la acción, registra un mensaje en la consola
+                                console.log("Acción cancelada");
+                            });
+                    });
+
+                    $(document).on('click', '.btn-rechazar', function () {
+                        mostrarDialogo("Rechazar la solicitud de " + $(this).data('nombre') + " " + $(this).data('apellidos') + "?")
+                            .then(() => {
+                                let userId = $(this).data('id');
+                                actualizarEstado(userId, "rechazada");
+                            })
+                            .catch(() => {
+                                console.log("Acción cancelada");
+                            });
+                    });
+
+                    // Mostrar el div al hacer clic en el enlace
+                    $('#access-request-link').click(function () {
+                        $('#div-solicitudes-acceso').show();
+                    });
+
+                    // Cerrar ventana al hacer clic en la "X"
+                    $('#cerrar-solicitudes').click(function () {
+                        $('#div-solicitudes-acceso').hide();
+                    });
+
+                } else {
+                    $('#access-request-number').text('');
+                    $('#ico-users').removeClass('fa-user-plus').addClass('fa-users');
+                    $("#notificacion-solicitudes").hide();
+                    $('#div-solicitudes-acceso').hide();
+                }
+            },
+            error: function (xhr) {
+                console.error("Error al obtener las solicitudes pendientes:", xhr.responseText);
+            }
+        });
+    }
+    function actualizarEstado(userId, estado) {
+        $.ajax({
+            url: `/api/usuarios/${userId}/estado`,
+            method: 'PATCH',
+            contentType: 'application/json',
+            data: JSON.stringify({ estado: estado }),
+            success: function (data) {
+                mostrarMensaje(data.message, '.exito-msg');
+
+                // Elimina la solicitud de la lista
+                $(`.solicitud[data-id="${userId}"]`).remove();
+                actualizarNotificaciones();
+                obtenerEmpleados();
+            },
+            error: function (xhr) {
+                mostrarMensaje(xhr.responseJSON?.message || "Error al actualizar el estado", '.error-msg');
+            }
+        });
+    }
+    $('#link-send-invitation').click(function () {
+        let html = `
+                        <div class="header-solicitudes">
+                            <h3>Enviar invitación</h3>
+                            <span id="cerrar-solicitudes">&times;</span>
+                        </div>
+                        <div id="form-invitacion">
+                            
+                            <input type="email" id="email-invitado" placeholder="Introduzca el correo del empleado" required>
+                            <button id="btn-enviar-invitacion">Enviar Invitación</button>
+                        </div>
+                                    `;
+        $('#div-solicitudes-acceso').html(html);
+        $('#div-solicitudes-acceso').show();
+        $('#cerrar-solicitudes').click(function () {
+            $('#div-solicitudes-acceso').hide();
+        });
+        $('#btn-enviar-invitacion').click(function (event) {
+            event.preventDefault();
+            let emailInvitado = $('#email-invitado').val();
+            enviarInvitacion(emailInvitado);
+        });
+    });
+    function enviarInvitacion(emailInvitado) {
+        $.ajax({
+            url: 'api/enviar-invitacion',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                id_empresa: empresa.id_empresa,
+                email: emailInvitado,
+                nombre_empresa: empresa.nombre_empresa
+            }),
+            success: function (response) {
+                if (response.showDialog) {
+                    mostrarDialogo(response.message)
+                        .then(() => {
+                            // Si el usuario acepta, reenviar con reenviar: true
+                            $.ajax({
+                                url: 'api/enviar-invitacion',
+                                method: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify({
+                                    id_empresa: empresa.id_empresa,
+                                    email: emailInvitado,
+                                    nombre_empresa: empresa.nombre_empresa,
+                                    reenviar: true
+                                }),
+                                success: function (response) {
+                                    mostrarMensaje(response.message, ".exito-msg");
+                                    $('#div-solicitudes-acceso').hide();
+                                },
+                                error: function (xhr) {
+                                    mostrarMensaje(xhr.responseJSON?.message || "Error al reenviar la invitación", '.error-msg');
+                                }
+                            });
+                        })
+                        .catch(() => {
+                            console.log("Acción cancelada por el usuario");
+                        });
+                } else {
+                    // Si no se necesita mostrar diálogo, solo mostrar el mensaje de éxito
+                    mostrarMensaje(response.message, ".exito-msg");
+                    $('#div-solicitudes-acceso').hide();
+                }
+            },
+            error: function (xhr) {
+                mostrarMensaje(xhr.responseJSON?.message || "Error al enviar la invitación", '.error-msg');
+            }
+        });
+
+    }
+
 
     $('#enlace-logout').click(function () {
         cerrarSesion();

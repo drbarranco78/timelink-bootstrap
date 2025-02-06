@@ -27,6 +27,11 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/usuarios/{id}', [UserController::class, 'obtenerUsuarioPorId']);
 Route::put('/usuarios/update', [UserController::class, 'update']);
+Route::get('/solicitudes-pendientes', [UserController::class, 'contarSolicitudesPendientes']);
+Route::patch('/usuarios/{id}/estado', [UserController::class, 'actualizarEstado']);
+Route::post('/usuarios/invitado', [UserController::class, 'registrarEmpleadoConInvitacion']);
+Route::post('/usuarios/excluidos', [UserController::class, 'obtenerEmpleadosExcluidos']);
+
 
 Route::get('/credenciales', [CredencialController::class, 'index']);
 Route::post('/credenciales', [CredencialController::class, 'store']);
@@ -46,6 +51,7 @@ Route::post('/fichajes/ausentes', [FichajeController::class, 'obtenerAusentes'])
 
 
 Route::post('/enviar-solicitud', [MailController::class, 'enviarSolicitud']);
+Route::post('/enviar-invitacion', [MailController::class, 'enviarInvitacion']);
 
 
 

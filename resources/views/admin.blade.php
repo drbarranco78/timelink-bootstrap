@@ -10,9 +10,12 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+        
         <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        
+        <link rel="stylesheet" href="{{ asset('css/private.css') }}">
         <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
         
         <!-- Estilos -->
         <link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
@@ -76,7 +79,7 @@
                             </a>
                             <div class="sb-sidenav-menu-heading">Interface</div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-building"></i></div>
                                 Empresa
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
@@ -87,14 +90,14 @@
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                <div class="sb-nav-link-icon"><i id="ico-users" class="fas fa-users"></i></div>
                                 Empleados
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                        Solicitudes de Acceso
+                                    <a id="access-request-link" class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
+                                        Solicitudes<span id="access-request-number"></span>
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     {{-- <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
@@ -104,8 +107,12 @@
                                             <a class="nav-link" href="password.html">Forgot Password</a>
                                         </nav>
                                     </div> --}}
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                    <a id="link-send-invitation" class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
                                         Enviar Invitación
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+                                    <a id="link-excluded" class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                        Excluidos
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     {{-- <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
@@ -129,8 +136,8 @@
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
-                        Start Bootstrap
+                        <div class="small">Conectado como:</div>
+                        Administrador
                     </div>
                 </nav>
             </div>
@@ -183,13 +190,15 @@
                                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Editar Perfil</button>
                                 </li>
 
-                                <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Configuración</button>
-                                </li>
-
+                                
                                 <li id="li_change-password" class="nav-item">
                                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Cambiar Password</button>
                                 </li>
+
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Eliminar</button>
+                                </li>
+    
 
                             </ul>
                             <div class="tab-content pt-2">
@@ -336,32 +345,32 @@
                                 <form>
 
                                     <div class="row mb-3">
-                                    <label for="fullname" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
+                                    <label for="fullname" class="col-md-4 col-lg-3 col-form-label">Cancelar cuenta</label>
                                     <div class="col-md-8 col-lg-9">
                                         <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="changesMade" checked>
                                         <label class="form-check-label" for="changesMade">
-                                            Changes made to your account
+                                            Excluir temporalmente
                                         </label>
                                         </div>
                                         <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="newProducts" checked>
                                         <label class="form-check-label" for="newProducts">
-                                            Information on new products and services
+                                            Eliminar permanentemente
                                         </label>
                                         </div>
-                                        <div class="form-check">
+                                        {{-- <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="proOffers">
                                         <label class="form-check-label" for="proOffers">
                                             Marketing and promo offers
                                         </label>
-                                        </div>
-                                        <div class="form-check">
+                                        </div> --}}
+                                        {{-- <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="securityNotify" checked disabled>
                                         <label class="form-check-label" for="securityNotify">
                                             Security alerts
                                         </label>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                     </div>
 
@@ -508,7 +517,7 @@
                                 Tabla de empleados
                             </div>
                             <div class="table-body">
-                            <table id="example" class="table table-striped nowrap" style="width:100%">
+                            <table id="tabla-empleados" class="table table-striped nowrap" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>
@@ -554,7 +563,15 @@
                 </footer> -->
             </div>
             <div class="exito-msg"></div>
-            <div class="error-msg"></div>
+            <div class="error-msg"></div>            
+            <div id="div-solicitudes-acceso"></div>
+            <div id="confirmar-accion" class="confirmar-accion">
+                <p class="texto-confirmar-accion">¿Estás seguro?</p>
+                <div class="botones-accion">
+                    <button id="aceptar-accion" class="aceptar-accion">Aceptar</button>
+                    <button id="cancelar-accion" class="cancelar-accion">Cancelar</button>
+                </div>
+            </div>
         </div>
         <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

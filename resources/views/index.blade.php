@@ -58,7 +58,7 @@
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                             <h3 class="register-heading">Registro de empleado</h3>
-                            <div class="row register-form">
+                            <form id="register-form" class="row register-form">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <input type="text" id="employee-name" class="form-control" maxlength=20 placeholder="Nombre *" value="" />
@@ -105,7 +105,7 @@
                                     </div>
                                     <input type="submit" id="employee-register" class="btnRegister" value="Enviar solicitud" />
                                 </div>
-                            </div>
+                            </form>
                         </div>
                         <div class="tab-pane fade show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                             <h3 class="register-heading">Registro de empresa</h3>

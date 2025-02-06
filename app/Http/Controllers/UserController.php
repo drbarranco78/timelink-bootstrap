@@ -32,9 +32,8 @@ class UserController extends Controller
             'empleado' => '/private',
             'maestro' => '/admin',
         ];
-
         try {
-            $validator = Validator::make($request->all(), [
+            $request->validate([
                 'dni' => 'required|string|unique:users,dni',
                 'password' => 'required|string',
                 'nombre' => 'required|string|max:50',
@@ -43,15 +42,12 @@ class UserController extends Controller
                 'id_empresa' => 'nullable|integer',
                 'cargo' => 'required|string|max:50',
                 'rol' => 'required|in:maestro,empleado',
+                'estado' => 'nullable|in:pendiente,aceptada,rechazada'
             ], [
                 'dni.unique' => 'El DNI ya está registrado.',
                 'email.unique' => 'El email ya está registrado.',
             ]);
-            if ($validator->fails()) {
-                return response()->json([
-                    'error' => $validator->errors()->first() 
-                ], 422);
-            }
+            
 
             DB::beginTransaction();
 
@@ -64,6 +60,7 @@ class UserController extends Controller
                 'id_empresa' => $request->id_empresa,
                 'cargo' => $request->cargo,
                 'rol' => $request->rol,
+                'estado' =>$request->estado,
             ]);
 
             // Crear la entrada en la tabla credenciales
@@ -185,19 +182,13 @@ class UserController extends Controller
     {
         $usuarios = User::where('id_empresa', $idEmpresa)->get();
 
-        // Verificar si hay usuarios en esa empresa
-        if ($usuarios->isEmpty()) {
-            return response()->json([
-                'message' => 'No hay usuarios registrados en esta empresa.'
-            ], 404);
-        }
-
-        return response()->json($usuarios);        
+        return response()->json($usuarios, 200); 
     }
 
-    public function obtenerUsuarioPorId($idUsuario)
+
+    public function obtenerUsuarioPorId($id)
     {
-        $usuario = User::where('id', $idUsuario)->first();
+        $usuario = User::find($id);
 
         if (!$usuario) {
             return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
@@ -208,7 +199,6 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
-
         // Validar los datos recibidos
         $request->validate([
             'id' => 'required|exists:users,id',
@@ -235,15 +225,108 @@ class UserController extends Controller
         $empleado->apellidos = $request->input('apellidos');
         $empleado->dni = $request->input('dni');
         $empleado->email = $request->input('email');
-        $empleado->cargo = $request->input('cargo');
+        $empleado->cargo = $request->input('cargo');   
         
-
         // Guardar los cambios
         $empleado->save();
-
         return response()->json(['message' => 'Empleado actualizado con éxito']);
     }
 
+    public function contarSolicitudesPendientes(Request $request)
+    {
+        $admin = Auth::user();
+        if (!Auth::check()) {
+            return response()->json(['message' => 'No autenticado'], 401);
+        }
+        $idEmpresa = $admin->id_empresa;
 
+        // Obtener los usuarios en estado 'pendiente'
+        $pendientes = User::where('id_empresa', $idEmpresa)
+                        ->where('estado', 'pendiente')
+                        ->get();
+
+        return response()->json(['pendientes' => $pendientes]);
+    }
+
+    public function obtenerEmpleadosExcluidos(Request $request) 
+    {
+        $idEmpresa = $request->input('id_empresa');
+    
+        if (!$idEmpresa) {
+            return response()->json(['message' => 'Falta el parámetro id_empresa'], 400);
+        }
+    
+        $excluidos = User::where('id_empresa', $idEmpresa)
+                        ->where('estado', 'rechazada')
+                        ->get();
+    
+        return response()->json(['excluidos' => $excluidos]);
+    }
+    
+
+    // Cambia el estado de la solicitud de acceso del usuario 
+    public function actualizarEstado(Request $request, $id)
+    {
+        $usuario = User::find($id);
+
+        if (!$usuario) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+
+        $estadoAnterior = $usuario->estado;
+        $usuario->estado = $request->estado;
+        $usuario->save();
+
+        // Definir el mensaje según el nuevo estado
+        $mensaje = "La solicitud de {$usuario->nombre} {$usuario->apellidos} ha sido ";
+        $mensaje .= ($request->estado === 'aceptada') ? "aceptada." : "rechazada.";
+
+        return response()->json(['message' => $mensaje, 'usuario' => $usuario]);
+    }
+
+    
+    public function registrarEmpleadoConInvitacion(Request $request) {
+        // Validación de los campos
+        $validated = $request->validate([
+            'email' => 'required|email|exists:invitaciones,email',
+            'id_empresa' => 'required|exists:empresas,id',
+            'dni' => 'required|string|max:20',
+            'nombre' => 'required|string|max:255',
+            'apellidos' => 'required|string|max:255',
+            'cargo' => 'required|string|max:255',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+    
+        $email = $request->email;
+        $id_empresa = $request->id_empresa;
+    
+        // Verificar si la invitación existe y no ha expirado
+        $invitacion = Invitacion::where('email', $email)
+                                ->where('id_empresa', $id_empresa)
+                                ->where('fecha_expiracion', '>=', now())
+                                ->first();
+    
+        if (!$invitacion) {
+            return response()->json(['message' => 'Invitación no válida o expirada'], 400);
+        }
+    
+        // Crear el usuario
+        User::create([
+            'email' => $email,
+            'id_empresa' => $id_empresa,
+            'dni' => $request->dni,
+            'nombre' => $request->nombre,
+            'apellidos' => $request->apellidos,
+            'cargo' => $request->cargo,
+            'password' => $request->password,
+            'rol' => 'empleado',
+            'estado' => 'aceptada',
+        ]);
+    
+        // Eliminar la invitación después de usarse
+        $invitacion->delete();
+    
+        return response()->json(['message' => 'Registro exitoso']);
+    }
 
 }

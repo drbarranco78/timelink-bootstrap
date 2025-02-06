@@ -11,10 +11,38 @@ let identificador;
 let passwordLogin;
 let empresas = [];
 let idEmpresa;
+let urlParams = new URLSearchParams(window.location.search);
+
+// Captura los valores de los parámetros
+let emailInvitado = urlParams.get('email');
+let idEmpresaInvitado = urlParams.get('id_empresa');
+let nombreEmpresaInvitado = urlParams.get('nombre_empresa');
 
 $(document).ready(function () {
     cargarEmpresas();
 });
+
+$(document).ajaxStop(function() {
+    if (emailInvitado && idEmpresaInvitado && nombreEmpresaInvitado) {
+        $('#profile-tab').remove();
+        $('#myTab').css("width", "fit-content");
+        $('#home-tab').text("Invitado");
+        $('#employee-register').val("Acceder");
+        $('#enlace-login').hide();
+        // $('#myTab #profile-tab').remove();
+        $("#employee-email").val(emailInvitado).prop('disabled', true);
+        
+        // Seleccionar la opción correspondiente al id_empresa
+        $("#company-selection").val(idEmpresaInvitado).prop('disabled', true);
+    }
+});
+// if (emailInvitado && idEmpresaInvitado && nombreEmpresaInvitado) {
+//     $("#employee-email").val(emailInvitado).prop('disabled', true);
+//     $("#company-selection").val(idEmpresaInvitado).prop('disabled', true);
+// }
+
+
+
 
 /**
 * Valida los campos del formulario de login
@@ -28,7 +56,7 @@ function validarLogin() {
         return true;
     } else {
         if (!patronDni.test(identificador)) {
-            
+
             mostrarMensaje("Introduzca un número de identificador válido", ".error-msg");
         } else if (!patronPassword.test(passwordLogin)) {
             mostrarMensaje("La contraseña debe tener entre 8 y 20 caracteres, y al menos una mayúscula, una minúscula y un número", ".error-msg");
@@ -58,7 +86,7 @@ $('#mostrarPassword').click(function () {
  * @param {Event} event - El evento de envío del formulario
  */
 $("#btnLogin").click(function (event) {
-    
+
     event.preventDefault();
     if (validarLogin()) {
         // Petición AJAX para autenticar
@@ -70,14 +98,18 @@ $("#btnLogin").click(function (event) {
                 password: passwordLogin
             },
             success: function (response) {
-                if (response.redirect) {                    
+                if (response.usuario.estado !== "aceptada") {
+                    mostrarMensaje("El administrador de tu empresa aún no ha aceptado tu solicitud de unión, recibirás un email para informarte cuando lo haga", '.exito-msg');
+                    return;
+                }
+                if (response.redirect) {
                     // Guardar datos del usuario en localStorage
-                    localStorage.setItem('usuario', JSON.stringify(response.usuario));                    
+                    localStorage.setItem('usuario', JSON.stringify(response.usuario));
                     // Guardar datos de la empresa                    
-                    localStorage.setItem('empresa', JSON.stringify(response.empresa));                  
-        
+                    localStorage.setItem('empresa', JSON.stringify(response.empresa));
+
                     mostrarMensaje(response.message, '.exito-msg');
-        
+
                     // Redirigir a la página correspondiente
                     window.location.href = response.redirect;
                 } else {
@@ -88,7 +120,7 @@ $("#btnLogin").click(function (event) {
                 mostrarMensaje(xhr.responseJSON.message, '.error-msg');
             }
         });
-        
+
     }
 });
 
@@ -98,7 +130,7 @@ function cargarEmpresas() {
         method: 'GET',
         success: function (data) {
             // Guarda las empresas en una variable global
-            empresas = data.array;  
+            empresas = data.array;
             let selectEmpresas = $("#company-selection");
             selectEmpresas.empty();
 
@@ -116,7 +148,7 @@ function cargarEmpresas() {
     });
 }
 $("#company-selection").change(function () {
-    idEmpresa = $(this).val();   
+    idEmpresa = $(this).val();
 });
 
 /**
@@ -159,17 +191,29 @@ function validarRegistro(datos) {
     return true;
 }
 $(".btnRegister").on("click", function (e) {
-    if ($(this).attr("id") === "btnLogin") {        
+    e.preventDefault();
+
+    if ($(this).attr("id") === "btnLogin") {
         return;
     }
-    e.preventDefault();
 
     let datos = {};
     const rol = $(this).attr("id") === "employee-register" ? "empleado" : "maestro";
     let num_empresa = idEmpresa;
-    console.log("Rol: " + rol);
-
-    if (rol === "empleado") {        
+    if (rol === "empleado" && emailInvitado && idEmpresaInvitado) {
+        datos = {
+            dni: $('#employee-dni').val(),
+            password: $("#employee-password1").val().trim(),
+            nombre: $("#employee-name").val(),
+            apellidos: $("#employee-surname").val(),
+            email: $("#employee-email").val(),
+            id_empresa: idEmpresaInvitado,
+            cargo: $("#employee-job").val(),
+            rol: rol,
+            estado: "aceptada",
+        };
+        registrarUsuario(datos);
+    }else if (rol === "empleado") {
         datos = {
             dni: $('#employee-dni').val(),
             password: $("#employee-password1").val().trim(),
@@ -179,8 +223,9 @@ $(".btnRegister").on("click", function (e) {
             id_empresa: num_empresa,
             cargo: $("#employee-job").val(),
             rol: rol,
+            estado: "pendiente",
         };
-        solicitarUnion(datos);
+        registrarUsuario(datos);
     } else {
         datos = {
             dni: $('#admin-dni').val(),
@@ -191,6 +236,7 @@ $(".btnRegister").on("click", function (e) {
             empresa: $("#admin-company").val(),
             cargo: "Administrador",
             rol: rol,
+
         };
         if (!validarRegistro(datos)) {
             return;
@@ -218,6 +264,7 @@ $(".btnRegister").on("click", function (e) {
                     id_empresa: idEmpresa,
                     cargo: "Administrador",
                     rol: rol,
+                    estado: "aceptada",
                 };
 
                 // Registrar al usuario administrador
@@ -231,11 +278,11 @@ $(".btnRegister").on("click", function (e) {
 
 });
 
-function solicitarUnion(datos){
+function solicitarUnion(datos) {
     if (!validarRegistro(datos)) {
-        return;        
+        return;
     }
-    idEmpresa=datos['id_empresa'];
+    idEmpresa = datos['id_empresa'];
     $.ajax({
         url: `/api/empresa/${idEmpresa}/maestro`,
         method: 'GET',
@@ -244,6 +291,7 @@ function solicitarUnion(datos){
 
             // Llama a la función para enviar el correo
             enviarCorreoSolicitud(datos, emailMaestro);
+            //registrarUsuario(datos);
         },
         error: function (xhr) {
             mostrarMensaje(xhr.responseJSON.message, '.error-msg');
@@ -267,12 +315,12 @@ function enviarCorreoSolicitud(datos, emailMaestro) {
         success: function (data) {
             console.log('Correo enviado con éxito:', data.message);
             mostrarMensaje("Se ha enviado la solicitud al administrador de la empresa", '.exito-msg');
-            
+
         },
         error: function (xhr) {
             mostrarMensaje(xhr.responseJSON.message, '.error-msg');
         }
-    });     
+    });
 }
 
 /**
@@ -280,6 +328,7 @@ function enviarCorreoSolicitud(datos, emailMaestro) {
  * @param {Object} datos - Los datos del usuario a registrar
  */
 function registrarUsuario(datos) {
+    console.log(datos);
 
     if (validarRegistro(datos)) {
         $.ajax({
@@ -289,20 +338,25 @@ function registrarUsuario(datos) {
             data: JSON.stringify(datos),
             success: function (response) {
                 console.log(response);
+                if (response.usuario.estado !== "aceptada") {
+                    //solicitarUnion(datos);
+                    $("#register-form")[0].reset();
+                    return;
+                }
                 if (response.redirect) {
-                    console.log("Redirigiendo a:", response.redirect);
+                    localStorage.setItem('empresa', JSON.stringify(response.empresa));
                     localStorage.setItem('usuario', JSON.stringify(response.usuario));
                     mostrarMensaje(response.message, '.exito-msg');
                     window.location.href = response.redirect;
                 } else {
-                    mostrarMensaje(response.message, '.error-msg');
+                    mostrarMensaje(response.error, '.error-msg');
                 }
             },
             error: function (xhr) {
-                mostrarMensaje(xhr.responseJSON.message, '.error-msg');
+                mostrarMensaje(xhr.responseJSON.error, '.error-msg');
             }
         });
-    }    
+    }
 }
 
 /**
@@ -316,16 +370,16 @@ function mostrarMensaje(mensaje, selector) {
 
 $("#enlace-login, #pie-formularios-registro").click(function (event) {
 
-    event.preventDefault();    
-    $(".register").css("display", "none"); 
+    event.preventDefault();
+    $(".register").css("display", "none");
     $("#login").fadeIn(1000).css("display", "block");
 
 });
 
 $("#enlace-registro, #pie-formularios-login").click(function () {
 
-    event.preventDefault();     
-    $("#login").css("display", "none"); 
+    event.preventDefault();
+    $("#login").css("display", "none");
     $("#register").fadeIn(1000).css("display", "block");
 
 });

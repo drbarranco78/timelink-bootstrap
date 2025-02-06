@@ -11,7 +11,9 @@ body{
 }
 /* Estilo de la cabecera  */
 header {
-    background-color:#1278A4;
+    /* background-color:#1278A4; */
+    
+    background: -webkit-linear-gradient(left, #232D4B, #467cbb);
     display: flex !important;
     flex-direction: row;
     justify-content: space-between;
@@ -80,7 +82,7 @@ h3{
 /* Mensajes de éxito y error de los formularios  */
 .error-msg, .exito-msg{
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: whitesmoke;
@@ -91,6 +93,7 @@ h3{
     max-width: 300px;
     text-align: center;
     display:none;
+    z-index: 9999;
 }
 .error-msg h3{
     color:rgb(202, 68, 68);
@@ -115,7 +118,7 @@ h3{
 }
 
 .register {
-    background: -webkit-linear-gradient(left, #232D4B, #00c6ff);
+    background: -webkit-linear-gradient(left, #232D4B, #467cbb);
     margin-top: 3%;
     padding: 3%;
     /* display: none; */
