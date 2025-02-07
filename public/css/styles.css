@@ -8143,7 +8143,8 @@ textarea.form-control-lg {
 
 .bg-primary {
   --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+  /* background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important; */
+  background-color: #33517D !important;
 }
 
 .bg-secondary {
@@ -8152,23 +8153,28 @@ textarea.form-control-lg {
 }
 
 .bg-success {
-  --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important;
+  --bs-bg-opacity: 0.5;
+  /* background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important; */
+  /* background-color: #198754 !important; */
+  background-color: #2C6B2F !important;
 }
 
 .bg-info {
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
+  
 }
 
 .bg-warning {
   --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
+  /* background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important; */
+  background-color: #D4A017 !important;
 }
 
 .bg-danger {
   --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+  /* background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important; */
+  background-color: #800020 !important;
 }
 
 .bg-light {

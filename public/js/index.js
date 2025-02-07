@@ -36,13 +36,6 @@ $(document).ajaxStop(function() {
         $("#company-selection").val(idEmpresaInvitado).prop('disabled', true);
     }
 });
-// if (emailInvitado && idEmpresaInvitado && nombreEmpresaInvitado) {
-//     $("#employee-email").val(emailInvitado).prop('disabled', true);
-//     $("#company-selection").val(idEmpresaInvitado).prop('disabled', true);
-// }
-
-
-
 
 /**
 * Valida los campos del formulario de login
@@ -106,7 +99,7 @@ $("#btnLogin").click(function (event) {
                     // Guardar datos del usuario en localStorage
                     localStorage.setItem('usuario', JSON.stringify(response.usuario));
                     // Guardar datos de la empresa                    
-                    localStorage.setItem('empresa', JSON.stringify(response.empresa));
+                    // localStorage.setItem('empresa', JSON.stringify(response.empresa));
 
                     mostrarMensaje(response.message, '.exito-msg');
 
@@ -253,8 +246,11 @@ $(".btnRegister").on("click", function (e) {
             contentType: 'application/json',
             data: JSON.stringify(empresa),
             success: function (response) {
+
+                // Guardar datos de la empresa                    
+                localStorage.setItem('empresa', JSON.stringify(response.empresa));
                 // Obtener el id_empresa de la respuesta
-                const idEmpresa = response.id_empresa;
+                const idEmpresa = response.empresa.id_empresa;
                 const datosAdmin = {
                     dni: $('#admin-dni').val(),
                     password: $("#admin-password1").val().trim(),
@@ -266,7 +262,7 @@ $(".btnRegister").on("click", function (e) {
                     rol: rol,
                     estado: "aceptada",
                 };
-
+                mostrarMensaje(response.message,'.exito-msg');
                 // Registrar al usuario administrador
                 registrarUsuario(datosAdmin);
             },
@@ -344,9 +340,11 @@ function registrarUsuario(datos) {
                     return;
                 }
                 if (response.redirect) {
-                    localStorage.setItem('empresa', JSON.stringify(response.empresa));
+                    //localStorage.setItem('empresa', JSON.stringify(response.empresa));
                     localStorage.setItem('usuario', JSON.stringify(response.usuario));
-                    mostrarMensaje(response.message, '.exito-msg');
+                    //if (response.usuario.rol!=="maestro") {
+                        mostrarMensaje(response.message, '.exito-msg');
+                    //}                   
                     window.location.href = response.redirect;
                 } else {
                     mostrarMensaje(response.error, '.error-msg');
@@ -376,7 +374,7 @@ $("#enlace-login, #pie-formularios-registro").click(function (event) {
 
 });
 
-$("#enlace-registro, #pie-formularios-login").click(function () {
+$("#enlace-registro, #pie-formularios-login").click(function (event) {
 
     event.preventDefault();
     $("#login").css("display", "none");

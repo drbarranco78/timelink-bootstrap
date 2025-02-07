@@ -106,7 +106,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         User::destroy($id);
-        return response()->json(['message' => 'Usuario eliminado']);
+        return response()->json(['message' => 'La cuenta de usuario ha sido eliminada']);
     }
 
     public function login(Request $request)
@@ -248,7 +248,8 @@ class UserController extends Controller
         return response()->json(['pendientes' => $pendientes]);
     }
 
-    public function obtenerEmpleadosExcluidos(Request $request) 
+    // Devuelve una lista de empleados con estado 'rechazado'
+    public function obtenerEmpleadosInactivos(Request $request) 
     {
         $idEmpresa = $request->input('id_empresa');
     
@@ -256,11 +257,11 @@ class UserController extends Controller
             return response()->json(['message' => 'Falta el parámetro id_empresa'], 400);
         }
     
-        $excluidos = User::where('id_empresa', $idEmpresa)
+        $inactivos = User::where('id_empresa', $idEmpresa)
                         ->where('estado', 'rechazada')
                         ->get();
     
-        return response()->json(['excluidos' => $excluidos]);
+        return response()->json(['inactivos' => $inactivos]);
     }
     
 
@@ -278,9 +279,9 @@ class UserController extends Controller
         $usuario->save();
 
         // Definir el mensaje según el nuevo estado
-        $mensaje = "La solicitud de {$usuario->nombre} {$usuario->apellidos} ha sido ";
-        $mensaje .= ($request->estado === 'aceptada') ? "aceptada." : "rechazada.";
-
+        // $mensaje = "La solicitud de {$usuario->nombre} {$usuario->apellidos} ha sido ";
+        // $mensaje .= ($request->estado === 'aceptada') ? "aceptada." : "rechazada.";
+        $mensaje="El estado del usuario ha sido actualizado";
         return response()->json(['message' => $mensaje, 'usuario' => $usuario]);
     }
 

@@ -8,6 +8,21 @@ let fechaSeleccionada;
 
 window.addEventListener('DOMContentLoaded', event => {
 
+    // $('.tab-pane').not('.active').hide();
+
+    // // Maneja el cambio de pestañas
+    // $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+    //     // Oculta todas las pestañas
+    //     $('.tab-pane').hide();
+
+    //     // Muestra solo la pestaña activa
+    //     var target = $(e.target).attr('href');
+    //     $(target).fadeIn(); // Usar fadeIn() para mayor suavidad
+    // });
+
+
+
+
     actualizarNotificaciones();
 
     let fecha = new Date();
@@ -20,12 +35,13 @@ window.addEventListener('DOMContentLoaded', event => {
 
     // Establecer la fecha en el input
     $('#selector-fecha').val(fechaHoy);
+    $('#selector-fecha').attr('max', fecha.toISOString().split("T")[0]);
 
     $('#span-fecha').text("Mostrando datos de hoy");
 
     // Llamada para obtener los fichajes de hoy
     obtenerNumFichajes(fechaHoy);
-    console.log("Hoy " + fechaHoy);
+
     fechaSeleccionada = fechaHoy;
 
     $('#selector-fecha').change(function () {
@@ -52,6 +68,7 @@ window.addEventListener('DOMContentLoaded', event => {
         idEmpresa = empresa.id_empresa;
     }
     obtenerEmpleados();
+    obtenerInactivos();
 
     function obtenerEmpleados() {
         $.ajax({
@@ -69,22 +86,19 @@ window.addEventListener('DOMContentLoaded', event => {
             }
         });
     }
-    $('#link-excluded').click(function () {
-        obtenerExcluidos();
-    });
-    function obtenerExcluidos() {
+    function obtenerInactivos() {
         $.ajax({
-            url: '/api/usuarios/excluidos',
+            url: '/api/usuarios/inactivos',
             method: 'POST',
             data: { id_empresa: empresa.id_empresa },
             success: function (response) {
-                if (response.excluidos.length > 0) {
-                    mostrarListaExcluidos(response.excluidos);
-                } else {
-                    mostrarMensaje("No hay empleados excluidos", ".exito-msg");
-                }
+                $('#excluded-number').text(response.inactivos.length);
+                if (response.inactivos.length > 0) {
 
-                console.log("Lista de excluidos:", response.excluidos);
+                    $('#link-excluded').click(function () {
+                        mostrarListaInactivos(response.inactivos);
+                    });
+                }
             },
             error: function (xhr, message) {
                 console.log("Error:", message);
@@ -94,21 +108,21 @@ window.addEventListener('DOMContentLoaded', event => {
             }
         });
     }
-    function mostrarListaExcluidos(excluidos) {       
+    function mostrarListaInactivos(inactivos) {
 
         let html = `
                         <div class="header-solicitudes">
-                            <h3>Empleados Excluidos</h3>
+                            <h3>Empleados Inactivos</h3>
                             <span id="cerrar-solicitudes">&times;</span>
                         </div>
                     `;
-        excluidos.forEach(excluido => {
+        inactivos.forEach(inactivo => {
             html += `
-                    <div class="solicitud" data-id="${excluido.id}">
-                        <p><strong>${excluido.nombre} ${excluido.apellidos}</strong></p>
-                        <p>Email: ${excluido.email}</p>
+                    <div class="solicitud" data-id="${inactivo.id}">
+                        <p><strong>${inactivo.nombre} ${inactivo.apellidos}</strong></p>
+                        <p>Email: ${inactivo.email}</p>
                         <!-- Solo pasamos el 'id' del usuario -->
-                        <button class="btn-ver-perfil" data-id="${excluido.id}">Ver Perfil</button>                                 
+                        <button class="btn-perfil-exc" data-id="${inactivo.id}">Ver Perfil</button>                                 
                     </div>
                 `;
         });
@@ -116,24 +130,21 @@ window.addEventListener('DOMContentLoaded', event => {
         $('#div-solicitudes-acceso').html(html);
         $('#div-solicitudes-acceso').show();
 
+
         // Cerrar ventana al hacer clic en la "X"
         $('#cerrar-solicitudes').click(function () {
             $('#div-solicitudes-acceso').hide();
         });
 
         // Evento click en el botón "Ver Perfil"
-        $(document).on('click', '.btn-ver-perfil', function () {
+        $(document).on('click', '.btn-perfil-exc', function () {
             $('#div-solicitudes-acceso').hide();
             // Obtenemos el ID del empleado desde el botón
             let idEmpleado = $(this).data('id');
-            
+
             consultarEmpleado(idEmpleado);
         });
     }
-
-
-
-
     function actualizarTablaEmpleados(empleados) {
         // Destruir la instancia actual de DataTable si ya existe
         if ($.fn.DataTable.isDataTable('#tabla-empleados')) {
@@ -192,6 +203,7 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
     function cargarPerfilEmpresa(empresa) {
+        $("#seccion-perfil").attr("data-id-empresa", empresa.id_empresa);
         actualizarLabels("empresa");
         $("#lb-profile").text("Logo de la empresa")
         $(".profile-card img").attr("src", "img/your_logo.png");
@@ -199,8 +211,13 @@ window.addEventListener('DOMContentLoaded', event => {
         $('#seccion-perfil h3').text("Datos de la empresa");
         $(".profile-card h2").text(empresa.nombre_empresa);
         $(".profile-card h3").hide();
+
         $('#contenedor-principal').hide();
         $('#seccion-perfil').show();
+
+        $('#delete-user').hide();
+        $('#status-change').hide();
+        $('#li_change-password').hide();
 
         // Sección resúmen
         $("#profile-name").text(empresa.nombre_empresa);
@@ -236,6 +253,7 @@ window.addEventListener('DOMContentLoaded', event => {
     }
     function cargarPerfil(empleado) {
         $("#seccion-perfil").attr("data-id-usuario", empleado.id);
+        $("#seccion-perfil").attr("data-rol-usuario", empleado.rol);
         actualizarLabels("empleado");
         $("#lb-profile").text("Imagen de perfil");
         $(".profile-card img").attr("src", "img/ico_usuario_activo.png");
@@ -244,6 +262,51 @@ window.addEventListener('DOMContentLoaded', event => {
         $('#seccion-perfil h3').text(empleado.rol === "maestro" ? 'Mi Perfil' : 'Perfil del empleado');
         $('#contenedor-principal').hide();
         $('#seccion-perfil').show();
+
+        $('#delete-user').show();
+        if (empleado.rol !== "maestro") {
+            $('#status-change').show();
+            $('input[name="status"]').prop('checked', false);
+            let estadoActual = empleado.estado;
+            // Marcar el radio button según el estado actual
+            switch (estadoActual) {
+                case 'pendiente':
+                    $('#status-pendiente').prop('checked', true);
+                    break;
+                case 'aceptada':
+                    $('#status-aceptado').prop('checked', true);
+                    break;
+                case 'rechazada':
+                    $('#status-rechazado').prop('checked', true);
+                    break;
+                case 'baja':
+                    $('#status-baja').prop('checked', true);
+                    break;
+                case 'vacaciones':
+                    $('#status-vacaciones').prop('checked', true);
+                    break;
+                default:
+                    $('#status-aceptado').prop('checked', true);
+                    break;
+            }
+            $('#change-status').click(function (event) {
+                event.preventDefault();
+                // Obtener el estado seleccionado
+                let estadoSeleccionado = $('input[name="status"]:checked').val();
+        
+                if (estadoSeleccionado) {
+                    // Llamar a la función para actualizar el estado
+                    actualizarEstado(empleado.id, estadoSeleccionado);
+                } else {
+                    mostrarMensaje("Debes seleccionar un estado.", '.error-msg');
+                }
+            });
+        } else {
+            $('#status-change').hide();
+        }
+
+        $('#li_change-password').show();
+
 
 
         $(".profile-card h2").text(empleado.nombre + " " + empleado.apellidos);
@@ -264,6 +327,10 @@ window.addEventListener('DOMContentLoaded', event => {
         $("#email").val(empleado.email);
         $("#job").val(empleado.cargo);
         $("#join-date").val(empleado.created_at);
+
+
+
+        $("#remove-employee-form").attr("data-id", empleado.id);
     }
 
     function actualizarLabels(tipo) {
@@ -271,8 +338,8 @@ window.addEventListener('DOMContentLoaded', event => {
         $('button[data-bs-target="#profile-overview"]').tab('show');
 
         if (tipo === "empresa") {
-            $('#profile-change-password').hide();
-            $('#li_change-password').hide();
+            // $('#profile-change-password').hide();
+            // $('#li_change-password').hide();
             // Actualizar labels para la empresa
             $('#lb-profile-name, #lb-fullname').text("Nombre de la empresa");
             $('#lb-profile-surname, #lb-surname').text("Dirección");
@@ -283,8 +350,8 @@ window.addEventListener('DOMContentLoaded', event => {
             $("#btn-save-changes").removeClass("esEmpleado");
 
         } else if (tipo === "empleado") {
-            $('#profile-change-password').show();
-            $('#li_change-password').show();
+            // $('#profile-change-password').show();
+            // $('#li_change-password').show();
             // Actualizar labels para el empleado
             $('#lb-profile-name, #lb-fullname').text("Nombre");
             $('#lb-profile-surname, #lb-surname').text("Apellidos");
@@ -546,7 +613,7 @@ window.addEventListener('DOMContentLoaded', event => {
             success: function (data) {
                 if (data.pendientes.length > 0) {
                     $('#ico-users').addClass('fa-user-plus').removeClass('fa-users');
-                    $("#notificacion-solicitudes").text(data.pendientes.length).show();
+                    //$("#notificacion-solicitudes").text(data.pendientes.length).show();
 
                     $('#access-request-number').text(data.pendientes.length);
                     $('#div-solicitudes-acceso').html('');
@@ -607,9 +674,9 @@ window.addEventListener('DOMContentLoaded', event => {
                     });
 
                 } else {
-                    $('#access-request-number').text('');
+                    $('#access-request-number').text('0').css("color", "inherit");
                     $('#ico-users').removeClass('fa-user-plus').addClass('fa-users');
-                    $("#notificacion-solicitudes").hide();
+                    //$("#notificacion-solicitudes").hide();
                     $('#div-solicitudes-acceso').hide();
                 }
             },
@@ -631,6 +698,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 $(`.solicitud[data-id="${userId}"]`).remove();
                 actualizarNotificaciones();
                 obtenerEmpleados();
+                obtenerInactivos();
             },
             error: function (xhr) {
                 mostrarMensaje(xhr.responseJSON?.message || "Error al actualizar el estado", '.error-msg');
@@ -645,7 +713,7 @@ window.addEventListener('DOMContentLoaded', event => {
                         </div>
                         <div id="form-invitacion">
                             
-                            <input type="email" id="email-invitado" placeholder="Introduzca el correo del empleado" required>
+                            <input class="input-email-invitado" type="email" id="email-invitado" placeholder="Introduzca el correo del empleado" required>
                             <button id="btn-enviar-invitacion">Enviar Invitación</button>
                         </div>
                                     `;
@@ -709,7 +777,65 @@ window.addEventListener('DOMContentLoaded', event => {
         });
 
     }
+    $('#remove-employee-form').submit(function (event) {
+        event.preventDefault();
+        let rolUsuario = $("#seccion-perfil").attr("data-rol-usuario");
+        if (!$('#changesMade').is(':checked')) {
+            $('.form-check span').text("Marca la casilla para continuar").fadeIn(); // Muestra el mensaje
+        
+            
+            setTimeout(function() {
+                $('.form-check span').fadeOut();
+            }, 2000);
+            return;
+        }
+        if (rolUsuario === "maestro") {
+            mostrarDialogo("Vas a eliminar la cuenta del administrador, esto borrará todos los datos de la empresa y todos sus empleados "
+                + "Esta acción es irreversible")
+                .then(() => {
+                    let empresaId = $("#seccion-perfil").attr("data-id-empresa")
 
+                    $.ajax({
+                        url: `api/empresas/${empresaId}`,
+                        method: 'DELETE',
+                        contentType: "application/json",
+
+                        success: function (response) {
+                            mostrarMensaje(response.message, ".exito-msg");
+                            window.location.href = response.redirect;
+                        },
+                        error: function (xhr) {
+                            mostrarMensaje(xhr.responseJSON?.message || "Error al eliminar la empresa", '.error-msg');
+                        }
+                    });
+                })
+                .catch(() => {
+                    console.log("Acción cancelada");
+                });
+        } else {
+            mostrarDialogo("¿Eliminar esta cuenta de forma permanente? Esta acción es irreversible")
+                .then(() => {
+                    let userId = $("#seccion-perfil").attr("data-id-usuario");
+                    $.ajax({
+                        url: `api/usuarios/${userId}`,
+                        method: 'delete',
+                        contentType: "application/json",
+
+                        success: function (response) {
+                            mostrarMensaje(response.message, ".exito-msg");
+                            $('#contenedor-principal').show();
+                            $('#seccion-perfil').hide();
+                        },
+                        error: function (xhr) {
+                            mostrarMensaje(xhr.responseJSON?.message || "Error al eliminar la cuenta de usuario", '.error-msg');
+                        }
+                    });
+                })
+                .catch(() => {
+                    console.log("Acción cancelada");
+                });
+        }
+    });
 
     $('#enlace-logout').click(function () {
         cerrarSesion();

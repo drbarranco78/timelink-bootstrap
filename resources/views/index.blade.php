@@ -16,7 +16,7 @@
                     <img src="img/timelink.webp" alt="">
                     <h3>Usuario registrado</h3>
                     <p>Accede a tu cuenta de forma segura</p>
-                    <input id="enlace-registro" type="submit" name="" value="Register" /><br />
+                    <input id="enlace-registro" type="submit" name="" value="Registro" /><br />
                 </div>
                 <div class="col-md-9 register-right">
                     <h3 class="register-heading">Iniciar sesión</h3>

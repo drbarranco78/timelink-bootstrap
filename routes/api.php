@@ -30,7 +30,7 @@ Route::put('/usuarios/update', [UserController::class, 'update']);
 Route::get('/solicitudes-pendientes', [UserController::class, 'contarSolicitudesPendientes']);
 Route::patch('/usuarios/{id}/estado', [UserController::class, 'actualizarEstado']);
 Route::post('/usuarios/invitado', [UserController::class, 'registrarEmpleadoConInvitacion']);
-Route::post('/usuarios/excluidos', [UserController::class, 'obtenerEmpleadosExcluidos']);
+Route::post('/usuarios/inactivos', [UserController::class, 'obtenerEmpleadosInactivos']);
 
 
 Route::get('/credenciales', [CredencialController::class, 'index']);
