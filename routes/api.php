@@ -48,6 +48,7 @@ Route::delete('/fichajes/{id}', [FichajeController::class, 'destroy']);
 Route::post('/fichajes/filtrar', [FichajeController::class, 'obtenerPorTrabajadorYRango']);
 Route::post('/fichajes/fecha', [FichajeController::class, 'obtenerFichajesPorFecha']);
 Route::post('/fichajes/ausentes', [FichajeController::class, 'obtenerAusentes']);
+Route::post('/fichajes/ultimo', [FichajeController::class, 'obtenerUltimoFichaje']);
 
 
 Route::post('/enviar-solicitud', [MailController::class, 'enviarSolicitud']);

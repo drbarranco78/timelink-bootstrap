@@ -15,7 +15,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('css/private.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('css/private.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 
@@ -86,7 +86,7 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Panel de control
                         </a>
-                        <div class="sb-sidenav-menu-heading">Interface</div>
+                        {{-- <div class="sb-sidenav-menu-heading">Interface</div> --}}
                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
                             data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-building"></i></div>
@@ -609,7 +609,7 @@
                                     <i class="fas fa-chart-area me-1"></i>
                                     Area Chart Example
                                 </div>
-                                <div class="card-body"><canvas id="myAreaChart" width="100%"
+                                <div class="card-body"><canvas id="multiLineChart" width="100%"
                                         height="40"></canvas></div>
                             </div>
                         </div>
@@ -620,6 +620,16 @@
                                     Bar Chart Example
                                 </div>
                                 <div class="card-body"><canvas id="myBarChart" width="100%"
+                                        height="40"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-area me-1"></i>
+                                    Otro Chart Example
+                                </div>
+                                <div class="card-body"><canvas id="myPieChart" width="100%"
                                         height="40"></canvas></div>
                             </div>
                         </div>
@@ -690,14 +700,25 @@
     
     </script>
     <script src="{{ asset('js/scripts.js') }}"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-    <script src="{{ asset('js/chart-area-demo.js') }}"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script> --}}
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script> --}}
+
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> --}}
+    {{-- <script src="{{ asset('js/chart-area-demo.js') }}"></script> --}}
+    {{-- <script src="https://cdn.plot.ly/plotly-3.0.0.min.js" charset="utf-8"></script> --}}
     <script src="{{ asset('js/chart-bar-demo.js') }}"></script>
+    <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/admin.js') }}"></script>
-    <script src="{{ asset('js/private.js') }}"></script>
+    
+    {{-- <script src="{{ asset('js/private.js') }}"></script> --}}
     <script src="{{ asset('js/index.js') }}"></script>
     <script src="{{ asset('js/tinymce.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+    {{-- <script src="{{ asset('js/chart-area-demo.js') }}"></script> --}}
+    <script src="{{ asset('js/linealChart.js') }}"></script>
 
 
     {{-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> --}}

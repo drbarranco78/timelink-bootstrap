@@ -3,297 +3,184 @@ const $historialHeader = $('.historial h2');
 const $mostrarHistorial = $('#mostrar-historial');
 const $borrarHistorial = $('#borrar-historial');
 let empleado = localStorage.getItem('usuario') ? JSON.parse(localStorage.getItem('usuario')) : null;
+let hoy = new Date().toISOString().split('T')[0];
+let segundosEntrada = 0;
+let segundosDescanso = 0;
+let intervaloEntrada, intervaloDescanso;
+let fechaFichajes;
+let ultimoFichaje;
+let horaEntrada;
 
-$('#mensaje-bienvenida h3').html("Trabajador: " + empleado.nombre + " " + empleado.apellidos);
 $(document).ready(function () {
-    
-    // Obtener la fecha actual
-    let fechaActual = new Date();
+    // $('#span-fecha').html("Trabajador: " + empleado.nombre + " " + empleado.apellidos);
+    $('#mensaje-usuario').text(empleado.nombre + " " + empleado.apellidos);
+    obtenerUltimoFichaje();
 
-    // Extrae año, mes y día con métodos de Date
-    let anio = fechaActual.getFullYear();
-    let mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
-    let dia = String(fechaActual.getDate()).padStart(2, '0');
-
-    // Crea el objeto Date con el formato deseado
-    fechaActual = new Date(`${anio}-${mes}-${dia}`);
-
-    // Convierte la fecha a un formato legible
-    let opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    let fechaFormateada = fechaActual.toLocaleDateString('es-ES', opcionesFecha);
-
-    // Inserta la fecha en el HTML
-    $('.fecha-actual').html("Hoy es " + fechaFormateada);
-
-    // Función para actualizar el reloj
-    function actualizarReloj() {
-        const fecha = new Date();
-        const horas = String(fecha.getHours()).padStart(2, '0');
-        const minutos = String(fecha.getMinutes()).padStart(2, '0');
-        const segundos = String(fecha.getSeconds()).padStart(2, '0');
-        const horaFormateada = `${horas}:${minutos}:${segundos}`;
-
-        $('#hora').text(horaFormateada);
-    }
-
-    // Actualizar el reloj cada segundo
-    setInterval(actualizarReloj, 1000);
-
-    // Llamar a la función inmediatamente para mostrar la hora sin esperar 1 segundo
-    actualizarReloj();
-});
-
-let fechaInicio;
-
-// Al hacer clic en "Comenzar jornada"
-$("#btn-comenzar").click(function () {
-    mostrarDialogo("¿Comenzar la jornada?")
-        .then(() => {
-            // Si el usuario confirma la acción
-            // Registrar la hora de inicio
-            fechaInicio = new Date();
-            const horaInicio = fechaInicio.toLocaleTimeString();
-            agregarHistorial("Jornada Iniciada");
-            // Actualizar mensaje de estado
-            $(".mensaje-estado").html(`Jornada iniciada a las ${horaInicio}`);
-            $('.historial h2').removeClass('d-none');
-            // Ocultar "Comenzar jornada" y mostrar los otros botones
-            $(this).addClass("d-none");
-            $("#btn-detener").removeClass("d-none");
-            $("#btn-descanso").removeClass("d-none");
-            // Cambiar estado y color
-            $("#estado").text("Trabajando")
-                .removeClass("estado-descanso estado-fuera")
-                .addClass("estado-trabajando");
-
-            // Cambiar icono
-            $("#icono-estado").attr("class", "fas fa-briefcase"); // Icono de "trabajando"
-            registrarFichaje("entrada");
-        })
-        .catch(() => {
-            // Si el usuario cancela la acción, registra un mensaje en la consola
-            console.log("Acción cancelada");
-        });
-});
-
-// Al hacer clic en "Detener jornada"
-$("#btn-detener").click(function () {
-    mostrarDialogo("¿Finalizar la jornada?")
-        .then(() => {
-            const fechaFin = new Date();
-            const horaFin = fechaFin.toLocaleTimeString();
-            agregarHistorial("Jornada detenida");
-            // Actualizar mensaje de estado
-            $(".mensaje-estado").html(`Jornada finalizada a las ${horaFin}`);
-
-            // Restaurar el estado inicial de los botones
-            $(this).addClass("d-none");
-            $("#btn-descanso").addClass("d-none");
-            $("#btn-terminar-descanso").addClass("d-none");
-            $("#btn-comenzar").removeClass("d-none");
-            // Cambiar estado y color
-            $("#estado").text("Fuera del trabajo")
-                .removeClass("estado-trabajando estado-descanso")
-                .addClass("estado-fuera");
-
-            // Cambiar icono
-            $("#icono-estado").attr("class", "fas fa-times-circle");
-            registrarFichaje("salida");
-        })
-        .catch(() => {
-            console.log("Acción cancelada");
-        });
-});
-
-// Al hacer clic en "Descanso"
-$("#btn-descanso").click(function () {
-    mostrarDialogo("¿Empezar un descanso?")
-        .then(() => {
-            // Registrar la hora de inicio del descanso
-            descansoInicio = new Date();
-            const horaDescanso = descansoInicio.toLocaleTimeString();
-            agregarHistorial("Descanso iniciado");
-            // Actualizar mensaje de estado
-            $(".mensaje-estado").html(`Descanso iniciado a las ${horaDescanso}`);
-
-            // Ocultar botón "Descanso" y mostrar "Terminar descanso"
-            $(this).addClass("d-none");
-            $("#btn-terminar-descanso").removeClass("d-none");
-            // Cambiar estado y color
-            $("#estado").text("En descanso")
-                .removeClass("estado-trabajando estado-fuera")
-                .addClass("estado-descanso");
-
-            // Cambiar icono
-            $("#icono-estado").attr("class", "fas fa-coffee"); // Icono de "descanso"
-            registrarFichaje("inicio_descanso");
-        })
-        .catch(() => {
-            // Si el usuario cancela la acción, registra un mensaje en la consola
-            console.log("Acción cancelada");
-        });
+    //actualizarTablaFichajes();
+    obtenerFichajesEmpleado(hoy);
+    obtenerFechaHora();
 
 });
+$('#selector-fecha').change(function () {
+    fechaFichajes = $(this).val();
 
-// Al hacer clic en "Terminar descanso"
-$("#btn-terminar-descanso").click(function () {
-    mostrarDialogo("¿Volver al trabajo?")
-        .then(() => {
-            const descansoFin = new Date();
-            const horaDescansoFin = descansoFin.toLocaleTimeString();
-            agregarHistorial("Descanso finalizado");
-            // Actualizar mensaje de estado
-            $(".mensaje-estado").html(`Descanso terminado a las ${horaDescansoFin}`);
+    // Convertir la fecha al formato dd/mm/yyyy
+    let partesFecha = fechaFichajes.split("-");
+    let fechaFormateadaSeleccionada = `${partesFecha[2]}/${partesFecha[1]}/${partesFecha[0]}`;
 
-            // Restaurar el estado inicial del descanso
-            $(this).addClass("d-none");
-            $("#btn-descanso").removeClass("d-none");
-            $("#estado").text("Trabajando")
-                .removeClass("estado-descanso estado-fuera")
-                .addClass("estado-trabajando");
+    // Actualizar el texto del span
+    $('#span-fecha').text(fechaHoy === fechaFichajes ? "Mostrando datos de hoy" : "Mostrando datos del día " + fechaFormateadaSeleccionada);
+    console.log("Seleccionada " + fechaFichajes);
 
-            // Cambiar icono
-            $("#icono-estado").attr("class", "fas fa-briefcase");
-            registrarFichaje("fin_descanso");
-
-        })
-        .catch(() => {
-            // Si el usuario cancela la acción, registra un mensaje en la consola
-            console.log("Acción cancelada");
-        });
-
+    obtenerFichajesEmpleado(fechaFichajes);
 });
-
-// Función para agregar un nuevo evento al historial con fecha, hora y mensaje
-function agregarHistorial(mensaje) {
-    const fecha = new Date();
-    const fechaFormateada = `${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}`;
-    const $li = $('<li></li>').text(`[${fechaFormateada}] - ${mensaje}`);
-    $historialList.append($li);
-}
-
-// Lógica para mostrar/ocultar el historial
-$('#mostrar-historial').click(function () {
-    if ($historialList.is(':visible')) {
-        $historialList.slideUp();
-        $mostrarHistorial.html('<i class="fas fa-eye"></i>');
-    } else {
-        $historialList.slideDown();
-        $mostrarHistorial.html('<i class="fas fa-eye-slash"></i>');
-    }
-});
-
-// Lógica para borrar el historial
-$('#borrar-historial').click(function () {
-    $historialList.html(''); // Borra todos los elementos de la lista
-});
-
-$('#cerrar-sesion , #logo-timelink').click(function () {
-    cerrarSesion();
-});
-function cerrarSesion() {
-    mostrarDialogo("¿Cerrar la sesión y volver al inicio?")
-        .then(() => {
-            $.ajax({
-                url: '/api/logout',
-                method: 'POST',
-                success: function (response) {
-                    localStorage.removeItem('usuario');
-                    localStorage.removeItem('empresa');
-                    // Redirigir a la página de login
-                    window.location.href = '/';
-                },
-                error: function (xhr, status, error) {
-                    console.log(xhr.responseText);
-                    mostrarMensaje("Hubo un problema al cerrar sesión, por favor intente más tarde.", '.error-logout');
-                }
-            });
-            
-        })
-        .catch(() => {            
-            console.log("Acción cancelada");
-        });
-    
-}
-
-/**
- * Muestra un cuadro de diálogo de confirmación con una promesa.
- * @param {string} pregunta - La pregunta a mostrar en el cuadro de diálogo.
- * @returns {Promise} - Se resuelve si el usuario acepta, se rechaza si cancela.
- */
-function mostrarDialogo(pregunta) {
-    return new Promise((resolve, reject) => {
-        const $dialogo = $('#confirmar-accion');
-
-        // Mostrar el diálogo
-        $dialogo.css("display", "flex");
-        $dialogo.find('p').text(pregunta);
-
-        // Evento para capturar clics fuera del diálogo
-        $(document).on('mousedown', function (e) {
-            if (!$(e.target).closest('#confirmar-accion').length) {
-                $dialogo.css("display", "none");
-                reject(); // Rechazar la promesa
-            }
-        });
-
-        // Cuando el usuario hace clic en "Cancelar"
-        $('#cancelar-accion').off('click').on('click', function () {
-            $dialogo.css("display", "none");
-            reject(); // Rechazar la promesa
-        });
-
-        // Cuando el usuario hace clic en "Aceptar"
-        $('#aceptar-accion').off('click').on('click', function () {
-            $dialogo.css("display", "none");
-            resolve(); // Resolver la promesa
-        });
+function obtenerFichajesEmpleado(fecha) {
+    $.ajax({
+        url: '/api/fichajes/fecha',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ fecha: fecha, id_usuario: empleado.id }),
+        success: function (fichajes) {
+            actualizarTablaFichajes(fichajes);
+        },
+        error: function (xhr, status, error) {
+            console.log("Error al cargar los fichajes: " + (xhr.responseJSON?.message || error));
+        }
     });
 }
-/**
- * Muestra un mensaje temporal en un elemento seleccionado, animándolo con fadeIn y fadeOut.
- * @param {string} mensaje - El mensaje a mostrar.
- * @param {string} selector - El selector del elemento donde mostrar el mensaje.
- */
-function mostrarMensaje(mensaje, selector) {
-    $(selector).html(`<h3>${mensaje}</h3>`).fadeIn(500).delay(2000).fadeOut(500);
+
+function actualizarTablaFichajes(fichajes) {
+    // Destruir la instancia actual de DataTable si ya existe
+    if ($.fn.DataTable.isDataTable('#tabla-fichajes')) {
+        $('#tabla-fichajes').DataTable().destroy();
+    }
+    let tabla = $("#tabla-fichajes tbody");
+    tabla.empty();
+    fichajes.forEach(fichaje => {
+        let fila = `<tr>
+                    <td>${fichaje.tipo_fichaje}</td>
+                    <td>${fichaje.fecha}</td>
+                    <td>${fichaje.hora}</td>
+                    <td>${fichaje.ubicacion}</td>                    
+                </tr>`;
+        tabla.append(fila);
+
+    });
+
+    // Volver a inicializar DataTable
+    $('#tabla-fichajes').DataTable({
+        language: {
+            "url": "/js/es-ES.json"
+        },
+        responsive: true
+    });
 }
+
+$(document).on("click", ".panel-fichaje", function (event) {
+    event.preventDefault();
+
+    let tipoFichaje = $(this).data("tipo");
+    let mensaje = '';
+
+    // Verifica entrada
+    if (tipoFichaje === "entrada") {
+        if (!$(this).hasClass('fichaje-activo')) {
+            if (!$('.panel-fichaje[data-tipo="inicio_descanso"]').hasClass('fichaje-activo')) {
+                mensaje = 'Iniciar la jornada?';
+            } else {
+                mensaje = '¿Terminar el descanso?';
+                tipoFichaje = "fin_descanso";
+            }
+        }
+        else {
+            mostrarMensaje('Ya has iniciado la jornada hoy. Solo puedes fichar una vez la entrada al día', '.error-msg');
+            return;
+        }
+    }
+
+    // Verifica salida
+    if (tipoFichaje === "salida") {
+
+        if (!$(this).hasClass('fichaje-activo')) {
+            if ($('.panel-fichaje[data-tipo="inicio_descanso"]').hasClass('fichaje-activo')) {
+                mostrarMensaje('Tienes que terminar el descanso para finalizar la jornada', '.error-msg');
+                return;
+            }
+            if ($('.panel-fichaje[data-tipo="entrada"]').hasClass('fichaje-activo')) {
+                mensaje = 'Terminar la jornada?';
+            } else {
+                mostrarMensaje('Aún no has iniciado la jornada. Tienes que fichar la entrada para poder salir', '.error-msg');
+                return;
+            }
+        } else {
+            mostrarMensaje('Ya has terminado la jornada de hoy. Solo puedes fichar una vez la salida al día', '.error-msg');
+            return;
+        }
+    }
+
+    // Verifica descanso
+    if (tipoFichaje === "inicio_descanso") {
+        if (!$(this).hasClass('fichaje-activo')) {
+            if ($('.panel-fichaje[data-tipo="entrada"]').hasClass('fichaje-activo')) {
+                mensaje = '¿Iniciar un descanso?';
+            } else {
+                mostrarMensaje('Tienes que comenzar la jornada antes de empezar un descanso', '.error-msg');
+                return;
+            }
+        } else {
+            mensaje = '¿Terminar el descanso?';
+            tipoFichaje = "fin_descanso";
+        }
+    }
+
+    // Llama la función para registrar el fichaje
+    registrarFichaje(tipoFichaje, mensaje, $(this));
+
+});
+
 
 /**
  * Función para registrar los datos de un fichaje
  * @param {string} tipo - Tipo de fichaje (entrada, salida, etc.)
  * 
  */
-function registrarFichaje(tipo) {
-    // Obtener la fecha y hora actuales
-    let fecha = new Date();
-    let horas = String(fecha.getHours()).padStart(2, '0');
-    let minutos = String(fecha.getMinutes()).padStart(2, '0');
-    //let segundos = String(fecha.getSeconds()).padStart(2, '0');
+function registrarFichaje(tipo, mensaje, elemento) {
+    mostrarDialogo(mensaje)
+        .then(() => {
+            // Obtener la fecha y hora actuales
+            let fecha = new Date();
+            let horas = String(fecha.getHours()).padStart(2, '0');
+            let minutos = String(fecha.getMinutes()).padStart(2, '0');
+            //let segundos = String(fecha.getSeconds()).padStart(2, '0');
 
-    let fechaActual = fecha.toISOString().split('T')[0];
-    let horaActual = `${horas}:${minutos}`;
+            let fechaActual = fecha.toISOString().split('T')[0];
+            let horaActual = `${horas}:${minutos}`;
 
-    navigator.geolocation.getCurrentPosition(
-        async position => {
-            let lat = position.coords.latitude;
-            let lng = position.coords.longitude;
+            navigator.geolocation.getCurrentPosition(
+                async position => {
+                    let lat = position.coords.latitude;
+                    let lng = position.coords.longitude;
 
-            // Obtener la dirección de forma asíncrona
-            let ubicacion = await obtenerDireccion(lat, lng);
-            console.log("Ubicación para mandar: " + ubicacion);
+                    // Obtener la dirección de forma asíncrona
+                    let ubicacion = await obtenerDireccion(lat, lng);
+                    console.log("Ubicación para mandar: " + ubicacion);
 
-            // Realizar la solicitud AJAX con la ubicación
-            enviarFichaje(tipo, fechaActual, horaActual, ubicacion);
-        },
-        error => {
-            console.error("Error al obtener la ubicación: ", error);
+                    // Realizar la solicitud AJAX con la ubicación
+                    enviarFichaje(tipo, fechaActual, horaActual, ubicacion, elemento);
+                },
+                error => {
+                    console.error("Error al obtener la ubicación: ", error);
 
-            // Registrar el fichaje sin ubicación
-            let ubicacion = "Ubicación no disponible";
-            enviarFichaje(tipo, fechaActual, horaActual, ubicacion);
-        }
-    );
+                    // Registrar el fichaje sin ubicación
+                    let ubicacion = "Ubicación no disponible";
+                    enviarFichaje(tipo, fechaActual, horaActual, ubicacion, elemento);
+                }
+            );
+
+        })
+        .catch(() => {
+            console.log("Acción cancelada");
+        });
 }
 
 /**
@@ -303,7 +190,7 @@ function registrarFichaje(tipo) {
  * @param {string} hora - Hora del fichaje en formato HH:mm:ss
  * @param {string} ubicacion - Ubicación o mensaje en caso de no obtenerla
  */
-function enviarFichaje(tipo, fecha, hora, ubicacion) {
+function enviarFichaje(tipo, fecha, hora, ubicacion, elemento) {
     $.ajax({
         url: '/api/fichajes',
         method: 'POST',
@@ -317,6 +204,17 @@ function enviarFichaje(tipo, fecha, hora, ubicacion) {
         success: function (response) {
             if (response.ok) {
                 console.log(response.message);
+                mostrarMensaje(response.message, '.exito-msg');
+                // Eliminar la clase 'fichaje-activo' de todos los elementos
+                $('.panel-fichaje').removeClass('fichaje-activo');
+                if (tipo !== "fin_descanso") {
+                    elemento.addClass('fichaje-activo');
+                } else if (tipo === "fin_descanso") {
+                    $('.panel-fichaje[data-tipo="entrada"]').addClass('fichaje-activo');
+                }
+                obtenerFichajesEmpleado($('#selector-fecha').val());
+                actualizarDetalles(tipo);
+
             } else {
                 mostrarMensaje(response.message, '.error-msg');
             }
@@ -336,6 +234,112 @@ function enviarFichaje(tipo, fecha, hora, ubicacion) {
         }
     });
 }
+
+function actualizarDetalles(tipo) {
+    let hora = actualizarReloj();
+    //let horaEntrada;
+    if (tipo === "entrada") {
+        //segundosEntrada = 0; 
+        clearInterval(intervaloDescanso);
+        intervaloEntrada = setInterval(contadorEntrada, 1000);
+        $('#span-estado').text("Jornada iniciada a las " + hora);
+        horaEntrada = hora;
+    }
+    if (tipo === "inicio_descanso") {
+        //segundosDescanso = 0; 
+        clearInterval(intervaloEntrada);
+        intervaloDescanso = setInterval(contadorDescanso, 1000);
+        $('#span-estado').text("Descanso iniciado a las " + hora);
+    }
+    if (tipo === "fin_descanso") {
+        clearInterval(intervaloDescanso);
+        intervaloEntrada = setInterval(contadorEntrada, 1000);
+        $('#span-estado').text("Jornada iniciada a las " + horaEntrada);
+    }
+    if (tipo === "salida") {
+        $('#detalles-salida').html("Hora de salida: " + hora);
+        $('#span-estado').text("Jornada finalizada a las " + hora);
+        clearInterval(intervaloEntrada);
+        clearInterval(intervaloDescanso);
+    }
+}
+
+function contadorEntrada() {
+    segundosEntrada++;
+    $('#detalles-entrada').html(formatearTiempo(segundosEntrada));
+}
+
+function contadorDescanso() {
+    segundosDescanso++;
+    $('#detalles-descanso').html(formatearTiempo(segundosDescanso));
+}
+
+function formatearTiempo(segundos) {
+    let horas = Math.floor(segundos / 3600);
+    let minutos = Math.floor((segundos % 3600) / 60);
+    let segs = segundos % 60;
+
+    return (
+        String(horas).padStart(2, '0') + ":" +
+        String(minutos).padStart(2, '0') + ":" +
+        String(segs).padStart(2, '0')
+    );
+}
+
+function obtenerUltimoFichaje() {
+    $.ajax({
+        url: '/api/fichajes/ultimo',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ id_usuario: empleado.id }),
+        success: function (fichaje) {
+            $('#detalles-salida').text('');
+            console.log("Último fichaje:", fichaje);
+            let tiempoTranscurrido = calcularTiempoTranscurrido(fichaje.created_at);
+            if (fichaje && fichaje.tipo_fichaje) {
+                if (fichaje.tipo_fichaje === "entrada" || fichaje.tipo_fichaje === "fin_descanso") {
+                    $('.panel-fichaje[data-tipo="entrada"]').addClass('fichaje-activo');
+                    $('#span-estado').text("Jornada iniciada el " + formatearFecha(fichaje.created_at));
+                    segundosEntrada = tiempoTranscurrido;
+                    contadorEntrada();
+                    intervaloEntrada = setInterval(contadorEntrada, 1000);
+                } else if (fichaje.tipo_fichaje === "inicio_descanso") {
+                    $('.panel-fichaje[data-tipo="inicio_descanso"]').addClass('fichaje-activo');
+                    $('#span-estado').text("Descanso iniciado el " + formatearFecha(fichaje.created_at));
+                    segundosDescanso = tiempoTranscurrido;
+                    contadorDescanso();
+                    intervaloDescanso = setInterval(contadorDescanso, 1000);
+                } else if (fichaje.tipo_fichaje === "salida") {
+                    $('.panel-fichaje[data-tipo="salida"]').addClass('fichaje-activo');
+                    $('#span-estado, #detalles-salida').text("Jornada finalizada el " + formatearFecha(fichaje.created_at));
+                    // $('#span-estado').text("Aún no has iniciado la jornada");
+                }
+            }
+        },
+        error: function (xhr) {
+            console.log("Error al obtener el último fichaje: " + xhr.responseJSON?.mensaje);
+        }
+    });
+}
+// Función para calcular tiempo transcurrido desde el último fichaje
+function calcularTiempoTranscurrido(fechaFichaje) {
+    let fechaInicio = new Date(fechaFichaje); 
+    let fechaActual = new Date();
+    let diferenciaSegundos = Math.floor((fechaActual - fechaInicio) / 1000);
+    return diferenciaSegundos > 0 ? diferenciaSegundos : 0;
+}
+function formatearFecha(fechaISO) {
+    let fecha = new Date(fechaISO);
+
+    let dia = String(fecha.getDate()).padStart(2, '0');
+    let mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Enero es 0
+    let año = fecha.getFullYear();
+    let horas = String(fecha.getHours()).padStart(2, '0');
+    let minutos = String(fecha.getMinutes()).padStart(2, '0');
+
+    return `${dia}/${mes}/${año} a las ${horas}:${minutos}`;
+}
+
 
 async function obtenerDireccion(lat, lng) {
     // Obtiene la dirección de Openstreetmap a partir de las coordenadas
@@ -364,5 +368,120 @@ async function obtenerDireccion(lat, lng) {
         return '';
     }
 }
+
+
+
+// // Función para agregar un nuevo evento al historial con fecha, hora y mensaje
+// function agregarHistorial(mensaje) {
+//     const fecha = new Date();
+//     const fechaFormateada = `${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}`;
+//     const $li = $('<li></li>').text(`[${fechaFormateada}] - ${mensaje}`);
+//     $historialList.append($li);
+// }
+
+// // Lógica para mostrar/ocultar el historial
+// $('#mostrar-historial').click(function () {
+//     if ($historialList.is(':visible')) {
+//         $historialList.slideUp();
+//         $mostrarHistorial.html('<i class="fas fa-eye"></i>');
+//     } else {
+//         $historialList.slideDown();
+//         $mostrarHistorial.html('<i class="fas fa-eye-slash"></i>');
+//     }
+// });
+
+// // Lógica para borrar el historial
+// $('#borrar-historial').click(function () {
+//     $historialList.html(''); // Borra todos los elementos de la lista
+// });
+
+
+// Al hacer clic en "Detener jornada"
+// $("#btn-detener").click(function () {
+//     mostrarDialogo("¿Finalizar la jornada?")
+//         .then(() => {
+//             const fechaFin = new Date();
+//             const horaFin = fechaFin.toLocaleTimeString();
+//             agregarHistorial("Jornada detenida");
+//             // Actualizar mensaje de estado
+//             $(".mensaje-estado").html(`Jornada finalizada a las ${horaFin}`);
+
+//             // Restaurar el estado inicial de los botones
+//             $(this).addClass("d-none");
+//             $("#btn-descanso").addClass("d-none");
+//             $("#btn-terminar-descanso").addClass("d-none");
+//             $("#btn-comenzar").removeClass("d-none");
+//             // Cambiar estado y color
+//             $("#estado").text("Fuera del trabajo")
+//                 .removeClass("estado-trabajando estado-descanso")
+//                 .addClass("estado-fuera");
+
+//             // Cambiar icono
+//             $("#icono-estado").attr("class", "fas fa-times-circle");
+//             registrarFichaje("salida");
+//         })
+//         .catch(() => {
+//             console.log("Acción cancelada");
+//         });
+// });
+
+// // Al hacer clic en "Descanso"
+// $("#btn-descanso").click(function () {
+//     mostrarDialogo("¿Empezar un descanso?")
+//         .then(() => {
+//             // Registrar la hora de inicio del descanso
+//             descansoInicio = new Date();
+//             const horaDescanso = descansoInicio.toLocaleTimeString();
+//             agregarHistorial("Descanso iniciado");
+//             // Actualizar mensaje de estado
+//             $(".mensaje-estado").html(`Descanso iniciado a las ${horaDescanso}`);
+
+//             // Ocultar botón "Descanso" y mostrar "Terminar descanso"
+//             $(this).addClass("d-none");
+//             $("#btn-terminar-descanso").removeClass("d-none");
+//             // Cambiar estado y color
+//             $("#estado").text("En descanso")
+//                 .removeClass("estado-trabajando estado-fuera")
+//                 .addClass("estado-descanso");
+
+//             // Cambiar icono
+//             $("#icono-estado").attr("class", "fas fa-coffee"); // Icono de "descanso"
+//             registrarFichaje("inicio_descanso");
+//         })
+//         .catch(() => {
+//             // Si el usuario cancela la acción, registra un mensaje en la consola
+//             console.log("Acción cancelada");
+//         });
+
+// });
+
+// // Al hacer clic en "Terminar descanso"
+// $("#btn-terminar-descanso").click(function () {
+//     mostrarDialogo("¿Volver al trabajo?")
+//         .then(() => {
+//             const descansoFin = new Date();
+//             const horaDescansoFin = descansoFin.toLocaleTimeString();
+//             agregarHistorial("Descanso finalizado");
+//             // Actualizar mensaje de estado
+//             $(".mensaje-estado").html(`Descanso terminado a las ${horaDescansoFin}`);
+
+//             // Restaurar el estado inicial del descanso
+//             $(this).addClass("d-none");
+//             $("#btn-descanso").removeClass("d-none");
+//             $("#estado").text("Trabajando")
+//                 .removeClass("estado-descanso estado-fuera")
+//                 .addClass("estado-trabajando");
+
+//             // Cambiar icono
+//             $("#icono-estado").attr("class", "fas fa-briefcase");
+//             registrarFichaje("fin_descanso");
+
+//         })
+//         .catch(() => {
+//             // Si el usuario cancela la acción, registra un mensaje en la consola
+//             console.log("Acción cancelada");
+//         });
+
+// });
 
 

@@ -25,12 +25,13 @@ h3{
 }
 
 .contenedor-principal{
-    height: 80% ;    
+    background: url('../img/img_inicio.png') no-repeat center center/cover;
+    height: 83vh ;    
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 2%;
+    /* margin-top: 2%; */
 }
 
 /* Contenedores del logo y el usuario en la cabecera  */
@@ -82,7 +83,7 @@ h3{
 /* Mensajes de éxito y error de los formularios  */
 .error-msg, .exito-msg{
     position: absolute;
-    top: 40%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: whitesmoke;
@@ -106,7 +107,9 @@ h3{
 
 .container{
     border-radius: 10px;
-    padding-right: 5% !important;    
+    padding-right: 5% !important; 
+    max-width: 1000px !important;   
+    opacity: 0.95 !important;
 
 }
 /* #register{
@@ -119,7 +122,7 @@ h3{
 
 .register {
     background: -webkit-linear-gradient(left, #232D4B, #467cbb);
-    margin-top: 3%;
+    /* margin-top: 3%; */
     padding: 3%;
     /* display: none; */
 }

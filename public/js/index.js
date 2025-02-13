@@ -99,7 +99,7 @@ $("#btnLogin").click(function (event) {
                     // Guardar datos del usuario en localStorage
                     localStorage.setItem('usuario', JSON.stringify(response.usuario));
                     // Guardar datos de la empresa                    
-                    // localStorage.setItem('empresa', JSON.stringify(response.empresa));
+                    localStorage.setItem('empresa', JSON.stringify(response.empresa));
 
                     mostrarMensaje(response.message, '.exito-msg');
 

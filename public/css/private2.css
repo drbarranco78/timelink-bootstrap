@@ -1,0 +1,231 @@
+#mensaje-bienvenida{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    margin-right: 50px;
+}
+
+.contenido-principal{
+    width: 60%;
+    height: 50vh;
+    min-height: fit-content;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #00AA9B;
+    align-items: center;
+    /* justify-content: center; */
+    text-align: center; 
+    background-color: whitesmoke;
+    border-radius: 15px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    margin: 50px auto;
+    padding: 20px;
+}
+.cabecera-ficha {
+    display: flex;
+    justify-content: space-around; 
+    margin-bottom: 80px;
+    width: 100%;    
+    gap: 100px;
+    padding: 10px; 
+    background-color: #ccc; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+.row{
+    justify-content: space-around;
+}
+
+/* .estado-actual, 
+.reloj {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px; 
+    font-weight: bold;
+} */
+
+/* .fecha-actual {    
+    background-color: #33517D;
+    color: whitesmoke;
+    padding: 10px 20px;
+    border-radius: 5px;
+    
+    text-align: center; 
+} */
+
+
+/* Botón para cerrar la sesión del administrador */
+.cerrar-sesion{
+    position: relative;
+    cursor: pointer;
+    margin: 10px;
+    border-radius: 10px;
+    width: 120px;
+    height: 30px;
+    text-align: center;
+    background-color: #232D4B;
+    border-radius: 10px;
+    color: whitesmoke;
+    align-content: center;    
+    border: 2px solid black;
+}
+
+/* .reloj {
+    
+    font-weight: bold;
+    color: #333;
+} */
+
+
+.mensaje-estado{
+    margin-bottom: 50px;
+}
+/* Colores para los diferentes estados */
+.estado-trabajando {
+    color: #28a745; 
+}
+
+.estado-descanso {
+    color: #0056b3; 
+}
+
+.estado-fuera {
+    color: #dc3545; 
+
+}
+
+#botones-jornada{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+/* Estilos generales para los botones */
+.btn-jornada {
+    background-color: #0056b3;
+    color: white;
+    /* font-size: 1.2em; */
+    width: 10vw;
+    display: flex;
+    justify-content: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-jornada:hover {
+    background-color: #0056b3; 
+}
+
+.btn-jornada i {
+    font-size: 1.5em;
+}
+.d-none{
+    display: none;
+}
+
+/* Colores específicos */
+#btn-comenzar {
+    background-color: #28a745; 
+}
+
+#btn-comenzar:hover {
+    background-color: #218838; 
+}
+
+#btn-detener {
+    background-color: #dc3545;
+}
+
+#btn-detener:hover {
+    background-color: #c82333; 
+}
+.historial {
+    margin-top: 50px;
+    width: 100%;
+}
+.historial h2{
+    margin-bottom: 20px;
+}
+.icono-mostrar, .icono-borrar {
+    cursor: pointer;
+    margin-left: 20px;
+    font-size: 18px;
+}
+
+.icono-mostrar:hover, .icono-borrar:hover {
+    color: #007bff; 
+}
+
+.lista-historial {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lista-historial li {
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.lista-historial li span {
+    display: block;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Estilo para los cuadros de diálogo */
+.confirmar-accion {
+    position: fixed;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);    
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* gap: 10px; */
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: whitesmoke;
+    border: 2px solid black;
+    /* color: whitesmoke;     */
+    padding: 20px;
+    z-index: 2;
+}
+.botones-accion{
+    display: flex;
+    flex-direction: row;
+}
+.aceptar-accion,
+.cancelar-accion {
+    padding: 5px 10px;
+    /* width: 50%;
+    height: 30px; */
+    margin: 20px;
+    /* font-size: 16px; */
+    font-weight: bold;
+    border-radius: 5px;
+    
+    color: whitesmoke;
+}
+.aceptar-accion {
+    background-color:#198754;
+}
+.cancelar-accion {
+    background-color: #DC3545;
+}
+

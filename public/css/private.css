@@ -1,188 +1,83 @@
-#mensaje-bienvenida{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-    margin-right: 50px;
-}
+/* .row{
+    justify-content: space-around;
+    margin-top: 100px;
+    margin-bottom: 100px;
+} */
+#action-panels{
+    justify-content: space-around;
+    margin-top: 100px;
+    margin-bottom: 100px;
 
-.contenido-principal{
-    width: 60%;
-    height: 50vh;
-    min-height: fit-content;
+}
+.ico-fichaje{
+    float: right !important;
+}
+.cabecera{
+    margin-top: 30px;
+    justify-content: center !important;
+}
+#mensaje-usuario{
+   
+    color: whitesmoke;   
+    font-size: 16px !important;    
+    margin: 0 !important;
+}
+#detalles-entrada, #detalles-descanso, #detalles-salida{
+    font-size: 16px !important;
+    font-weight: bold;
+}
+.div-calendar{
     display: flex;
     flex-direction: column;
-    border: 2px solid #00AA9B;
-    align-items: center;
-    /* justify-content: center; */
-    text-align: center; 
-    background-color: whitesmoke;
-    border-radius: 15px;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-    margin: 50px auto;
-    padding: 20px;
+    /* float: right !important;    */
+    align-items: center !important;
+    margin: 0 !important;
+    justify-content: center !important;
 }
-.cabecera-ficha {
-    display: flex;
-    justify-content: space-around; 
-    margin-bottom: 80px;
-    width: 100%;    
-    gap: 100px;
-    padding: 10px; 
-    background-color: #ccc; 
-    border-radius: 10px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-}
-
-/* .estado-actual, 
-.reloj {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 20px; 
-    font-weight: bold;
-} */
-
-/* .fecha-actual {    
-    background-color: #33517D;
-    color: whitesmoke;
-    padding: 10px 20px;
-    border-radius: 5px;
+.card-header{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between;
     
-    text-align: center; 
-} */
-
-
-/* Botón para cerrar la sesión del administrador */
-.cerrar-sesion{
-    position: relative;
-    cursor: pointer;
-    margin: 10px;
-    border-radius: 10px;
-    width: 120px;
-    height: 30px;
-    text-align: center;
-    background-color: #232D4B;
-    border-radius: 10px;
-    color: whitesmoke;
-    align-content: center;    
-    border: 2px solid black;
 }
-
-/* .reloj {
+th{      
+    text-align: left !important;
+    padding-right: 0 !important;
+    padding-left: 30px !important;
+}
+.dt-type-date{
+    text-align: left !important;
+}
+.dt-column-order{
+    left: 5px;
+    right: 0 !important;    
+}
+.table-body{
+    padding: 20px !important;
+    color: var(--bs-card-color);
     
+}
+td,th{
+    border: 1px solid black !important;
+    border-radius: 10px !important;
+    align-items: center !important;
+}
+.btn-fichaje{
+    background-color: transparent;
+    border: none;
     font-weight: bold;
-    color: #333;
-} */
-
-
-.mensaje-estado{
-    margin-bottom: 50px;
+    font-size: 15px;
+    
 }
-/* Colores para los diferentes estados */
-.estado-trabajando {
-    color: #28a745; 
-}
-
-.estado-descanso {
-    color: #0056b3; 
-}
-
-.estado-fuera {
-    color: #dc3545; 
-
-}
-
-#botones-jornada{
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-}
-
-/* Estilos generales para los botones */
-.btn-jornada {
-    background-color: #0056b3;
-    color: white;
-    /* font-size: 1.2em; */
-    width: 10vw;
-    display: flex;
-    justify-content: center;
-    border: 1px solid black;
-    border-radius: 10px;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
+.fichaje-activo{
+    filter: none !important;
+    border: 5px solid #2196F3;
     transition: background-color 0.3s ease;
 }
 
-.btn-jornada:hover {
-    background-color: #0056b3; 
+.bg-success, .bg-danger, .bg-primary{
+    filter: brightness(80%);
 }
-
-.btn-jornada i {
-    font-size: 1.5em;
-}
-.d-none{
-    display: none;
-}
-
-/* Colores específicos */
-#btn-comenzar {
-    background-color: #28a745; 
-}
-
-#btn-comenzar:hover {
-    background-color: #218838; 
-}
-
-#btn-detener {
-    background-color: #dc3545;
-}
-
-#btn-detener:hover {
-    background-color: #c82333; 
-}
-.historial {
-    margin-top: 50px;
-    width: 100%;
-}
-.historial h2{
-    margin-bottom: 20px;
-}
-.icono-mostrar, .icono-borrar {
-    cursor: pointer;
-    margin-left: 20px;
-    font-size: 18px;
-}
-
-.icono-mostrar:hover, .icono-borrar:hover {
-    color: #007bff; 
-}
-
-.lista-historial {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.lista-historial li {
-    padding: 10px;
-    margin-bottom: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.lista-historial li span {
-    display: block;
-    font-size: 14px;
-    color: #333;
-}
-
-/* Estilo para los cuadros de diálogo */
 .confirmar-accion {
     position: fixed;
     top: 50%; 
@@ -201,7 +96,7 @@
     border: 2px solid black;
     /* color: whitesmoke;     */
     padding: 20px;
-    z-index: 2;
+    z-index: 7;
 }
 .botones-accion{
     display: flex;
@@ -225,4 +120,3 @@
 .cancelar-accion {
     background-color: #DC3545;
 }
-
