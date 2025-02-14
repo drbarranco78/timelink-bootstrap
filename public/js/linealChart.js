@@ -77,48 +77,85 @@ window.addEventListener('DOMContentLoaded', event => {
         // descansos = descansos.map(value => value === 0 ? null : value);
         // salidas = salidas.map(value => value === 0 ? null : value);
 
-        const data = {
-            labels: horasExactas, // Usamos las horas exactas en el eje X
-            datasets: [
-                { label: "Entradas", data: entradas, borderColor: "green", fill: false, tension: 0.1, spanGaps: true },
-                { label: "Descansos", data: descansos, borderColor: "blue", fill: false, tension: 0.1, spanGaps: true },
-                { label: "Salidas", data: salidas, borderColor: "orange", fill: false, tension: 0.1, spanGaps: true }
-            ]
-        };
+        // const data = {
+        //     //labels: horasExactas, // Usamos las horas exactas en el eje X
+        //     datasets: [
+        //         { label: "Entradas", data: entradas, borderColor: "green", fill: false, tension: 0.1, spanGaps: true },
+        //         { label: "Descansos", data: descansos, borderColor: "blue", fill: false, tension: 0.1, spanGaps: true },
+        //         { label: "Salidas", data: salidas, borderColor: "orange", fill: false, tension: 0.1, spanGaps: true }
+        //     ]
+        // };
+
+        // const data = {
+        //     datasets: [
+        //         {
+        //             label: "Entradas",
+        //             data: [
+        //                 { x: "2025-02-14T08:15:00", y: 1 },
+        //                 { x: "2025-02-14T09:47:00", y: 1 }
+        //             ],
+        //             borderColor: "green",
+        //             fill: false,
+        //             tension: 0.1,
+        //             spanGaps: true
+        //         },
+        //         {
+        //             label: "Descansos",
+        //             data: [
+        //                 { x: "2025-02-14T10:30:00", y: 1 },
+        //                 { x: "2025-02-14T11:45:00", y: 4 }
+        //             ],
+        //             borderColor: "blue",
+        //             fill: false,
+        //             tension: 0.1,
+        //             spanGaps: true
+        //         },
+        //         {
+        //             label: "Salidas",
+        //             data: [
+        //                 { x: "2025-02-14T12:00:00", y: 1 }
+        //             ],
+        //             borderColor: "orange",
+        //             fill: false,
+        //             tension: 0.1,
+        //             spanGaps: true
+        //         }
+        //     ]
+        // };
+        
         const options = {
             responsive: true,
-            plugins: { legend: { display: true } },
+            plugins: {
+                legend: { display: true }
+            },
             scales: {
-                // xAxes: [{
-                //     ticks: {
-                //     },
-                //     type: 'time',
-                //     // time: {
-                //     //   round: 'hours',
-                //     //   parser: "yyyy, M, d, H, m, s",
-                //     //   displayFormats: {
-                //     //     'millisecond': '',
-                //     //     'second': 'H:mm',
-                //     //     'minute': 'H:mm',
-                //     //     'hour': 'H:mm',
-                //     //     'day': 'H:mm',
-                //     //     'week': 'MMM DD',
-                //     //     'month': 'MMM DD',
-                //     //     'quarter': 'MMM DD',
-                //     //     'year': 'MMM DD',
-                //     //   },
-                //     //   tooltipFormat: 'D MMM YYYY H:mm'
-                //     // }
-                //   }],
-                yAxes: [{
+                x: {
+                    type: "time",
+                    time: {
+                        parser: "yyyy-MM-dd'T'HH:mm:ss",
+                        tooltipFormat: "HH:mm:ss",
+                        unit: "hour",
+                        displayFormats: {
+                            minute: "HH:mm",
+                            hour: "HH:mm"
+                        }
+                    },
+                    min: "2025-02-14T08:00:00",
+                    max: "2025-02-14T20:00:00",
+                    ticks: {
+                        source: "auto",
+                        autoSkip: true,
+                        maxTicksLimit: 24
+                    }
+                },
+                y: {
                     min: 0,
                     max: totalEmpleadosActivos,
                     ticks: {
-                        beginAtZero: true,
-                        max: totalEmpleadosActivos,
-                        stepSize: 1
+                        stepSize: 1,
+                        beginAtZero: true
                     }
-                }]
+                }
             }
         };
 

@@ -702,14 +702,17 @@
     <script src="{{ asset('js/scripts.js') }}"></script>
     {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script> --}}
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script> --}}
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script> --}}
 
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> --}}
     {{-- <script src="{{ asset('js/chart-area-demo.js') }}"></script> --}}
     {{-- <script src="https://cdn.plot.ly/plotly-3.0.0.min.js" charset="utf-8"></script> --}}
-    <script src="{{ asset('js/chart-bar-demo.js') }}"></script>
+    {{-- <script src="{{ asset('js/chart-bar-demo.js') }}"></script> --}}
     <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/admin.js') }}"></script>
     
