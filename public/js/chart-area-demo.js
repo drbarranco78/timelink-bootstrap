@@ -318,3 +318,58 @@ window.addEventListener('DOMContentLoaded', event => {
 //     }
 //   }
 // });
+
+
+
+
+
+// xAxes: [{
+//   type: 'time',
+//   time: {
+//     parser: "yyyy-MM-dd'T'HH:mm:ss", // Usa el formato correcto para las fechas
+//     tooltipFormat: 'HH:mm:ss', // Formato en el tooltip
+//     displayFormats: {
+//       second: 'HH:mm:ss',
+//       minute: 'HH:mm',
+//       hour: 'HH:mm'
+//     }
+//   },
+//   ticks: {
+//     //autoSkip: false, 
+//   //   source: 'data', // Genera los ticks automáticamente según los datos
+//   //   stepSize: 15 * 60 * 1000, // Cada tick cada 15 minutos (ajústalo si es necesario)
+//   },
+//   offset: true // Permite que los puntos queden entre los ticks si es necesario
+// }],
+
+
+let horas = [
+  '2024-02-13T08:00:00',
+  '2024-02-13T09:00:00',
+  '2024-02-13T10:00:00',
+  '2024-02-13T11:00:00',
+  '2024-02-13T12:00:00',
+  '2024-02-13T13:00:00',
+  '2024-02-13T14:00:00',
+  '2024-02-13T15:00:00',
+  '2024-02-13T16:00:00',
+  '2024-02-13T17:00:00',
+  '2024-02-13T18:00:00',
+  '2024-02-13T19:00:00',
+  '2024-02-13T20:00:00'
+];
+// let horas = [
+//     new Date('2024-02-13T08:00:00').getTime(),
+//     new Date('2024-02-13T09:00:00').getTime(),
+//     new Date('2024-02-13T10:00:00').getTime(),
+//     new Date('2024-02-13T11:00:00').getTime(),
+//     new Date('2024-02-13T12:00:00').getTime(),
+//     new Date('2024-02-13T13:00:00').getTime(),
+//     new Date('2024-02-13T14:00:00').getTime(),
+//     new Date('2024-02-13T15:00:00').getTime(),
+//     new Date('2024-02-13T16:00:00').getTime(),
+//     new Date('2024-02-13T17:00:00').getTime(),
+//     new Date('2024-02-13T18:00:00').getTime(),
+//     new Date('2024-02-13T19:00:00').getTime(),
+//     new Date('2024-02-13T20:00:00').getTime()
+//   ];
