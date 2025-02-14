@@ -9,12 +9,17 @@ window.addEventListener('DOMContentLoaded', event => {
     let entradas = [];
     let descansos = [];
     let salidas = [];
+    let fechaCompleta;
+    let horaMinuto;
 
     cargarDatosFichajes(fechaSelect).then(() => {
         generarGraficoFichajes();
     });
     $('#selector-fecha').change(function () {
         fechaSelect = $(this).val();
+        entradas = [];
+        descansos = [];
+        salidas = [];
         console.log("Horas exactas: ", horasExactas);
         cargarDatosFichajes(fechaSelect).then(() => {
             generarGraficoFichajes();
@@ -33,42 +38,41 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
     function contarFichajesPorHora() {
-
-
-
+        // Recorremos los fichajes y los agrupamos por hora
         fichajesPorFecha.forEach(fichaje => {
-            // let fecha = new Date(fichaje.created_at);
-            // let horaMinuto = fecha.getHours().toString().padStart(2, '0') + ":" +
-            //     fecha.getMinutes().toString().padStart(2, '0');
-            let horaMinuto = fichaje.hora;
-
-            horasExactas.push(horaMinuto); // Agregar cada hora exacta al eje X
-
-            if (fichaje.tipo_fichaje === "entrada") entradas.push({ hora: horaMinuto, cantidad: 1 });
-            if (fichaje.tipo_fichaje === "inicio_descanso") descansos.push({ hora: horaMinuto, cantidad: 1 });
-            if (fichaje.tipo_fichaje === "salida") salidas.push({ hora: horaMinuto, cantidad: 1 });
+            let fechaFichaje = new Date(fechaSelect).toISOString().split('T')[0];
+            let fechaCompleta = `${fechaFichaje}${fichaje.hora}`;
+    
+            horasExactas.push(fechaCompleta);
+    
+            // Agrupar por tipo de fichaje
+            if (fichaje.tipo_fichaje === "entrada") {
+                entradas.push(fechaCompleta);
+            }
+            if (fichaje.tipo_fichaje === "inicio_descanso") {
+                descansos.push(fechaCompleta);
+            }
+            if (fichaje.tipo_fichaje === "salida") {
+                salidas.push(fechaCompleta);
+            }
         });
-
-        // Ordenamos las horas en orden cronológico y eliminamos duplicados
+    
+        // Elimina duplicados de horasExactas y ordénalos
         horasExactas = [...new Set(horasExactas)].sort();
-
-        // Función auxiliar para obtener el número de fichajes en una hora exacta
+    
+        // Función para obtener la cantidad de fichajes por hora
         function obtenerCantidad(fichajes, hora) {
-            return fichajes.filter(f => f.hora === hora).reduce((acc, cur) => acc + cur.cantidad, 0);
+            return fichajes.filter(f => f === hora).length;
         }
-
+    
+        // Aseguramos que cada dataset tiene la estructura correcta
         return {
             horasExactas,
-            entradas: horasExactas.map(hora => obtenerCantidad(entradas, hora)),
-            descansos: horasExactas.map(hora => obtenerCantidad(descansos, hora)),
-            salidas: horasExactas.map(hora => obtenerCantidad(salidas, hora))
+            entradas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(entradas, hora) })),
+            descansos: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(descansos, hora) })),
+            salidas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(salidas, hora) }))
         };
     }
-    function obtenerTotalEmpleadosActivos() {
-        return ausentesPorFecha.filter(f => f.rol !== "maestro" && f.estado === "aceptada").length;
-    }
-
-
     function generarGraficoFichajes() {
         let { horasExactas, entradas, descansos, salidas } = contarFichajesPorHora();
         let totalEmpleadosActivos = fichajesPorFecha.filter(f => f.tipo_fichaje === "entrada").length
@@ -76,15 +80,29 @@ window.addEventListener('DOMContentLoaded', event => {
         // entradas = entradas.map(value => value === 0 ? null : value);
         // descansos = descansos.map(value => value === 0 ? null : value);
         // salidas = salidas.map(value => value === 0 ? null : value);
-
-        // const data = {
-        //     //labels: horasExactas, // Usamos las horas exactas en el eje X
-        //     datasets: [
-        //         { label: "Entradas", data: entradas, borderColor: "green", fill: false, tension: 0.1, spanGaps: true },
-        //         { label: "Descansos", data: descansos, borderColor: "blue", fill: false, tension: 0.1, spanGaps: true },
-        //         { label: "Salidas", data: salidas, borderColor: "orange", fill: false, tension: 0.1, spanGaps: true }
-        //     ]
-        // };
+        function convertirAFechas(datos) {
+            return datos.map(item => {
+                return {
+                    x: new Date(item.x), // Convertir la cadena a objeto Date
+                    y: item.y
+                };
+            });
+        }
+    
+        let entradasConvertidas = convertirAFechas(entradas);
+        let descansosConvertidos = convertirAFechas(descansos);
+        let salidasConvertidas = convertirAFechas(salidas);
+    
+        console.log("Entradas en formato HH:mm " ,entradas);
+        console.log("Entradas convertidas " ,entradas);
+        const data = {
+            //labels: horasExactas, // Usamos las horas exactas en el eje X
+            datasets: [
+                { label: "Entradas", data: entradas, borderColor: "green", fill: false, tension: 0.1, spanGaps: true },
+                { label: "Descansos", data: descansos, borderColor: "blue", fill: false, tension: 0.1, spanGaps: true },
+                { label: "Salidas", data: salidas, borderColor: "orange", fill: false, tension: 0.1, spanGaps: true }
+            ]
+        };
 
         // const data = {
         //     datasets: [
@@ -132,7 +150,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 x: {
                     type: "time",
                     time: {
-                        parser: "yyyy-MM-dd'T'HH:mm:ss",
+                        parser: "yyyy-MM-ddHH:mm:ss",
                         tooltipFormat: "HH:mm:ss",
                         unit: "hour",
                         displayFormats: {
@@ -171,7 +189,9 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
 
-
+    function obtenerTotalEmpleadosActivos() {
+        return ausentesPorFecha.filter(f => f.rol !== "maestro" && f.estado === "aceptada").length;
+    }
 
 
 
