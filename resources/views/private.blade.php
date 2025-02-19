@@ -8,17 +8,14 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Panel de control - Timelink</title>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-
     <link rel="stylesheet" href="{{ asset('css/private.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-
     <!-- Estilos -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/boxicons.min.css') }}">
@@ -27,7 +24,7 @@
     <link rel="stylesheet" href="{{ asset('css/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
 
-    
+
 
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css">
@@ -85,7 +82,7 @@
                         <div class="sb-sidenav-menu-heading"></div>
                         <a id="dashboard-inicio" class="nav-link" href="#">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Panel de empleado
+                            Panel de fichajes
                         </a>
                         <div class="sb-sidenav-menu-heading">Interface</div>
                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
@@ -146,9 +143,9 @@
                             </nav>
                         </div>
                         {{-- <div class="sb-sidenav-menu-heading">Addons</div> --}}
-                        <a class="nav-link" href="charts.html">
-                            <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                            Informes
+                        <a id="location-register" class="nav-link" href="#">
+                            <div class="sb-nav-link-icon"><i class="fas fa-location"></i></div>
+                            Registrar ubicación
                         </a>
                         {{-- <a class="nav-link" href="tables.html">
                             <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
@@ -164,24 +161,12 @@
         </div>
         <div id="layoutSidenav_content">
             <main>
-                <!-- <div class="pagetitle">
-                    <h1>Profile</h1>
-                    <nav>
-                        <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item">Users</li>
-                        <li class="breadcrumb-item active">Profile</li>
-                        </ol>
-                    </nav>
-                </div> -->
                 <section id="seccion-perfil" class="section profile">
                     <h3>Perfil</h3>
                     <div class="row">
                         <div class="col-xl-4">
-
                             <div class="card">
                                 <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-
                                     <img src="img/ico_usuario_activo.png" alt="Profile" class="rounded-circle">
                                     <h2>Daniel Rodríguez</h2>
                                     <h3>Web Designer</h3>
@@ -234,7 +219,8 @@
                                     </ul>
                                     <div class="tab-content pt-2">
 
-                                        <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
+                                        <div class="tab-pane fade show active profile-overview" id="profile-overview"
+                                            role="tabpanel">
                                             <h5 class="card-title">About</h5>
                                             <p class="small fst-italic">Sunt est soluta temporibus accusantium neque
                                                 nam maiores cumque temporibus. Tempora libero non est unde veniam est
@@ -242,7 +228,7 @@
                                                 odit. Fuga sequi sed ea saepe at unde.</p>
 
                                             <h5 class="card-title">Detalles</h5>
-                              
+
 
                                             <div class="row">
                                                 <div id="lb-profile-name" class="col-lg-3 col-md-4 label ">Nombre
@@ -279,7 +265,8 @@
 
                                         </div>
 
-                                        <div class="tab-pane fade profile-edit pt-3" id="profile-edit" role="tabpanel">
+                                        <div class="tab-pane fade profile-edit pt-3" id="profile-edit"
+                                            role="tabpanel">
 
                                             <!-- Profile Edit Form -->
                                             <form>
@@ -418,7 +405,7 @@
                                                                 Eliminar esta cuenta de forma permanente
                                                             </label>
                                                         </div>
-                                      
+
                                                     </div>
                                                 </div>
 
@@ -537,18 +524,19 @@
                         </div>
 
                         {{-- <li class="breadcrumb-item active">Dashboard</li> --}}
-                        
+
                     </div>
 
                     <div id="action-panels" class="row">
                         <div class="col-xl-3 col-md-6">
                             <div class="card bg-success text-white mb-4 panel-fichaje" data-tipo="entrada">
                                 <div class="card-body">Entrada <i class="ico-fichaje fas fa-play"></i></div>
-                                
+
                                 <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a id="detalles-entrada" class="small text-white stretched-link toggle-detalles" href="#"
-                                        data-tipo="entrada"></a>
-                                    <div class="small text-white"><i id="ico_entrada" class="fas fa-angle-down"></i></div>
+                                    <a id="detalles-entrada" class="small text-white stretched-link toggle-detalles"
+                                        href="#" data-tipo="entrada"></a>
+                                    <div class="small text-white"><i id="ico_entrada" class="fas fa-angle-down"></i>
+                                    </div>
                                 </div>
                                 <div id="ficha-entradas" class="card-body bg-success p-3 detalles-actividad">
                                     <ul></ul>
@@ -561,8 +549,8 @@
                                 <div class="card-body">Descanso <i class="ico-fichaje fas fa-coffee"></i></div>
                                 <div id="tarjeta-actividad"
                                     class="card-footer d-flex align-items-center justify-content-between">
-                                    <a id="detalles-descanso" class="small text-white stretched-link toggle-detalles" href="#"
-                                        data-tipo="inicio_descanso"></a>
+                                    <a id="detalles-descanso" class="small text-white stretched-link toggle-detalles"
+                                        href="#" data-tipo="inicio_descanso"></a>
                                     <div class="small text-white"><i id="ico_descanso" class="fas fa-angle-down"></i>
                                     </div>
                                 </div>
@@ -575,8 +563,8 @@
                             <div class="card bg-danger text-white mb-4 panel-fichaje" data-tipo="salida">
                                 <div class="card-body">Salida <i class="ico-fichaje fas fa-sign-out-alt"></i></div>
                                 <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a id="detalles-salida" class="small text-white stretched-link toggle-detalles" href="#"
-                                        data-tipo="salida"></a>
+                                    <a id="detalles-salida" class="small text-white stretched-link toggle-detalles"
+                                        href="#" data-tipo="salida"></a>
                                     <div class="small text-white"><i class="fas fa-angle-down"></i></div>
                                 </div>
                                 <div id="ficha-salidas" class="card-body bg-warning p-3 detalles-actividad">
@@ -586,43 +574,8 @@
                             </div>
                         </div>
 
-                        {{-- <div class="col-xl-3 col-md-6">
-                            <div class="card bg-danger text-white mb-4">
-                                <div class="card-body">Ausencias <span></span></div>
-                                <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a class="small text-white stretched-link toggle-detalles" href="#"
-                                        data-tipo="ausencia">Ver Detalles</a>
-                                    <div class="small text-white"><i class="fas fa-angle-down"></i></div>
-                                </div>
-                                <div id="ficha-ausencias" class="card-body bg-danger p-3 detalles-actividad">
-                                    <ul></ul>
-
-                                </div>
-                            </div>
-                        </div> --}}
                     </div>
-                    {{-- <div class="row">
-                        <div class="col-xl-6">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <i class="fas fa-chart-area me-1"></i>
-                                    Area Chart Example
-                                </div>
-                                <div class="card-body"><canvas id="myAreaChart" width="100%"
-                                        height="40"></canvas></div>
-                            </div>
-                        </div>
-                        <div class="col-xl-6">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <i class="fas fa-chart-bar me-1"></i>
-                                    Bar Chart Example
-                                </div>
-                                <div class="card-body"><canvas id="myBarChart" width="100%"
-                                        height="40"></canvas></div>
-                            </div>
-                        </div>
-                    </div> --}}
+
                     <div class="card mb-4">
                         <div class="card-header">
                             <div>
@@ -634,7 +587,7 @@
                                 <input id="selector-fecha" class="mt-4" type="date">
                             </div>
                         </div>
-                        
+
                         <div class="table-body">
                             <table id="tabla-fichajes" class="table table-striped nowrap" style="width:100%">
                                 <thead>
@@ -683,48 +636,43 @@
         </div>
         <div class="exito-msg"></div>
         <div class="error-msg"></div>
-        <div id="div-solicitudes-acceso"></div>
-        <div id="confirmar-accion" class="confirmar-accion">
-            <p class="texto-confirmar-accion">¿Estás seguro?</p>
-            <div class="botones-accion">
-                <button id="aceptar-accion" class="aceptar-accion">Aceptar</button>
-                <button id="cancelar-accion" class="cancelar-accion">Cancelar</button>
+        
+
+        <div id="div-registro-ubicacion">
+            <div class="header-solicitudes">
+                <h3>Registrar ubicación</h3>
+                <span id="cerrar-modal">×</span>
+            </div>
+            <div id="form-registro-ubicacion">
+                <input class="input-comentarios" type="text" id="input-comentarios"
+                    placeholder="Indique el motivo del registro" required="true">
+                <button id="btn-registrar-ubicacion">Enviar</button>
             </div>
         </div>
+
+    </div>
+    <div id="confirmar-accion" class="confirmar-accion">
+        <p class="texto-confirmar-accion">¿Estás seguro?</p>
+        <div class="botones-accion">
+            <button id="aceptar-accion" class="aceptar-accion">Aceptar</button>
+            <button id="cancelar-accion" class="cancelar-accion">Cancelar</button>
+        </div>
+    </div>
     </div>
     <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
-    
-    
     <script src="{{ asset('js/scripts.js') }}"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-    <script src="{{ asset('js/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('js/chart-bar-demo.js') }}"></script> --}}
-    {{-- <script src="{{ asset('js/admin.js') }}"></script> --}}
-
-    
     <script src="{{ asset('js/index.js') }}"></script>
     <script src="{{ asset('js/tinymce.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/private.js') }}"></script>
 
-
-    {{-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> --}}
-
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
-        crossorigin="anonymous"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/umd/simple-datatables.min.js"
-        crossorigin="anonymous"></script> -->
-
-    <!-- <script src="https://cdn.datatables.net/plug-ins/2.2.1/i18n/es-ES.json"></script> -->
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
+    </script>
 
 </body>
 

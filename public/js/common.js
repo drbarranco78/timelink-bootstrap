@@ -9,6 +9,11 @@ let fechaHoy;
 
 
 window.addEventListener('DOMContentLoaded', event => {
+    window.formatearFecha=function (fecha) {
+        let partesFecha = fecha.split("-");
+        let fechaFormateada = `${partesFecha[2]}/${partesFecha[1]}/${partesFecha[0]}`;
+        return fechaFormateada;
+    }
     window.obtenerFechaHora = function () {
         let fecha = new Date();
         let dia = String(fecha.getDate()).padStart(2, '0');
@@ -83,7 +88,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
         $('#delete-user').hide();
         $('#status-change').hide();
-        $('#li_change-password').hide();
+        $('#li-change-password').hide();
 
         // Sección resúmen
         $("#profile-name").text(empresa.nombre_empresa);
@@ -131,6 +136,11 @@ window.addEventListener('DOMContentLoaded', event => {
         $('#seccion-perfil').show();
 
         $('#delete-user').show();
+        if (empleado.rol!=="maestro") {
+            $('#li-change-password').hide();
+        }else{
+            $('#li-change-password').show();
+        }
         if (empleado.rol !== "maestro") {
             $('#status-change').show();
             $('input[name="status"]').prop('checked', false);
@@ -174,8 +184,6 @@ window.addEventListener('DOMContentLoaded', event => {
 
         $('#li_change-password').show();
 
-
-
         $(".profile-card h2").text(empleado.nombre + " " + empleado.apellidos);
         $(".profile-card h3").text(empleado.cargo);
 
@@ -194,8 +202,6 @@ window.addEventListener('DOMContentLoaded', event => {
         $("#email").val(empleado.email);
         $("#job").val(empleado.cargo);
         $("#join-date").val(empleado.created_at);
-
-
 
         $("#remove-employee-form").attr("data-id", empleado.id);
     }

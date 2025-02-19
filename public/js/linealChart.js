@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded', event => {
-    let numDescansos, numEntradas, numSalidas, numAusentes;
-    let lineChart;
+    //let numDescansos, numEntradas, numSalidas, numAusentes;
+    let lineChart, barChart, pieChart, mapa;
     let fichajesPorFecha;
     let ausentesPorFecha;
     let fechaSelect = $('#selector-fecha').val();
@@ -11,18 +11,44 @@ window.addEventListener('DOMContentLoaded', event => {
     let salidas = [];
     let fechaCompleta;
     let horaMinuto;
+    let totalEmpleadosActivos;
+    let tiempoTotalTrabajado;
+    let tiempoTotalDescanso;
+
+    // console.log(typeof jQuery);
+
+
+    $(document).on('click', '.toggle-chart', function () {
+        
+
+        // Encuentra el contenedor padre (card) y ocúltalo
+        $(this).closest('.card').find('.card-body').slideToggle(200, function () {
+            
+        });
+
+        // Cambia el icono de dirección
+        $(this).toggleClass('fa-angle-up fa-angle-down');
+    });
 
     cargarDatosFichajes(fechaSelect).then(() => {
         generarGraficoFichajes();
+        cargarMapa(fichajesPorFecha);
+        generarGraficoAusencias(fechaSelect);
+        obtenerTiemposTotales(fechaSelect);
+        
+        
     });
     $('#selector-fecha').change(function () {
         fechaSelect = $(this).val();
         entradas = [];
         descansos = [];
         salidas = [];
-        console.log("Horas exactas: ", horasExactas);
         cargarDatosFichajes(fechaSelect).then(() => {
             generarGraficoFichajes();
+            generarGraficoAusencias(fechaSelect);
+            cargarMapa(fichajesPorFecha);
+            obtenerTiemposTotales(fechaSelect);
+          
         });
     });
 
@@ -31,7 +57,7 @@ window.addEventListener('DOMContentLoaded', event => {
         return cargarFichajesYAusentes(fecha).then(data => {
             fichajesPorFecha = data.fichajes;
             ausentesPorFecha = data.ausentes;
-            console.log("Datos cargados:", fichajesPorFecha, ausentesPorFecha);
+            
         }).catch(error => {
             console.error("Error al obtener fichajes y ausentes:", error);
         });
@@ -41,12 +67,13 @@ window.addEventListener('DOMContentLoaded', event => {
         // Recorremos los fichajes y los agrupamos por hora
         fichajesPorFecha.forEach(fichaje => {
             let fechaFichaje = new Date(fechaSelect).toISOString().split('T')[0];
-            let fechaCompleta = `${fechaFichaje}${fichaje.hora}`;
-    
+            let fechaCompleta = `${fechaFichaje}T${fichaje.hora}`;
+
             horasExactas.push(fechaCompleta);
-    
+
             // Agrupar por tipo de fichaje
             if (fichaje.tipo_fichaje === "entrada") {
+
                 entradas.push(fechaCompleta);
             }
             if (fichaje.tipo_fichaje === "inicio_descanso") {
@@ -56,101 +83,87 @@ window.addEventListener('DOMContentLoaded', event => {
                 salidas.push(fechaCompleta);
             }
         });
-    
+
         // Elimina duplicados de horasExactas y ordénalos
         horasExactas = [...new Set(horasExactas)].sort();
-    
+
         // Función para obtener la cantidad de fichajes por hora
         function obtenerCantidad(fichajes, hora) {
             return fichajes.filter(f => f === hora).length;
         }
-    
-        // Aseguramos que cada dataset tiene la estructura correcta
+
+        
+        // return {
+        //     horasExactas,
+        //     entradas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(entradas, hora) })),
+        //     descansos: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(descansos, hora) })),
+        //     salidas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(salidas, hora) }))
+        // };
         return {
             horasExactas,
-            entradas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(entradas, hora) })),
-            descansos: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(descansos, hora) })),
-            salidas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(salidas, hora) }))
+            entradas: horasExactas
+                .map(hora => ({ x: hora, y: obtenerCantidad(entradas, hora) }))
+                .filter(dato => dato.y > 0),
+            descansos: horasExactas
+                .map(hora => ({ x: hora, y: obtenerCantidad(descansos, hora) }))
+                .filter(dato => dato.y > 0),
+            salidas: horasExactas
+                .map(hora => ({ x: hora, y: obtenerCantidad(salidas, hora) }))
+                .filter(dato => dato.y > 0)
         };
     }
     function generarGraficoFichajes() {
         let { horasExactas, entradas, descansos, salidas } = contarFichajesPorHora();
-        let totalEmpleadosActivos = fichajesPorFecha.filter(f => f.tipo_fichaje === "entrada").length
+
+
+        totalEmpleadosActivos = fichajesPorFecha.filter(f => f.tipo_fichaje === "entrada").length
             + ausentesPorFecha.filter(f => f.rol !== "maestro" && f.estado === "aceptada").length;
-        // entradas = entradas.map(value => value === 0 ? null : value);
-        // descansos = descansos.map(value => value === 0 ? null : value);
-        // salidas = salidas.map(value => value === 0 ? null : value);
-        function convertirAFechas(datos) {
-            return datos.map(item => {
-                return {
-                    x: new Date(item.x), // Convertir la cadena a objeto Date
-                    y: item.y
-                };
-            });
-        }
-    
-        let entradasConvertidas = convertirAFechas(entradas);
-        let descansosConvertidos = convertirAFechas(descansos);
-        let salidasConvertidas = convertirAFechas(salidas);
-    
-        console.log("Entradas en formato HH:mm " ,entradas);
-        console.log("Entradas convertidas " ,entradas);
+        entradas = entradas.map(value => value === 0 ? null : value);
+        descansos = descansos.map(value => value === 0 ? null : value);
+        salidas = salidas.map(value => value === 0 ? null : value);
+
         const data = {
-            //labels: horasExactas, // Usamos las horas exactas en el eje X
             datasets: [
-                { label: "Entradas", data: entradas, borderColor: "green", fill: false, tension: 0.1, spanGaps: true },
-                { label: "Descansos", data: descansos, borderColor: "blue", fill: false, tension: 0.1, spanGaps: true },
-                { label: "Salidas", data: salidas, borderColor: "orange", fill: false, tension: 0.1, spanGaps: true }
+                {
+                    label: "Entrada", data: entradas, borderColor: "rgba(75, 192, 192, 0.8)", fill: false, tension: 0.1, spanGaps: false, pointRadius: 6,
+                    pointHoverRadius: 8,
+                },
+                {
+                    label: "Inicio_descanso", data: descansos, borderColor: "rgba(54, 162, 235, 0.8)", fill: false, tension: 0.1, spanGaps: false, pointRadius: 6,
+                    pointHoverRadius: 8,
+
+                },
+                {
+                    label: "Salida", data: salidas, borderColor: "rgba(255, 205, 86, 0.8)", fill: false, tension: 0.1, spanGaps: false, pointRadius: 6,
+                    pointHoverRadius: 8,
+                }
             ]
         };
-
-        // const data = {
-        //     datasets: [
-        //         {
-        //             label: "Entradas",
-        //             data: [
-        //                 { x: "2025-02-14T08:15:00", y: 1 },
-        //                 { x: "2025-02-14T09:47:00", y: 1 }
-        //             ],
-        //             borderColor: "green",
-        //             fill: false,
-        //             tension: 0.1,
-        //             spanGaps: true
-        //         },
-        //         {
-        //             label: "Descansos",
-        //             data: [
-        //                 { x: "2025-02-14T10:30:00", y: 1 },
-        //                 { x: "2025-02-14T11:45:00", y: 4 }
-        //             ],
-        //             borderColor: "blue",
-        //             fill: false,
-        //             tension: 0.1,
-        //             spanGaps: true
-        //         },
-        //         {
-        //             label: "Salidas",
-        //             data: [
-        //                 { x: "2025-02-14T12:00:00", y: 1 }
-        //             ],
-        //             borderColor: "orange",
-        //             fill: false,
-        //             tension: 0.1,
-        //             spanGaps: true
-        //         }
-        //     ]
-        // };
-        
         const options = {
             responsive: true,
             plugins: {
-                legend: { display: true }
+                legend: { display: true },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            let horaTooltip = tooltipItem.raw.x.split("T")[1]; // Extraer solo la hora
+                            let tipoFichaje = tooltipItem.dataset.label; // Tipo de fichaje
+                
+                            // Filtramos los empleados que ficharon a esa hora y con ese tipo de fichaje
+                            let empleados = fichajesPorFecha
+                                .filter(f => f.hora === horaTooltip && f.tipo_fichaje.toLowerCase() === tipoFichaje.toLowerCase())
+                                .map(f => `${f.usuario.nombre} ${f.usuario.apellidos}`);                           
+                
+                            return empleados.length ? [`${tipoFichaje}:`, ...empleados] : [`${tipoFichaje}: Sin registros`];
+                        }
+                    }
+                }
             },
             scales: {
                 x: {
                     type: "time",
                     time: {
-                        parser: "yyyy-MM-ddHH:mm:ss",
+                        parser: "yyyy-MM-dd'T'HH:mm:ss",
                         tooltipFormat: "HH:mm:ss",
                         unit: "hour",
                         displayFormats: {
@@ -158,8 +171,8 @@ window.addEventListener('DOMContentLoaded', event => {
                             hour: "HH:mm"
                         }
                     },
-                    min: "2025-02-14T08:00:00",
-                    max: "2025-02-14T20:00:00",
+                    // min: `${new Date(fechaSelect).toISOString().split('T')[0]}T08:00:00`,
+                    // max: `${new Date(fechaSelect).toISOString().split('T')[0]}T20:00:00`,                    
                     ticks: {
                         source: "auto",
                         autoSkip: true,
@@ -168,7 +181,8 @@ window.addEventListener('DOMContentLoaded', event => {
                 },
                 y: {
                     min: 0,
-                    max: totalEmpleadosActivos,
+                    // max:7,
+                    // max: totalEmpleadosActivos,
                     ticks: {
                         stepSize: 1,
                         beginAtZero: true
@@ -176,7 +190,6 @@ window.addEventListener('DOMContentLoaded', event => {
                 }
             }
         };
-
         var ctx = document.getElementById("multiLineChart").getContext("2d");
         if (lineChart) {
             lineChart.destroy();
@@ -188,6 +201,186 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
+    async function generarGraficoAusencias(fechaSeleccionada) {
+        try {
+            const response = await fetch(`/api/fichajes/ausencias-semana/${fechaSeleccionada}`);
+            const data = await response.json();
+            console.log("AusentesPorfecha: " , data);
+            let hoy = new Date().toISOString().split('T')[0];
+            const fechasFiltradas = Object.keys(data).filter(fecha => {
+                return new Date(fecha) <= new Date(hoy);
+            });
+    
+            // Convertir fechas en nombres de días (Lunes, Martes...)
+            const opcionesFormato = { weekday: "long" };
+            const etiquetasDias = Object.keys(data).map(fecha => {
+                let fechaObj = new Date(fecha);
+                let nombreDia = fechaObj.toLocaleDateString("es-ES", opcionesFormato);
+                let numeroDia = fechaObj.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" });
+                return `${nombreDia} ${numeroDia}`;
+            });
+
+            // const valoresAusencias = Object.values(data);
+            const valoresAusencias = fechasFiltradas.map(fecha => data[fecha]);
+
+            // Configurar datos para la gráfica
+            const chartData = {
+                labels: etiquetasDias,
+                datasets: [{
+                    label: "Número de Ausencias",
+                    data: valoresAusencias,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(255, 205, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                    ],
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    borderWidth: 1
+                }]
+            };
+            // Destruir gráfica anterior si existe
+            if (barChart) {
+                barChart.destroy();
+            }
+            // Crear gráfica de barras
+            const ctxBar = document.getElementById("myBarChart").getContext("2d");
+            barChart = new Chart(ctxBar, {
+                type: "bar",
+                data: chartData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            ticks: {
+                                stepSize: 1,
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error("Error cargando ausencias:", error);
+        }
+    }
+    function cargarMapa(fichajesPorFecha) {
+        if (mapa) {
+            mapa.remove();
+        }
+        let primerFichaje = fichajesPorFecha[0];
+        mapa = L.map('mapaFichajes').setView(
+            fichajesPorFecha && fichajesPorFecha.length > 0
+                ? [primerFichaje.latitud, primerFichaje.longitud]
+                : [40.4167750, -3.7037900], // Coordenadas de Madrid como predeterminadas
+            8 // Zoom inicial
+        );
+        // Cargar el mapa base
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(mapa);
+        
+        let markers = L.markerClusterGroup();
+        fichajesPorFecha.forEach(fichaje => {
+            let comentarios = fichaje.comentarios ? fichaje.comentarios : "";
+            let ubicacion = fichaje.ciudad?fichaje.ciudad:"Ubicación no disponible"
+            let marker = L.marker([fichaje.latitud, fichaje.longitud]).addTo(mapa)
+                .bindPopup(fichaje.usuario.nombre + " " + fichaje.usuario.apellidos
+                    + "<br>" + fichaje.tipo_fichaje + " " + fichaje.hora + "<br>" 
+                    + comentarios + "<br>" + ubicacion)
+                .openPopup();
+            markers.addLayer(marker);
+        });
+        mapa.addLayer(markers);
+        if (markers.getLayers().length > 0) {
+            const bounds = markers.getBounds();  // Obtener los límites del clúster
+            mapa.fitBounds(bounds); // Ajusta la vista del mapa para que incluya todos los puntos
+        }      
+    }
+    function segundosAHora(segundos) {
+        var horas = Math.floor(segundos / 3600);
+        var minutos = Math.floor((segundos % 3600) / 60);
+        var segundosRestantes = segundos % 60;
+
+        // Asegurar que el formato sea siempre de dos dígitos
+        return (horas < 10 ? '0' : '') + horas + ':' + 
+               (minutos < 10 ? '0' : '') + minutos + ':' + 
+               (segundosRestantes < 10 ? '0' : '') + segundosRestantes;
+    }
+    function obtenerTiemposTotales(fechaSeleccionada) {
+        $.ajax({
+            url: '/api/fichajes/tiempos-totales/' + encodeURIComponent(fechaSeleccionada),
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                // tiempoTotalTrabajado=segundosAHora(response.total_trabajado);
+                // tiempoTotalDescanso=segundosAHora(response.total_descansos);
+
+                tiempoTotalTrabajado=response.total_trabajado;
+                tiempoTotalDescanso=response.total_descansos;
+
+
+                console.log("Tiempo trabajado: " + tiempoTotalTrabajado);
+                console.log("Tiempo de descanso: " + tiempoTotalDescanso);
+                generarGraficoTiempos(fechaSeleccionada);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON?.message || 'Error desconocido');
+            }
+        });
+    }
+    
+
+    function generarGraficoTiempos(fechaSeleccionada) {
+        // let numAusentes = ausentesPorFecha.length;
+        let numAusentes=obtenerTotalEmpleadosActivos();
+
+        const data = {
+            labels: ['Tiempo trabajado', 'Tiempo de descanso', 'Número de ausencias'],
+            datasets: [{
+                data: [tiempoTotalTrabajado, tiempoTotalDescanso,numAusentes],
+                backgroundColor: ['rgba(75, 192, 192, 0.8)', 'rgba(54, 162, 235, 0.8)', 'rgba(255, 99, 132, 0.8)'],
+            }],
+        }
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        // Personalizar el texto del tooltip
+                        label: function (tooltipItem) {
+                            var value = tooltipItem.raw; // Obtener el valor de los datos
+                            var label = tooltipItem.label; // Obtener la etiqueta
+        
+                            // Si el valor es un tiempo en segundos, formatearlo como HH:mm:ss
+                            if (label === 'Tiempo trabajado' || label === 'Tiempo de descanso') {                                
+                                return label + ': ' + segundosAHora(value); // Formatear tiempo
+                            } else {                               
+                                return label + ': ' + value; // Dejar el número de ausencias sin cambios
+                                
+                            }
+                        }
+                    }
+                }
+            },
+            
+        };
+        var ctx = document.getElementById("myPieChart").getContext("2d");
+        if (pieChart) {
+            pieChart.destroy();
+        }
+        pieChart = new Chart(ctx, {
+            type: "doughnut",
+            data: data,
+            options: options           
+        });
+    }
 
     function obtenerTotalEmpleadosActivos() {
         return ausentesPorFecha.filter(f => f.rol !== "maestro" && f.estado === "aceptada").length;

@@ -65,6 +65,8 @@
 
 .card-body{
     font-weight: bolder;
+    
+    
 }
 .card-body span{
     float: right;    
@@ -111,9 +113,7 @@ td,th{
     border-radius: 10px !important;
     align-items: center !important;
 }
-.fa-user-plus{
-    
-    
+.fa-user-plus{    
     color:greenyellow;
 }
 #access-request-number {
@@ -137,14 +137,14 @@ td,th{
     background-color: #33517D;
     padding: 15px 15px;
     border: 1px solid black;
-    border-radius: 10px;
+    border-radius: 5px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     display: none;
     text-align: center;
     z-index: 6;
 }
 #div-solicitudes-acceso h3{
-    font-weight: bold;
+    /* font-weight: bold; */
     color: whitesmoke;
 }
 
@@ -267,4 +267,61 @@ td,th{
 .cancelar-accion {
     background-color: #DC3545;
 }
+
+#show-lineChart{
+    float: right;
+    cursor: pointer;
+}
+
+#myPieChart{
+    max-height: 300px;
+}
+.chart-canvas{
+    min-width: 100%;
+}
+
+.chart-body{
+    min-height: 300px;
+   
+   /* // max-height: 300px; */
+}
+
+#mapaFichajes{
+    z-index: 4;
+}
+/* Estilo para los números en los clústeres */
+/* .leaflet-marker-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 14px; 
+    color: white; 
+    background-color: #2C6B2F;
+    border-radius: 50%;
+    width: 30px; 
+    height: 30px; 
+} */
+
+/* Opcional: Cambiar el tamaño de los círculos dependiendo del número de fichajes */
+.leaflet-marker-icon .leaflet-div-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #3388ff; 
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 12px;
+    text-align: center;
+    line-height: 1;
+}
+.marker-cluster div span{
+    margin-right: 10px;
+}
+.leaflet-control-zoom-in span,.leaflet-control-zoom-out span{
+    margin-right: 8px;
+}
+/* .marker-cluster-small div {
+text-align: center !important;
+} */
 

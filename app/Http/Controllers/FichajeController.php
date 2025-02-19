@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Fichaje;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 
 class FichajeController extends Controller
 {
@@ -21,39 +23,102 @@ class FichajeController extends Controller
     {
         $request->validate([
             'id_usuario' => 'required|exists:users,id',
-            'tipo_fichaje' => 'required|in:entrada,salida,inicio_descanso,fin_descanso',
+            'tipo_fichaje' => 'required|in:entrada,salida,inicio_descanso,fin_descanso,registro',
             'fecha' => 'required|date',
-            'hora' => 'required|date_format:H:i',
-            'ubicacion' => 'nullable|string'
+            'hora' => 'required|date_format:H:i:s',
+            'ubicacion' => 'nullable|string',
+            'ciudad' => 'nullable|string|max:100',
+            'latitud' => 'nullable|numeric|between:-90,90', 
+            'longitud' => 'nullable|numeric|between:-180,180', 
+            'comentarios' => 'nullable|string|max:255'
         ]);
 
         try {
-            // Formatear la hora para asegurarse de que no tenga segundos
-            $horaFormateada = date('H:i', strtotime($request->hora));
+            $idUsuario = $request->id_usuario;
+            $tipoFichaje = $request->tipo_fichaje;
+            $fecha = $request->fecha;
+            $hora = $request->hora;
+            $ubicacion = $request->ubicacion;
+            $ciudad = $request->ciudad;
+            $latitud = $request->latitud;
+            $longitud = $request->longitud;
+            $comentarios = $request->comentarios;
+            $duracion = 0;
 
-            // Crear el registro de fichaje
+            if ($tipoFichaje === 'inicio_descanso' || $tipoFichaje === 'salida') {
+                // Buscar el fichaje de entrada para el día
+                $entradaFichaje = Fichaje::where('id_usuario', $idUsuario)
+                    ->whereDate('fecha', $fecha)
+                    ->where('tipo_fichaje', 'entrada')
+                    ->orderBy('hora', 'desc')
+                    ->first();
+            
+                if ($entradaFichaje) {
+                    // Convertir la hora de entrada y la hora actual a objetos Carbon
+                    $horaEntrada = Carbon::createFromFormat('H:i:s', $entradaFichaje->hora);
+                    $horaActualObj = Carbon::createFromFormat('H:i:s', $hora); // $hora ya debe venir con segundos (por ejemplo, "12:00:00")
+                    
+                    // Calcular el tiempo total transcurrido desde la entrada hasta ahora
+                    $tiempoTotal = $horaEntrada->diffInSeconds($horaActualObj);
+                    
+                    // Sumar el tiempo de descansos ya registrados (almacenados en fichajes de tipo fin_descanso)
+                    $tiempoBreaks = Fichaje::where('id_usuario', $idUsuario)
+                        ->whereDate('fecha', $fecha)
+                        ->where('tipo_fichaje', 'fin_descanso')
+                        ->sum('duracion');
+                    
+                    // El tiempo trabajado acumulado es la diferencia total menos el tiempo en descansos
+                    $trabajoAcumulado = $tiempoTotal - $tiempoBreaks;
+                    
+                    Log::info("Tiempo total desde entrada (seg): " . $tiempoTotal);
+                    Log::info("Tiempo total de descansos (seg): " . $tiempoBreaks);
+                    Log::info("Trabajo acumulado (seg): " . $trabajoAcumulado);
+            
+                    // Actualizar el fichaje de entrada con el tiempo trabajado acumulado
+                    $entradaFichaje->update(['duracion' => $trabajoAcumulado]);
+                }
+            }
+            
+
+            if ($tipoFichaje === 'fin_descanso') {
+                // Buscar el último fichaje de tipo 'inicio_descanso'
+                $ultimoInicioDescanso = Fichaje::where('id_usuario', $idUsuario)
+                    ->where('tipo_fichaje', 'inicio_descanso')
+                    ->whereDate('fecha', $fecha)
+                    ->orderBy('hora', 'desc')
+                    ->first();
+            
+                if ($ultimoInicioDescanso) {
+                    // Suponiendo que en la base de datos la hora se guarda como H:i:s
+                    $horaInicio = Carbon::createFromFormat('H:i:s', $ultimoInicioDescanso->hora);
+                    // Como el request trae la hora en formato H:i, le añadimos ":00"
+                    $horaFin = Carbon::createFromFormat('H:i:s', $hora);
+                    // Calcular la diferencia en segundos
+                    $duracion = $horaInicio->diffInSeconds($horaFin);
+                    Log::info("Duración de descanso en segundos: " . $duracion);
+                }
+            }           
+
+            // Crear el nuevo fichaje
             $fichaje = Fichaje::create([
-                'id_usuario' => $request->id_usuario,
-                'tipo_fichaje' => $request->tipo_fichaje,
-                'fecha' => $request->fecha,
-                'hora' => $horaFormateada,
-                'ubicacion' => $request->ubicacion
+                'id_usuario' => $idUsuario,
+                'tipo_fichaje' => $tipoFichaje,
+                'fecha' => $fecha,
+                'hora' => $hora,
+                'ubicacion' => $ubicacion,
+                'ciudad' => $ciudad,
+                'latitud' => $latitud,
+                'longitud' => $longitud,
+                'duracion' => $duracion, // Se almacena solo en fin_descanso
+                'comentarios' => $comentarios
             ]);
 
-            // Respuesta JSON con éxito
-            return response()->json([
-                'ok' => true,
-                'message' => 'Fichaje registrado correctamente'                
-            ], 201);
-
+            return response()->json(['message' => 'Fichaje registrado correctamente', 'fichaje' => $fichaje], 201);
         } catch (\Exception $e) {
-            // Respuesta JSON en caso de error
-            return response()->json([
-                'ok' => false,
-                'message' => 'Error al registrar el fichaje: ' . $e->getMessage()
-            ], 500);
+            return response()->json(['message' => 'Error al registrar fichaje', 'error' => $e->getMessage()], 500);
         }
     }
+
 
 
     // Obtener un fichaje por ID
@@ -172,5 +237,69 @@ class FichajeController extends Controller
 
         return response()->json($empleadosAusentes);
     }
+
+    public function obtenerAusentesSemana($fecha)
+    {
+        $fechaCarbon = Carbon::parse($fecha);
+        $lunes = $fechaCarbon->startOfWeek(); // Obtiene el lunes de la semana
+        $viernes = $fechaCarbon->copy()->endOfWeek()->subDays(2); // Ajustamos para viernes
+
+        // Obtener todos los empleados
+        $totalEmpleados = User::where('estado', 'aceptada')
+        ->where('rol', '!=', 'maestro')
+        ->count();
+
+        // Crear un array con los días de lunes a viernes con 0 por defecto
+        $ausenciasSemana = [];
+        for ($i = 0; $i < 5; $i++) {
+            $dia = $lunes->copy()->addDays($i)->toDateString();
+            $ausenciasSemana[$dia] = $totalEmpleados; // Todos ausentes por defecto
+        }
+
+        // Obtener IDs de empleados que ficharon cada día
+        $fichajes = Fichaje::whereBetween('created_at', [$lunes, $viernes])
+            ->where('tipo_fichaje', 'entrada')
+            ->selectRaw('DATE(created_at) as dia, COUNT(DISTINCT id_usuario) as presentes')
+            ->groupBy('dia')
+            ->orderBy('dia')
+            ->get();
+
+        // Calcular ausencias restando los presentes a los empleados totales
+        foreach ($fichajes as $fichaje) {
+            $ausenciasSemana[$fichaje->dia] = $totalEmpleados - $fichaje->presentes;
+        }
+
+        return response()->json($ausenciasSemana);
+    }
+
+
+    public function obtenerTiemposTotales($fecha)
+    {
+        //$fecha = $request->input('fecha');
+        
+
+        $totalTrabajado = Fichaje::whereDate('fecha', $fecha)
+            ->where('tipo_fichaje', 'entrada')
+            ->sum('duracion');
+
+        $totalDescanso = Fichaje::whereDate('fecha', $fecha)
+            ->where('tipo_fichaje', 'fin_descanso')
+            ->sum('duracion');
+
+        $totalTrabajado = $totalTrabajado ?? 0;
+        $totalDescanso = $totalDescanso ?? 0;
+
+        // if ($totalTrabajado === 0 && $totalDescanso === 0) {
+        //     return response()->json(['message' => 'No hay datos para la fecha seleccionada'], 404);
+        // }
+
+        return response()->json([
+            'total_trabajado' => $totalTrabajado,
+            'total_descansos' => $totalDescanso
+        ]);
+    }
+
+
+
 
 }

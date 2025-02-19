@@ -20,6 +20,11 @@ class Fichaje extends Model
         'fecha',
         'hora',
         'ubicacion',
+        'ciudad',
+        'latitud',
+        'longitud',
+        'duracion',
+        'comentarios'
     ];
 
     // Un fichaje pertenece a un usuario

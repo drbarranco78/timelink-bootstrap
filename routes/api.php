@@ -49,6 +49,10 @@ Route::post('/fichajes/filtrar', [FichajeController::class, 'obtenerPorTrabajado
 Route::post('/fichajes/fecha', [FichajeController::class, 'obtenerFichajesPorFecha']);
 Route::post('/fichajes/ausentes', [FichajeController::class, 'obtenerAusentes']);
 Route::post('/fichajes/ultimo', [FichajeController::class, 'obtenerUltimoFichaje']);
+Route::get('/fichajes/ausencias-semana/{fecha}', [FichajeController::class, 'obtenerAusentesSemana']);
+Route::get('/fichajes/tiempos-totales/{fecha}', [FichajeController::class, 'obtenerTiemposTotales']);
+
+
 
 
 Route::post('/enviar-solicitud', [MailController::class, 'enviarSolicitud']);
