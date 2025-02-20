@@ -222,61 +222,67 @@ class FichajeController extends Controller
     }
 
 
-
     public function obtenerAusentes(Request $request)
     {
-        $fecha = $request->input('fecha', now()->toDateString()); // Si no hay fecha, usa hoy
-
+         // Si no hay fecha, usa hoy
+        $fecha = $request->input('fecha', now()->toDateString());
+    
         // Obtener IDs de empleados que han fichado entrada ese día
         $empleadosConEntrada = Fichaje::where('tipo_fichaje', 'entrada')
-            ->whereDate('created_at', $fecha)
+            ->whereDate('fecha', $fecha) 
             ->pluck('id_usuario');
-
-        // Obtener empleados que NO están en la lista de fichados
-        $empleadosAusentes = User::whereNotIn('id', $empleadosConEntrada)->get();
-
+    
+        // Obtener empleados que NO han fichado y que fueron creados antes o el mismo día de la fecha consultada
+        $empleadosAusentes = User::whereNotIn('id', $empleadosConEntrada)
+        // Excluir empleados creados después de la fecha
+            ->whereDate('created_at', '<=', $fecha) 
+            ->get();
+    
         return response()->json($empleadosAusentes);
     }
-
+    
     public function obtenerAusentesSemana($fecha)
     {
         $fechaCarbon = Carbon::parse($fecha);
         $lunes = $fechaCarbon->startOfWeek(); // Obtiene el lunes de la semana
-        $viernes = $fechaCarbon->copy()->endOfWeek()->subDays(2); // Ajustamos para viernes
-
-        // Obtener todos los empleados
-        $totalEmpleados = User::where('estado', 'aceptada')
-        ->where('rol', '!=', 'maestro')
-        ->count();
+        // Obtenemos el viernes
+        $viernes = $fechaCarbon->copy()->endOfWeek()->subDays(2);
 
         // Crear un array con los días de lunes a viernes con 0 por defecto
         $ausenciasSemana = [];
+
         for ($i = 0; $i < 5; $i++) {
             $dia = $lunes->copy()->addDays($i)->toDateString();
+
+            // Contar empleados que fueron creados hasta ese día
+            $totalEmpleados = User::where('estado', 'aceptada')
+                ->where('rol', '!=', 'maestro')
+                ->whereDate('created_at', '<=', $dia) // Excluir empleados creados después del día consultado
+                ->count();
+
             $ausenciasSemana[$dia] = $totalEmpleados; // Todos ausentes por defecto
         }
 
         // Obtener IDs de empleados que ficharon cada día
-        $fichajes = Fichaje::whereBetween('created_at', [$lunes, $viernes])
+        $fichajes = Fichaje::whereBetween('fecha', [$lunes, $viernes])
             ->where('tipo_fichaje', 'entrada')
-            ->selectRaw('DATE(created_at) as dia, COUNT(DISTINCT id_usuario) as presentes')
+            ->selectRaw('fecha as dia, COUNT(DISTINCT id_usuario) as presentes')
             ->groupBy('dia')
             ->orderBy('dia')
             ->get();
 
-        // Calcular ausencias restando los presentes a los empleados totales
+        // Calcular ausencias restando los presentes a los empleados totales de cada día
         foreach ($fichajes as $fichaje) {
-            $ausenciasSemana[$fichaje->dia] = $totalEmpleados - $fichaje->presentes;
+            $ausenciasSemana[$fichaje->dia] -= $fichaje->presentes;
         }
 
         return response()->json($ausenciasSemana);
     }
 
 
+
     public function obtenerTiemposTotales($fecha)
-    {
-        //$fecha = $request->input('fecha');
-        
+    {       
 
         $totalTrabajado = Fichaje::whereDate('fecha', $fecha)
             ->where('tipo_fichaje', 'entrada')

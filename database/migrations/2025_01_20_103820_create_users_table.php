@@ -37,7 +37,7 @@ return new class extends Migration
         Schema::create('sessions', function (Blueprint $table) {
             $table->id(); 
             //$table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete(); // Constrained para la relación
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

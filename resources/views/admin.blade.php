@@ -12,27 +12,21 @@
     <!-- Estilos para el Cluster del mapa-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-
-    {{-- <link rel="stylesheet" href="{{ asset('css/private.css') }}"> --}}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">    
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-
-    <!-- Estilos -->
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">    
     <link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/boxicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/quill.snow.css') }}">
     <link rel="stylesheet" href="{{ asset('css/quill.bubble.css') }}">
     <link rel="stylesheet" href="{{ asset('css/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
-
-
-
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
@@ -729,14 +723,16 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-    
+    {{-- <script src="{{ asset('js/app.js') }}"></script>  
+    <script src="{{ asset('js/bootstrap.js') }}"></script>   --}}
     <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/admin.js') }}"></script>
     
     <script src="{{ asset('js/index.js') }}"></script>
     <script src="{{ asset('js/tinymce.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>    
-    <script src="{{ asset('js/linealChart.js') }}"></script>   
+    <script src="{{ asset('js/data-charts.js') }}"></script>
+        
 
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.js"></script>

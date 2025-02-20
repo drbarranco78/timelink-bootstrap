@@ -24,7 +24,7 @@ $(document).ready(function () {
     obtenerFichajesEmpleado(hoy);
     obtenerFechaHora();
     //obtenerTiemposEmpleado();
-    console.log("Fecha completa: ", new Date().toISOString());
+    
 });
 $(document).on('click', '#cerrar-modal', function () {
     $('#div-registro-ubicacion').hide();
@@ -97,7 +97,7 @@ function actualizarTablaFichajes(fichajes) {
     });
 }
 function obtenerFechaSinHora(fecha) {
-    return new Date(fecha).toISOString().split('T')[0]; // "yyyy-mm-dd"
+    return new Date(fecha).toISOString().split('T')[0]; 
 }
 $(document).on("click", ".panel-fichaje", function (event) {
     event.preventDefault();
@@ -106,10 +106,14 @@ $(document).on("click", ".panel-fichaje", function (event) {
 
     // Verifica entrada
     if (tipoFichaje === "entrada") {
+
+        // Asegura que sólo se fiche la entrada una vez al día  (COMENTADO PARA PRUEBAS)
+
         // if (hoy == fechaUltimoFichaje) {
         //     mostrarMensaje('Ya has terminado la jornada hoy. Solo puedes fichar una vez la entrada al día', '.error-msg');
         //     return;
         // }
+        
         if (!$(this).hasClass('fichaje-activo')) {
             if (!$('.panel-fichaje[data-tipo="inicio_descanso"]').hasClass('fichaje-activo')) {
                 mensaje = 'Iniciar la jornada?';
@@ -245,8 +249,7 @@ function enviarFichaje(tipo, fecha, hora, ubicacion, ciudad, lat, lng, duracion=
             duracion: duracion,
             comentarios:comentarios
         },
-        success: function (response) {
-            //if (response.status===201) {
+        success: function (response) {           
                 console.log(response.message);
                 mostrarMensaje(response.message, '.exito-msg');
                 // Eliminar la clase 'fichaje-activo' de todos los elementos
@@ -259,12 +262,8 @@ function enviarFichaje(tipo, fecha, hora, ubicacion, ciudad, lat, lng, duracion=
                 }
                 obtenerFichajesEmpleado($('#selector-fecha').val());
                 actualizarDetalles(tipo);
-
-            // } else {
-            //     mostrarMensaje(response.message, '.error-msg');
-            // }
         },
-        error: function (xhr, status, error) {
+        error: function (xhr) {
             let mensajeError;
             try {
                 let respuesta = JSON.parse(xhr.responseText);
@@ -345,7 +344,7 @@ function obtenerFichajesHoy() {
         }),
         success: function (fichajes) {
             if (fichajes && fichajes.length > 0) {
-                // El array ya está ordenado, así que el último elemento es el fichaje más reciente
+                // El array ya está ordenado, así que el último fichaje es el más reciente
                 ultimoFichaje = fichajes[fichajes.length - 1];
                 console.log("Último fichaje:", ultimoFichaje);
                 
@@ -452,6 +451,8 @@ async function obtenerDireccion(lat, lng) {
                 (data.address.city || data.address.town || data.address.village || ''),
 
             ].filter(Boolean).join(', ');
+
+            
             let ciudad = data.address.province ||
                 data.address.state || data.address.region || '';
 

@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
         // Actualizar el texto del span
         $('#span-fecha').text(fechaHoy === fechaSeleccionada ? "Mostrando datos de hoy" : "Mostrando datos del día " + fechaFormateadaSeleccionada);
-        
+
         if (usuarioActivo.rol === "maestro") {
             obtenerNumFichajes(fechaSeleccionada);
         }
@@ -55,10 +55,9 @@ window.addEventListener('DOMContentLoaded', event => {
     //     obtenerNumFichajes(fechaSeleccionada);
     // }, 1800000);
     // setInterval(actualizarNotificaciones, 30000);
-    
+
     if (empresa) {
         $('#nombre-empresa').html(empresa.nombre_empresa);
-        let idEmpresa = empresa.id_empresa;       
     }
 
     window.obtenerEmpleados = function () {
@@ -69,6 +68,9 @@ window.addEventListener('DOMContentLoaded', event => {
                 empleados = response;
                 // Llenar la tabla con los empleados
                 actualizarTablaEmpleados(empleados);
+                obtenerNumFichajes(fechaSeleccionada);
+                
+                
             },
             error: function (xhr) {
                 mostrarMensaje(xhr.responseJSON.message, '.error-msg');
@@ -141,12 +143,14 @@ window.addEventListener('DOMContentLoaded', event => {
             $('#tabla-empleados').DataTable().destroy();
         }
         let tabla = $("#tabla-empleados tbody");
-        tabla.empty(); // Limpiamos la tabla antes de insertar datos
+        
+        // Limpiamos la tabla antes de insertar datos
+        tabla.empty(); 
 
         empleados.forEach(empleado => {
-            
+
             if (empleado.rol === "empleado" && empleado.estado === "aceptada") {
-                let fechaAlta=formatearFecha(new Date(empleado.created_at).toISOString().split('T')[0]);
+                let fechaAlta = formatearFecha(new Date(empleado.created_at).toISOString().split('T')[0]);
                 let fila = `<tr>
                         <td>${empleado.nombre}</td>
                         <td>${empleado.apellidos}</td>
@@ -187,7 +191,7 @@ window.addEventListener('DOMContentLoaded', event => {
         let icono = tarjeta.find(".fa-angle-down, .fa-angle-up");
 
         // Alternar visibilidad
-        detalles.slideToggle(200);        
+        detalles.slideToggle(200);
 
         // Alternar icono
         icono.toggleClass("fa-angle-down fa-angle-up");
@@ -215,7 +219,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
     // Función para contar y mostrar el número de fichajes en las tarjetas y los ausentes
     function obtenerNumFichajes(fecha) {
-        
+
         cargarFichajesYAusentes(fecha).then(data => {
             let fichajes = data.fichajes;
             let ausentes = data.ausentes;
@@ -254,7 +258,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
         // Contenedores para cada tipo de fichaje
         let contenedorDescansos = $('#ficha-descansos ul');
-        let contenedorEntradas = $('#ficha-entradas ul');
+        let contenedorEntradas = $('#ficha-entradas');
         let contenedorSalidas = $('#ficha-salidas ul');
 
         // Variables para almacenar el contenido
@@ -264,12 +268,12 @@ window.addEventListener('DOMContentLoaded', event => {
 
         // Recorrer los fichajes y filtrar por tipo
         fichajes.forEach(function (fichaje) {
-            let textoFichaje = `${fichaje.usuario.nombre} ${fichaje.usuario.apellidos} - ${fichaje.hora.slice(0, 5)} - ${fichaje.ciudad}`;
+            let textoFichaje = `${fichaje.hora.slice(0, 5)} - ${fichaje.usuario.nombre} ${fichaje.usuario.apellidos} -  ${fichaje.ciudad}`;
 
             if (fichaje.tipo_fichaje === "inicio_descanso" || fichaje.tipo_fichaje === "fin_descanso") {
                 contenidoDescansos += `<li>${textoFichaje} - ${fichaje.tipo_fichaje}</li>`;
             } else if (fichaje.tipo_fichaje === "entrada") {
-                contenidoEntradas += `<li>${textoFichaje}</li>`;
+                contenidoEntradas += `<i class="fas fa-clock m-right10"></i>${textoFichaje}<br>`;
             } else if (fichaje.tipo_fichaje === "salida") {
                 contenidoSalidas += `<li>${textoFichaje}</li>`;
             }
@@ -289,16 +293,16 @@ window.addEventListener('DOMContentLoaded', event => {
             success: function (data) {
                 if (data.pendientes.length > 0) {
                     $('#ico-users').addClass('fa-user-plus').removeClass('fa-users');
-                    
+
                     $('#access-request-number').text(data.pendientes.length);
                     $('#div-solicitudes-acceso').html('');
                     // Construimos el contenido del div
                     let html = `
-                        <div class="header-solicitudes">
-                            <h3>Solicitudes de acceso</h3>
-                            <span id="cerrar-solicitudes">&times;</span>
-                        </div>
-                    `;
+                            <div class="header-solicitudes">
+                                <h3>Solicitudes de acceso</h3>
+                                <span id="cerrar-solicitudes">&times;</span>
+                            </div>
+                        `;
 
                     data.pendientes.forEach(solicitud => {
                         html += `
@@ -322,7 +326,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
                             })
                             .catch(() => {
-                                // Si el usuario cancela la acción, registra un mensaje en la consola
+                                // Si el usuario cancela la acción
                                 console.log("Acción cancelada");
                             });
                     });
@@ -341,11 +345,11 @@ window.addEventListener('DOMContentLoaded', event => {
                     //Mostrar el div al hacer clic en el enlace
                     $('#access-request-link').click(function () {
                         $('#div-solicitudes-acceso').html(html).show();
-                    });            
+                    });
 
                 } else {
                     $('#access-request-number').text('0').css("color", "inherit");
-                    $('#ico-users').removeClass('fa-user-plus').addClass('fa-users');                    
+                    $('#ico-users').removeClass('fa-user-plus').addClass('fa-users');
                     $('#div-solicitudes-acceso').hide();
                 }
             },
@@ -368,6 +372,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 actualizarNotificaciones();
                 obtenerEmpleados();
                 obtenerInactivos();
+                actualizarCharts();
             },
             error: function (xhr) {
                 mostrarMensaje(xhr.responseJSON?.message || "Error al actualizar el estado", '.error-msg');
@@ -376,24 +381,26 @@ window.addEventListener('DOMContentLoaded', event => {
     }
     $('#link-send-invitation').click(function () {
         let html = `
-                    <div class="header-solicitudes">
-                        <h3>Enviar invitación</h3>
-                        <span id="cerrar-solicitudes">&times;</span>
-                    </div>
-                    <div id="form-invitacion">
-                        
-                        <input class="input-email-invitado" type="email" id="email-invitado" placeholder="Introduzca el correo del empleado" required>
-                        <button id="btn-enviar-invitacion">Enviar Invitación</button>
-                    </div>
-                    `;
+                <div class="header-solicitudes">
+                    <h3>Enviar invitación</h3>
+                    <span id="cerrar-solicitudes">&times;</span>
+                </div>
+                <div id="form-invitacion">
+                    
+                    <input class="input-email-invitado" type="email" id="email-invitado" placeholder="Introduzca el correo del empleado" required>
+                    <button id="btn-enviar-invitacion">Enviar Invitación</button>
+                </div>
+                `;
         $('#div-solicitudes-acceso').html(html);
-        $('#div-solicitudes-acceso').show();     
+        $('#div-solicitudes-acceso').show();
         $('#btn-enviar-invitacion').click(function (event) {
             event.preventDefault();
             let emailInvitado = $('#email-invitado').val();
             enviarInvitacion(emailInvitado);
         });
     });
+
+    // Envía una invitación por correo electrónico para unirse a la empresa 
     function enviarInvitacion(emailInvitado) {
         $.ajax({
             url: 'api/enviar-invitacion',
@@ -406,6 +413,8 @@ window.addEventListener('DOMContentLoaded', event => {
             }),
             success: function (response) {
                 if (response.showDialog) {
+
+                    // Si ya había una invitación activa para esa dirección, se le pregunta
                     mostrarDialogo(response.message)
                         .then(() => {
                             // Si el usuario acepta, reenviar con reenviar: true

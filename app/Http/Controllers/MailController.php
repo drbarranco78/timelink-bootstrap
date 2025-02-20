@@ -13,6 +13,8 @@ use App\Models\Invitacion;
 
 class MailController extends Controller
 {
+
+    // Enviar correo de solicitud de unión a una empresa
     public function enviarSolicitud(Request $request)
     {
         $nombre = $request->nombre;
@@ -29,6 +31,7 @@ class MailController extends Controller
         return response()->json(['message' => 'Correo enviado correctamente']);       
     }
 
+    // Enviar invitación para unirse 
     public function enviarInvitacion(Request $request)
     {
         $request->validate([

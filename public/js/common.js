@@ -136,7 +136,7 @@ window.addEventListener('DOMContentLoaded', event => {
         $('#seccion-perfil').show();
 
         $('#delete-user').show();
-        if (empleado.rol!=="maestro") {
+        if (empleado.id!==usuarioActivo.id) {
             $('#li-change-password').hide();
         }else{
             $('#li-change-password').show();
@@ -174,6 +174,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 if (estadoSeleccionado) {
                     // Llamar a la función para actualizar el estado
                     actualizarEstado(empleado.id, estadoSeleccionado);
+                    actualizarCharts();
                 } else {
                     mostrarMensaje("Debes seleccionar un estado.", '.error-msg');
                 }
@@ -211,9 +212,7 @@ window.addEventListener('DOMContentLoaded', event => {
         $('button[data-bs-target="#profile-overview"]').tab('show');
 
         if (tipo === "empresa") {
-            // $('#profile-change-password').hide();
-            // $('#li_change-password').hide();
-            // Actualizar labels para la empresa
+            
             $('#lb-profile-name, #lb-fullname').text("Nombre de la empresa");
             $('#lb-profile-surname, #lb-surname').text("Dirección");
             $('#lb-profile-dni, #lb-dni').text("CIF");
@@ -223,9 +222,7 @@ window.addEventListener('DOMContentLoaded', event => {
             $("#btn-save-changes").removeClass("esEmpleado");
 
         } else if (tipo === "empleado") {
-            // $('#profile-change-password').show();
-            // $('#li_change-password').show();
-            // Actualizar labels para el empleado
+        
             $('#lb-profile-name, #lb-fullname').text("Nombre");
             $('#lb-profile-surname, #lb-surname').text("Apellidos");
             $('#lb-profile-dni, #lb-dni').text("DNI/NIE");
@@ -358,7 +355,7 @@ window.addEventListener('DOMContentLoaded', event => {
         event.preventDefault();
         let rolUsuario = $("#seccion-perfil").attr("data-rol-usuario");
         if (!$('#changesMade').is(':checked')) {
-            $('.form-check span').text("Marca la casilla para continuar").fadeIn(); // Muestra el mensaje
+            $('.form-check span').text("Marca la casilla para continuar").fadeIn();
 
 
             setTimeout(function () {

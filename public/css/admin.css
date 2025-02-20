@@ -32,9 +32,6 @@
 .sb-nav-link-icon{
     color: rgb(211, 208, 208) !important;
 }
-/* .nav-link{
-    color: whitesmoke !important;
-} */
 
 #seccion-perfil{
     display: none;
@@ -46,31 +43,31 @@
     /* background: #f8f9fa; */
     /* background-color: rgba(var(--bs-success-rgb)) !important; */
     padding: 15px;
-    border-collapse: collapse;
-    /* border-top: 1px solid #ddd; */
+    border-collapse: collapse;    
     border-color:#8f8f8f;
     border-radius: 5px;
     max-height: 40vh;
-    overflow-y: auto;
-    /* color: black !important; */
+    overflow-y: auto;   
     font-weight: 500 !important;
     z-index: 6;
-    position: absolute; /* Hace que flote sobre los demás */
+    position: absolute; 
     left: 0;
     top: 103%;
     width: 100%; 
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);    
 }
 
 .card-body{
-    font-weight: bolder;
-    
+    font-weight: bolder;   
     
 }
 .card-body span{
     float: right;    
 }
+canvas{
+    height: 95% !important;
+}
+
 #selector-fecha{
     padding: 0 !important;
     margin: 0 !important;
@@ -130,7 +127,7 @@ td,th{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 30vw;
+    width: 25vw;
     height: auto;
     max-height: 80vh;
     overflow-y: auto;
@@ -240,10 +237,14 @@ td,th{
     font-size: 16px;
     font-weight: bold;
     background-color: whitesmoke;
-    border: 2px solid black;
-    /* color: whitesmoke;     */
+    border: 2px solid black;    
     padding: 20px;
     z-index: 7;
+}
+.confirmar-accion p{
+    width: 100%;
+    border-bottom: 1px solid black;
+    font-size: 16px;
 }
 .botones-accion{
     display: flex;
@@ -251,18 +252,15 @@ td,th{
 }
 .aceptar-accion,
 .cancelar-accion {
-    padding: 5px 10px;
-    /* width: 50%;
-    height: 30px; */
-    margin: 20px;
-    /* font-size: 16px; */
+    padding: 5px 10px;   
+    margin: 20px;    
     font-weight: bold;
     border-radius: 5px;
     
     color: whitesmoke;
 }
 .aceptar-accion {
-    background-color:#198754;
+    background-color:#2C6B2F;
 }
 .cancelar-accion {
     background-color: #DC3545;
@@ -278,32 +276,23 @@ td,th{
 }
 .chart-canvas{
     min-width: 100%;
+    min-height: 80%;
 }
 
 .chart-body{
+    height: 380px !important;
     min-height: 300px;
-   
-   /* // max-height: 300px; */
+    align-items: center !important;
 }
 
 #mapaFichajes{
     z-index: 4;
+    max-height: 100%;
+    min-height: 100%;
+    /* margin-top: 10px; */
 }
-/* Estilo para los números en los clústeres */
-/* .leaflet-marker-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-size: 14px; 
-    color: white; 
-    background-color: #2C6B2F;
-    border-radius: 50%;
-    width: 30px; 
-    height: 30px; 
-} */
 
-/* Opcional: Cambiar el tamaño de los círculos dependiendo del número de fichajes */
+/* Estilos del mapa*/
 .leaflet-marker-icon .leaflet-div-icon {
     display: flex;
     justify-content: center;
@@ -320,6 +309,9 @@ td,th{
 }
 .leaflet-control-zoom-in span,.leaflet-control-zoom-out span{
     margin-right: 8px;
+}
+.m-right10{
+    margin-right: 10px;
 }
 /* .marker-cluster-small div {
 text-align: center !important;

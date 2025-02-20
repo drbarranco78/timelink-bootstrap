@@ -22,20 +22,43 @@ $(document).ready(function () {
     cargarEmpresas();
 });
 
-$(document).ajaxStop(function() {
+// Se ejecuta después de la función asíncrona que carga las empresas en el selector
+$(document).ajaxStop(function () {
     if (emailInvitado && idEmpresaInvitado && nombreEmpresaInvitado) {
         $('#profile-tab').remove();
         $('#myTab').css("width", "fit-content");
         $('#home-tab').text("Invitado");
         $('#employee-register').val("Acceder");
-        $('#enlace-login').hide();
-        // $('#myTab #profile-tab').remove();
+        $('#enlace-login').hide();       
         $("#employee-email").val(emailInvitado).prop('disabled', true);
-        
+
         // Seleccionar la opción correspondiente al id_empresa
         $("#company-selection").val(idEmpresaInvitado).prop('disabled', true);
     }
 });
+function validarDniNie(dniNie) {
+    const patronDNI = /^\d{8}[A-Z]$/;
+    const patronNIE = /^[XYZ]\d{7}[A-Z]$/;
+    
+    // Si no cumple ninguno de los dos patrones, es inválido
+    if (!patronDNI.test(dniNie) && !patronNIE.test(dniNie)) {
+        return false;
+    }
+
+    // Si es un NIE, convertimos la letra inicial en un número
+    let numero = dniNie
+        .replace(/^X/, '0')
+        .replace(/^Y/, '1')
+        .replace(/^Z/, '2')
+        .slice(0, -1); // Quitamos la letra final
+
+    // Cálculo de la letra correcta
+    const letras = 'TRWAGMYFPDXBNJZSQVHLCKE';
+    const letraEsperada = letras[numero % 23];
+
+    // Comprobar si la letra es correcta
+    return dniNie.slice(-1) === letraEsperada;
+}
 
 /**
 * Valida los campos del formulario de login
@@ -135,7 +158,7 @@ function cargarEmpresas() {
                 selectEmpresas.append(`<option value="${empresa.id_empresa}">${empresa.nombre_empresa}</option>`);
             });
         },
-        error: function (xhr, status, error) {
+        error: function (xhr) {
             mostrarMensaje(xhr.responseJSON.message, '.error-msg');
         }
     });
@@ -206,7 +229,7 @@ $(".btnRegister").on("click", function (e) {
             estado: "aceptada",
         };
         registrarUsuario(datos);
-    }else if (rol === "empleado") {
+    } else if (rol === "empleado") {
         datos = {
             dni: $('#employee-dni').val(),
             password: $("#employee-password1").val().trim(),
@@ -262,7 +285,7 @@ $(".btnRegister").on("click", function (e) {
                     rol: rol,
                     estado: "aceptada",
                 };
-                mostrarMensaje(response.message,'.exito-msg');
+                mostrarMensaje(response.message, '.exito-msg');
                 // Registrar al usuario administrador
                 registrarUsuario(datosAdmin);
             },
@@ -284,10 +307,8 @@ function solicitarUnion(datos) {
         method: 'GET',
         success: function (response) {
             const emailMaestro = response.email;
-
             // Llama a la función para enviar el correo
             enviarCorreoSolicitud(datos, emailMaestro);
-            //registrarUsuario(datos);
         },
         error: function (xhr) {
             mostrarMensaje(xhr.responseJSON.message, '.error-msg');
@@ -323,8 +344,7 @@ function enviarCorreoSolicitud(datos, emailMaestro) {
  * Envia el formulario de registro
  * @param {Object} datos - Los datos del usuario a registrar
  */
-function registrarUsuario(datos) {
-    console.log(datos);
+function registrarUsuario(datos) {   
 
     if (validarRegistro(datos)) {
         $.ajax({
@@ -335,17 +355,14 @@ function registrarUsuario(datos) {
             success: function (response) {
                 console.log(response);
                 if (response.usuario.estado !== "aceptada") {
-                    //solicitarUnion(datos);
                     $("#register-form")[0].reset();
                     return;
                 }
                 if (response.redirect) {
-                    //localStorage.setItem('empresa', JSON.stringify(response.empresa));
                     localStorage.setItem('usuario', JSON.stringify(response.usuario));
-                    //if (response.usuario.rol!=="maestro") {
-                        mostrarMensaje(response.message, '.exito-msg');
-                    //}                   
+                    mostrarMensaje(response.message, '.exito-msg');
                     window.location.href = response.redirect;
+
                 } else {
                     mostrarMensaje(response.error, '.error-msg');
                 }
@@ -366,7 +383,7 @@ function mostrarMensaje(mensaje, selector) {
     $(selector).html(`<h3>${mensaje}</h3>`).fadeIn(500).delay(2000).fadeOut(500);
 }
 
-$("#enlace-login, #pie-formularios-registro").click(function (event) {
+$("#enlace-login").click(function (event) {
 
     event.preventDefault();
     $(".register").css("display", "none");
@@ -374,7 +391,7 @@ $("#enlace-login, #pie-formularios-registro").click(function (event) {
 
 });
 
-$("#enlace-registro, #pie-formularios-login").click(function (event) {
+$("#enlace-registro").click(function (event) {
 
     event.preventDefault();
     $("#login").css("display", "none");
