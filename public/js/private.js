@@ -9,14 +9,14 @@ let segundosDescanso = 0;
 let intervaloEntrada, intervaloDescanso;
 let fechaFichajes;
 let ultimoFichaje;
-let horaEntrada=0;
+let horaEntrada = 0;
 let fechaUltimoFichaje;
 let duracion, comentarios;
-let tiempoTrabajado=0;
-let tiempoDescanso=0;
-let tiempoTotalDesdeEntrada=0;
+let tiempoTrabajado = 0;
+let tiempoDescanso = 0;
+let tiempoTotalDesdeEntrada = 0;
 
-$(document).ready(function () {    
+$(document).ready(function () {
     $('#mensaje-usuario').text(empleado.nombre + " " + empleado.apellidos);
     obtenerFichajesHoy();
 
@@ -24,7 +24,7 @@ $(document).ready(function () {
     obtenerFichajesEmpleado(hoy);
     obtenerFechaHora();
     //obtenerTiemposEmpleado();
-    
+
 });
 $(document).on('click', '#cerrar-modal', function () {
     $('#div-registro-ubicacion').hide();
@@ -38,7 +38,7 @@ function obtenerTiemposEmpleado() {
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
-            id_usuario:empleado.id,           
+            id_usuario: empleado.id,
         }),
         success: function (tiempos) {
             console.log('Tiempo trabajado:', tiempos.trabajo + 'Tiempo de descanso:', tiempos.descanso);
@@ -48,7 +48,7 @@ function obtenerTiemposEmpleado() {
         }
 
     })
-    
+
 }
 $('#selector-fecha').change(function () {
     fechaFichajes = $(this).val();
@@ -57,11 +57,12 @@ $('#selector-fecha').change(function () {
     obtenerFichajesEmpleado(fechaFichajes);
 });
 function obtenerFichajesEmpleado(fecha) {
+    console.log("Id de la empresa para filtrar por fecha " + empresa.id_empresa);
     $.ajax({
         url: '/api/fichajes/fecha',
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ fecha: fecha, id_usuario: empleado.id }),
+        data: JSON.stringify({ fecha: fecha, id_usuario: empleado.id, id_empresa: empresa.id_empresa }),
         success: function (fichajes) {
             actualizarTablaFichajes(fichajes);
         },
@@ -79,7 +80,7 @@ function actualizarTablaFichajes(fichajes) {
     let tabla = $("#tabla-fichajes tbody");
     tabla.empty();
     fichajes.forEach(fichaje => {
-        let fechaFormateada=formatearFecha(fichaje.fecha);
+        let fechaFormateada = formatearFecha(fichaje.fecha);
         let fila = `<tr>
                     <td>${fichaje.tipo_fichaje}</td>
                     <td>${fechaFormateada}</td>
@@ -97,7 +98,7 @@ function actualizarTablaFichajes(fichajes) {
     });
 }
 function obtenerFechaSinHora(fecha) {
-    return new Date(fecha).toISOString().split('T')[0]; 
+    return new Date(fecha).toISOString().split('T')[0];
 }
 $(document).on("click", ".panel-fichaje", function (event) {
     event.preventDefault();
@@ -113,7 +114,7 @@ $(document).on("click", ".panel-fichaje", function (event) {
         //     mostrarMensaje('Ya has terminado la jornada hoy. Solo puedes fichar una vez la entrada al día', '.error-msg');
         //     return;
         // }
-        
+
         if (!$(this).hasClass('fichaje-activo')) {
             if (!$('.panel-fichaje[data-tipo="inicio_descanso"]').hasClass('fichaje-activo')) {
                 mensaje = 'Iniciar la jornada?';
@@ -165,19 +166,19 @@ $(document).on("click", "#location-register", function (event) {
     event.preventDefault();
     $('#div-registro-ubicacion').show();
 
-});   
+});
 $(document).on('click', '#btn-registrar-ubicacion', function (event) {
     event.preventDefault();
     if (!$('.panel-fichaje[data-tipo="entrada"]').hasClass('fichaje-activo')) {
         mostrarMensaje('No puedes registrar el fichaje sin iniciar la jornada ni en medio de un descanso', '.error-msg');
         return;
     }
-    comentarios=$('#input-comentarios').val();
+    comentarios = $('#input-comentarios').val();
     mensaje = '¿Registrar tu ubicación?';
     tipoFichaje = "registro";
-    registrarFichaje(tipoFichaje, mensaje,null, comentarios);
+    registrarFichaje(tipoFichaje, mensaje, null, comentarios);
 
-});   
+});
 
 /**
  * Función para registrar los datos de un fichaje
@@ -198,23 +199,23 @@ function registrarFichaje(tipo, mensaje, elemento, comentarios) {
 
             navigator.geolocation.getCurrentPosition(
                 async position => {
-                    let lat = position.coords.latitude;                   
+                    let lat = position.coords.latitude;
                     let lng = position.coords.longitude;
 
                     // Obtener la dirección de forma asíncrona
                     let ubicacionCompleta = await obtenerDireccion(lat, lng);
                     let ubicacion = ubicacionCompleta.direccion;
                     let ciudad = ubicacionCompleta.ciudad;
-                    
+
                     // Realizar la solicitud AJAX con la ubicación
-                    enviarFichaje(tipo, fechaActual, horaActual, ubicacion, ciudad, lat, lng, duracion, comentarios,elemento);
+                    enviarFichaje(tipo, fechaActual, horaActual, ubicacion, ciudad, lat, lng, duracion, comentarios, elemento);
                 },
                 error => {
                     console.error("Error al obtener la ubicación: ", error);
 
                     // Registrar el fichaje sin ubicación
                     let ubicacion = "Ubicación no disponible";
-                    let ciudad ="Ciudad no disponible";
+                    let ciudad = "Ciudad no disponible";
                     enviarFichaje(tipo, fechaActual, horaActual, ubicacion, ciudad, 0, 0, elemento);
                 }
             );
@@ -232,7 +233,7 @@ function registrarFichaje(tipo, mensaje, elemento, comentarios) {
  * @param {string} hora - Hora del fichaje en formato HH:mm:ss
  * @param {string} ubicacion - Ubicación o mensaje en caso de no obtenerla
  */
-function enviarFichaje(tipo, fecha, hora, ubicacion, ciudad, lat, lng, duracion=null, comentarios=null, elemento) {
+function enviarFichaje(tipo, fecha, hora, ubicacion, ciudad, lat, lng, duracion = null, comentarios = null, elemento) {
     console.log("Hora para mandar: " + hora);
     $.ajax({
         url: '/api/fichajes',
@@ -247,21 +248,21 @@ function enviarFichaje(tipo, fecha, hora, ubicacion, ciudad, lat, lng, duracion=
             latitud: lat,
             longitud: lng,
             duracion: duracion,
-            comentarios:comentarios
+            comentarios: comentarios
         },
-        success: function (response) {           
-                console.log(response.message);
-                mostrarMensaje(response.message, '.exito-msg');
-                // Eliminar la clase 'fichaje-activo' de todos los elementos
-                $('.panel-fichaje').removeClass('fichaje-activo');
-                
-                if (tipo !== "fin_descanso") {
-                    elemento.addClass('fichaje-activo');
-                } else if (tipo === "fin_descanso") {
-                    $('.panel-fichaje[data-tipo="entrada"]').addClass('fichaje-activo');
-                }
-                obtenerFichajesEmpleado($('#selector-fecha').val());
-                actualizarDetalles(tipo);
+        success: function (response) {
+            console.log(response.message);
+            mostrarMensaje(response.message, '.exito-msg');
+            // Eliminar la clase 'fichaje-activo' de todos los elementos
+            $('.panel-fichaje').removeClass('fichaje-activo');
+
+            if (tipo !== "fin_descanso") {
+                elemento.addClass('fichaje-activo');
+            } else if (tipo === "fin_descanso") {
+                $('.panel-fichaje[data-tipo="entrada"]').addClass('fichaje-activo');
+            }
+            obtenerFichajesEmpleado($('#selector-fecha').val());
+            actualizarDetalles(tipo);
         },
         error: function (xhr) {
             let mensajeError;
@@ -281,7 +282,7 @@ function enviarFichaje(tipo, fecha, hora, ubicacion, ciudad, lat, lng, duracion=
 
 function actualizarDetalles(tipo) {
     let hora = actualizarReloj();
-    
+
     //let horaEntrada;
     if (tipo === "entrada") {
         $('#detalles-salida').empty();
@@ -289,7 +290,7 @@ function actualizarDetalles(tipo) {
         clearInterval(intervaloDescanso);
         intervaloEntrada = setInterval(contadorEntrada, 1000);
         $('#span-estado').text("Jornada iniciada a las " + hora);
-        
+
     }
     if (tipo === "inicio_descanso") {
         //segundosDescanso = 0; 
@@ -338,39 +339,40 @@ function obtenerFichajesHoy() {
         url: '/api/fichajes/fecha',
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ 
-            id_usuario: empleado.id, 
-            fecha: hoy 
+        data: JSON.stringify({
+            id_usuario: empleado.id,
+            fecha: hoy,
+            id_empresa: empresa.id_empresa
         }),
         success: function (fichajes) {
             if (fichajes && fichajes.length > 0) {
                 // El array ya está ordenado, así que el último fichaje es el más reciente
                 ultimoFichaje = fichajes[fichajes.length - 1];
                 console.log("Último fichaje:", ultimoFichaje);
-                
+
             } else {
                 console.log("No hay fichajes para la fecha:", hoy);
                 return;
             }
-            fichajes.forEach(fichaje =>{
+            fichajes.forEach(fichaje => {
                 if (fichaje.tipo_fichaje === "entrada") {
-                    tiempoTrabajado=fichaje.duracion;     
-                    tiempoTotalDesdeEntrada = calcularTiempoTranscurrido(fichaje.hora);   
-                    console.log("Tiempo total desde entrada: " +tiempoTotalDesdeEntrada);            
+                    tiempoTrabajado = fichaje.duracion;
+                    tiempoTotalDesdeEntrada = calcularTiempoTranscurrido(fichaje.hora);
+                    console.log("Tiempo total desde entrada: " + tiempoTotalDesdeEntrada);
                 }
                 if (fichaje.tipo_fichaje === "fin_descanso") {
-                    tiempoDescanso+=fichaje.duracion;
+                    tiempoDescanso += fichaje.duracion;
                 }
             })
-            $('#detalles-salida').text('');           
-           
+            $('#detalles-salida').text('');
+
             let tiempoTranscurrido = calcularTiempoTranscurrido(ultimoFichaje.hora);
             if (ultimoFichaje && ultimoFichaje.tipo_fichaje) {
                 if (ultimoFichaje.tipo_fichaje === "entrada" || ultimoFichaje.tipo_fichaje === "fin_descanso") {
                     $('.panel-fichaje[data-tipo="entrada"]').addClass('fichaje-activo');
                     $('#span-estado').text("Jornada iniciada el " + formatearFechaYhora(ultimoFichaje.created_at));
                     console.log("Tiempo de descanso: " + tiempoDescanso);
-                    segundosDescanso=tiempoDescanso;
+                    segundosDescanso = tiempoDescanso;
                     contadorDescanso();
                     segundosEntrada = tiempoTotalDesdeEntrada - tiempoDescanso;
                     contadorEntrada();
@@ -379,7 +381,7 @@ function obtenerFichajesHoy() {
                     $('.panel-fichaje[data-tipo="inicio_descanso"]').addClass('fichaje-activo');
                     $('#span-estado').text("Descanso iniciado el " + formatearFechaYhora(ultimoFichaje.created_at));
                     console.log("Tiempo trabajado: " + tiempoTrabajado);
-                    segundosEntrada=tiempoTrabajado;
+                    segundosEntrada = tiempoTrabajado;
                     contadorEntrada();
                     segundosDescanso = tiempoTranscurrido;
                     contadorDescanso();
@@ -387,7 +389,7 @@ function obtenerFichajesHoy() {
                 } else if (ultimoFichaje.tipo_fichaje === "salida") {
                     $('.panel-fichaje[data-tipo="salida"]').addClass('fichaje-activo');
                     $('#span-estado, #detalles-salida').text("Jornada finalizada el " + formatearFechaYhora(ultimoFichaje.created_at));
-                    fechaUltimoFichaje= ultimoFichaje.fecha;
+                    fechaUltimoFichaje = ultimoFichaje.fecha;
                     // $('#span-estado').text("Aún no has iniciado la jornada");
                 }
             }
@@ -452,7 +454,7 @@ async function obtenerDireccion(lat, lng) {
 
             ].filter(Boolean).join(', ');
 
-            
+
             let ciudad = data.address.province ||
                 data.address.state || data.address.region || '';
 
