@@ -94,7 +94,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 }
             },
             error: function (xhr, message) {
-                console.log("Error:", message);
+                
                 if (xhr.responseJSON) {
                     mostrarMensaje(xhr.responseJSON.message, '.error-msg');
                 }
