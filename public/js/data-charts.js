@@ -28,7 +28,7 @@ window.addEventListener('DOMContentLoaded', event => {
         cargarDatosFichajes(fechaSelect).then(() => {
             generarGraficoFichajes();
             cargarMapa(fichajesPorFecha);
-            generarGraficoAusencias(fechaSelect);
+            obtenerAusenciasSemana(fechaSelect);
             obtenerTiemposTotales(fechaSelect);
 
 
@@ -201,9 +201,7 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
-    async function generarGraficoAusencias(fechaSeleccionada) {
-        
-
+    async function obtenerAusenciasSemana(fechaSeleccionada) {
         try {
             $.ajax({
                 url: `/api/fichajes/ausencias-semana/${fechaSeleccionada}/${empresa.id_empresa}`,
@@ -230,6 +228,7 @@ window.addEventListener('DOMContentLoaded', event => {
                     valoresAusencias = fechasFiltradas.map(function (fecha) {
                         return data[fecha];
                     });
+                    generarGraficoAusencias();
 
                     console.log("Fechas filtradas: ", fechasFiltradas);
                     console.log("Valores de ausencias: ", valoresAusencias);
@@ -242,46 +241,50 @@ window.addEventListener('DOMContentLoaded', event => {
             console.error("Error inesperado:", error);
         }
 
-        console.log("Valores de ausenciasasddasdsa: ", valoresAusencias);
-        // Configurar datos para la gráfica
-        const chartData = {
-            labels: etiquetasDias,
-            datasets: [{
-                label: "Número de Ausencias",
-                data: valoresAusencias,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.5)',
-                    'rgba(255, 205, 86, 0.5)',
-                    'rgba(75, 192, 192, 0.5)',
-                    'rgba(54, 162, 235, 0.5)',
-                    'rgba(153, 102, 255, 0.5)',
-                ],
-                borderColor: "rgba(255, 99, 132, 1)",
-                borderWidth: 1
-            }]
-        };
-        // Destruir gráfica anterior si existe
-        if (barChart) {
-            barChart.destroy();
-        }
-        // Crear gráfica de barras
-        const ctxBar = document.getElementById("myBarChart").getContext("2d");
-        barChart = new Chart(ctxBar, {
-            type: "bar",
-            data: chartData,
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        ticks: {
-                            stepSize: 1,
-                            beginAtZero: true
+        
+        function generarGraficoAusencias(params) {
+            // Configurar datos para la gráfica
+            const chartData = {
+                labels: etiquetasDias,
+                datasets: [{
+                    label: "Número de Ausencias",
+                    data: valoresAusencias,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(255, 205, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                    ],
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    borderWidth: 1
+                }]
+            };
+            // Destruir gráfica anterior si existe
+            if (barChart) {
+                barChart.destroy();
+            }
+            // Crear gráfica de barras
+            const ctxBar = document.getElementById("myBarChart").getContext("2d");
+            barChart = new Chart(ctxBar, {
+                type: "bar",
+                data: chartData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            ticks: {
+                                stepSize: 1,
+                                beginAtZero: true
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+
     }
+
     function cargarMapa(fichajesPorFecha) {
         if (mapa) {
             mapa.remove();

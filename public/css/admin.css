@@ -274,16 +274,16 @@ td,th{
 #myPieChart{
     max-height: 300px;
 }
-.chart-canvas{
+/* .chart-canvas{
     min-width: 100%;
     min-height: 100% !important;
-}
-
-/* .chart-body{
-     height: 380px !important;
-    min-height: 300px;
-    align-items: center !important; 
 } */
+
+.chart-body{
+    /* height: 380px !important; */
+    min-height: 350px;
+    /* align-items: center !important;  */
+}
 
 #mapaFichajes{
     z-index: 4;
