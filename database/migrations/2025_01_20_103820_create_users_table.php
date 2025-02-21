@@ -21,7 +21,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('id_empresa');
                 $table->string('cargo', 50)->nullable();
                 $table->enum('rol', ['maestro', 'empleado']);
-                $table->enum('estado', ['pendiente', 'aceptada', 'rechazada'])->default('pendiente');
+                $table->enum('estado', ['pendiente', 'aceptada', 'rechazada', 'baja', 'vacaciones'])->default('pendiente');
                 $table->foreign('id_empresa')->references('id_empresa')->on('empresas')->onUpdate('cascade')->onDelete('cascade');
                 $table->timestamp('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
                 $table->timestamp('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

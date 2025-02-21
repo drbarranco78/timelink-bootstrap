@@ -8,14 +8,14 @@ window.addEventListener('DOMContentLoaded', event => {
                 url: '/api/fichajes/fecha',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ fecha: fecha }),
+                data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa}),
                 success: function (fichajes) {
                     // Llamar para obtener los ausentes
                     $.ajax({
                         url: '/api/fichajes/ausentes',
                         method: 'POST',
                         contentType: 'application/json',
-                        data: JSON.stringify({ fecha: fecha }),
+                        data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa }),
                         success: function (ausentes) {
                             // Resolvemos ambos datos en un solo objeto
                             resolve({ fichajes, ausentes });

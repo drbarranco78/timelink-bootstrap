@@ -326,7 +326,9 @@ window.addEventListener('DOMContentLoaded', event => {
 
             }),
             success: function (response) {
-                mostrarMensaje(response.message, 'exito-msg');
+                //$('#currentPassword').val('');
+                $('#currentPassword, #newPassword, #renewPassword').val('');
+                mostrarMensaje(response.message, '.exito-msg');
             },
             error: function (xhr) {
                 mostrarMensaje(xhr.responseJSON.message, '.error-msg');

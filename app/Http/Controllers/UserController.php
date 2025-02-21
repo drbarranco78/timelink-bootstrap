@@ -36,18 +36,19 @@ class UserController extends Controller
             // 'dni' => ['required', 'string', 'unique:users,dni', new DniNieValido], Comentado para pruebas (Usar en producción)
             'dni' => 'required|string|unique:users,dni|regex:/^\d{8}[A-Z]$/', // Validación básica para desarrollo
             'password' => 'required|string|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/',
-            'nombre' => 'required|string|max:50|regex:/^(?=[A-Za-zñÑáéíóúÁÉÍÓÚ])[A-Za-zñÑáéíóúÁÉÍÓÚ\s]{1,48}[A-Za-zñÑáéíóúÁÉÍÓÚ]$/',
+            'nombre' => 'required|string|max:50|regex:/^[A-Za-zñÑáéíóúÁÉÍÓÚ]+(?:\s[A-Za-zñÑáéíóúÁÉÍÓÚ]+)*$/',
             'apellidos' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email|regex:/^[a-zA-Z0-9._%+-]{1,40}@[a-zA-Z0-9.-]{2,20}\.[a-zA-Z]{2,}$/',
             'id_empresa' => 'nullable|exists:empresas,id_empresa',
             'cargo' => 'required|string|max:50',
             'rol' => 'required|in:maestro,empleado',
-            'estado' => 'nullable|in:pendiente,aceptada,rechazada'
+            'estado' => 'nullable|in:pendiente,aceptada,rechazada,baja,vacaciones'
         ], [
             'dni.unique' => 'El DNI ya está registrado.',
             'email.unique' => 'El email ya está registrado.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'id_empresa.exists' => 'La empresa seleccionada no es válida.'
+            'id_empresa.exists' => 'La empresa seleccionada no es válida.',
+            'estado.in' => 'El estado debe ser pendiente, aceptada, rechazada, baja o vacaciones',
         ]);
     
         try {
@@ -74,9 +75,10 @@ class UserController extends Controller
             DB::commit();
     
             Auth::login($usuario);
+            $mensaje = ($request->estado ?? '') === 'pendiente' ? 'Solicitud enviada al administrador de la empresa': 'Usuario registrado correctamente';
     
             return response()->json([
-                'message' => 'Usuario registrado correctamente',
+                'message' => $mensaje,
                 'redirect' => $redirects[$usuario->rol] ?? '/',
                 'usuario' => $usuario,
             ], 201);
@@ -199,14 +201,20 @@ class UserController extends Controller
         // Validar los datos recibidos
         $request->validate([
             'id' => 'required|exists:users,id',
-            'nombre' => 'required|string|max:255',
-            'apellidos' => 'required|string|max:255',
+            'nombre' => 'required|string|max:50|regex:/^[A-Za-zñÑáéíóúÁÉÍÓÚ]+(?:\s[A-Za-zñÑáéíóúÁÉÍÓÚ]+)*$/',
+            'apellidos' => 'required|string|max:50|regex:/^(?=[A-Za-zñÑáéíóúÁÉÍÓÚ])[A-Za-zñÑáéíóúÁÉÍÓÚ\s]{1,48}[A-Za-zñÑáéíóúÁÉÍÓÚ]$/',
+            // 'dni' => ['required', 'string', 'unique:users,dni', new DniNieValido],
             'dni' => 'required|string|max:20',
             'email' => 'required|email|unique:users,email,' . $request->id . '|max:255',
             'cargo' => 'required|string|max:255',
-        ], [
+            'estado' => 'sometimes|in:pendiente,aceptada,rechazada,baja,vacaciones',
+        ], [             
+            //'dni.regex' => 'El formato del DNI no es válido',
+            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'apellidos.regex' => 'Los apellidos solo pueden contener letras y espacios.',
             'email.email' => 'El formato de email no es válido',
-            'id.exists' => 'El usuario no existe en la base de datos'   
+            'id.exists' => 'El usuario no existe en la base de datos',
+            'estado.in' => 'El estado debe ser pendiente, aceptada, rechazada, baja o vacaciones',
         ]);
 
         // Buscar el empleado por el ID
@@ -222,19 +230,24 @@ class UserController extends Controller
         $empleado->apellidos = $request->input('apellidos');
         $empleado->dni = $request->input('dni');
         $empleado->email = $request->input('email');
-        $empleado->cargo = $request->input('cargo');   
+        $empleado->cargo = $request->input('cargo'); 
+        if ($request->has('estado')) {
+            $empleado->estado = $request->input('estado');
+        }  
         
         // Guardar los cambios
         $empleado->save();
         return response()->json(['message' => 'Empleado actualizado con éxito']);
     }
 
+    // Devuelve una lista de empleados con solicitudes de acceso pendiantes de aprobación
     public function contarSolicitudesPendientes(Request $request)
     {
-        $admin = Auth::user();
         if (!Auth::check()) {
             return response()->json(['message' => 'No autenticado'], 401);
         }
+        $admin = Auth::user();
+        
         $idEmpresa = $admin->id_empresa;
 
         // Obtener los usuarios en estado 'pendiente'
@@ -248,7 +261,10 @@ class UserController extends Controller
     // Devuelve una lista de empleados con estado 'rechazado'
     public function obtenerEmpleadosInactivos(Request $request) 
     {
-        $idEmpresa = $request->input('id_empresa');
+        $request->validate([
+            'id_empresa' => 'required|exists:empresas,id_empresa',
+        ]);
+        $idEmpresa=$request->input('id_empresa');
     
         if (!$idEmpresa) {
             return response()->json(['message' => 'Falta el parámetro id_empresa'], 400);
@@ -265,32 +281,52 @@ class UserController extends Controller
     // Cambia el estado de la solicitud de acceso del usuario 
     public function actualizarEstado(Request $request, $id)
     {
-        $usuario = User::find($id);
+        // Validar la entrada
+        $request->validate([
+            'estado' => 'required|string|in:pendiente,aceptada,rechazada,baja,vacaciones',
+        ], [
+            'estado.in' => 'El estado debe ser pendiente, aceptada, rechazada, baja o vacaciones',
+        ]);
 
+        // Buscar el usuario
+        $usuario = User::find($id);
         if (!$usuario) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
 
+        // Verificar si el usuario autenticado tiene permisos (puedes mejorar esta lógica)
+        // if (!Auth::user()->esAdmin()) {
+        //     return response()->json(['message' => 'No tienes permisos para realizar esta acción'], 403);
+        // }
+
+        // Evitar actualizaciones innecesarias
+        if ($usuario->estado === $request->estado) {
+            return response()->json(['message' => 'El usuario ya tiene este estado'], 200);
+        }
+
+        // Guardar el nuevo estado
         $estadoAnterior = $usuario->estado;
         $usuario->estado = $request->estado;
         $usuario->save();
 
-        // Definir el mensaje según el nuevo estado
-        // $mensaje = "La solicitud de {$usuario->nombre} {$usuario->apellidos} ha sido ";
-        // $mensaje .= ($request->estado === 'aceptada') ? "aceptada." : "rechazada.";
-        $mensaje="El estado del usuario ha sido actualizado";
-        return response()->json(['message' => $mensaje, 'usuario' => $usuario]);
+     
+
+        return response()->json([
+            'message' => 'El estado del usuario ha sido actualizado',
+            'usuario' => $usuario
+        ]);
     }
 
-    
+
+    // Registra a un empleado invitado 
     public function registrarEmpleadoConInvitacion(Request $request) {
         // Validación de los campos
         $validated = $request->validate([
             'email' => 'required|email|exists:invitaciones,email|unique:users,email',
             'id_empresa' => 'required|exists:empresas,id',
             'dni' => ['required', 'string', 'max:20', 'unique:users,dni', new DniNieValido],
-            'nombre' => 'required|string|max:255|regex:/^[\pL\s]+$/u',
-            'apellidos' => 'required|string|max:255|regex:/^[\pL\s]+$/u',
+            'nombre' => 'required|string|max:50|regex:/^[A-Za-zñÑáéíóúÁÉÍÓÚ]+(?:\s[A-Za-zñÑáéíóúÁÉÍÓÚ]+)*$/',
+            'apellidos' => 'required|string|max:50|regex:/^(?=[A-Za-zñÑáéíóúÁÉÍÓÚ])[A-Za-zñÑáéíóúÁÉÍÓÚ\s]{1,48}[A-Za-zñÑáéíóúÁÉÍÓÚ]$/',
             'cargo' => 'required|string|max:255|regex:/^[\pL\s]+$/u',
             'password' => [
                 'required',

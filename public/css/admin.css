@@ -64,9 +64,9 @@
 .card-body span{
     float: right;    
 }
-canvas{
+/* canvas{
     height: 95% !important;
-}
+} */
 
 #selector-fecha{
     padding: 0 !important;
@@ -276,14 +276,14 @@ td,th{
 }
 .chart-canvas{
     min-width: 100%;
-    min-height: 80%;
+    min-height: 100% !important;
 }
 
-.chart-body{
-    height: 380px !important;
+/* .chart-body{
+     height: 380px !important;
     min-height: 300px;
-    align-items: center !important;
-}
+    align-items: center !important; 
+} */
 
 #mapaFichajes{
     z-index: 4;

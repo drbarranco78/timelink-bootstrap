@@ -12,6 +12,7 @@ window.addEventListener('DOMContentLoaded', event => {
     let tiempoTotalDescanso;
     let totalEmpleadosActivos;
     let numAusentes;
+    let valoresAusencias, etiquetasDias;
 
 
     $(document).on('click', '.toggle-chart', function () {
@@ -34,7 +35,7 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
     actualizarCharts();
-    
+
     $('#selector-fecha').change(function () {
         fechaSelect = $(this).val();
         entradas = [];
@@ -201,69 +202,85 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
     async function generarGraficoAusencias(fechaSeleccionada) {
+        
+
         try {
-            const response = await fetch(`/api/fichajes/ausencias-semana/${fechaSeleccionada}`);
-            const data = await response.json();
-            console.log("AusentesPorfecha: ", data);
-            let hoy = new Date().toISOString().split('T')[0];
-            const fechasFiltradas = Object.keys(data).filter(fecha => {
-                return new Date(fecha) <= new Date(hoy);
+            $.ajax({
+                url: `/api/fichajes/ausencias-semana/${fechaSeleccionada}/${empresa.id_empresa}`,
+                method: 'GET',
+                success: function (data) {
+                    console.log("AusentesPorfecha: ", data);
+                    let hoy = new Date().toISOString().split('T')[0];
+
+                    // Filtrar fechas menores o iguales a hoy
+                    const fechasFiltradas = Object.keys(data).filter(function (fecha) {
+                        return new Date(fecha) <= new Date(hoy);
+                    });
+
+                    // Convertir fechas en nombres de días (Lunes, Martes...)
+                    const opcionesFormato = { weekday: "long" };
+                    etiquetasDias = Object.keys(data).map(function (fecha) {
+                        let fechaObj = new Date(fecha);
+                        let nombreDia = fechaObj.toLocaleDateString("es-ES", opcionesFormato);
+                        let numeroDia = fechaObj.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" });
+                        return `${nombreDia} ${numeroDia}`;
+                    });
+
+                    // Filtrar los valores de ausencias basados en las fechas filtradas
+                    valoresAusencias = fechasFiltradas.map(function (fecha) {
+                        return data[fecha];
+                    });
+
+                    console.log("Fechas filtradas: ", fechasFiltradas);
+                    console.log("Valores de ausencias: ", valoresAusencias);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error cargando ausencias:", error);
+                }
             });
+        } catch (error) {
+            console.error("Error inesperado:", error);
+        }
 
-            // Convertir fechas en nombres de días (Lunes, Martes...)
-            const opcionesFormato = { weekday: "long" };
-            const etiquetasDias = Object.keys(data).map(fecha => {
-                let fechaObj = new Date(fecha);
-                let nombreDia = fechaObj.toLocaleDateString("es-ES", opcionesFormato);
-                let numeroDia = fechaObj.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" });
-                return `${nombreDia} ${numeroDia}`;
-            });
-
-            // const valoresAusencias = Object.values(data);
-            const valoresAusencias = fechasFiltradas.map(fecha => data[fecha]);
-
-            // Configurar datos para la gráfica
-            const chartData = {
-                labels: etiquetasDias,
-                datasets: [{
-                    label: "Número de Ausencias",
-                    data: valoresAusencias,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.5)',
-                        'rgba(255, 205, 86, 0.5)',
-                        'rgba(75, 192, 192, 0.5)',
-                        'rgba(54, 162, 235, 0.5)',
-                        'rgba(153, 102, 255, 0.5)',
-                    ],
-                    borderColor: "rgba(255, 99, 132, 1)",
-                    borderWidth: 1
-                }]
-            };
-            // Destruir gráfica anterior si existe
-            if (barChart) {
-                barChart.destroy();
-            }
-            // Crear gráfica de barras
-            const ctxBar = document.getElementById("myBarChart").getContext("2d");
-            barChart = new Chart(ctxBar, {
-                type: "bar",
-                data: chartData,
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            ticks: {
-                                stepSize: 1,
-                                beginAtZero: true
-                            }
+        console.log("Valores de ausenciasasddasdsa: ", valoresAusencias);
+        // Configurar datos para la gráfica
+        const chartData = {
+            labels: etiquetasDias,
+            datasets: [{
+                label: "Número de Ausencias",
+                data: valoresAusencias,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(255, 205, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(153, 102, 255, 0.5)',
+                ],
+                borderColor: "rgba(255, 99, 132, 1)",
+                borderWidth: 1
+            }]
+        };
+        // Destruir gráfica anterior si existe
+        if (barChart) {
+            barChart.destroy();
+        }
+        // Crear gráfica de barras
+        const ctxBar = document.getElementById("myBarChart").getContext("2d");
+        barChart = new Chart(ctxBar, {
+            type: "bar",
+            data: chartData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        ticks: {
+                            stepSize: 1,
+                            beginAtZero: true
                         }
                     }
                 }
-            });
-
-        } catch (error) {
-            console.error("Error cargando ausencias:", error);
-        }
+            }
+        });
     }
     function cargarMapa(fichajesPorFecha) {
         if (mapa) {

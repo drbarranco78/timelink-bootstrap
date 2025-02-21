@@ -353,6 +353,7 @@ function registrarUsuario(datos) {
             contentType: 'application/json',
             data: JSON.stringify(datos),
             success: function (response) {
+                mostrarMensaje(response.message, '.exito-msg');
                 console.log(response);
                 if (response.usuario.estado !== "aceptada") {
                     $("#register-form")[0].reset();
@@ -360,7 +361,7 @@ function registrarUsuario(datos) {
                 }
                 if (response.redirect) {
                     localStorage.setItem('usuario', JSON.stringify(response.usuario));
-                    mostrarMensaje(response.message, '.exito-msg');
+                    
                     window.location.href = response.redirect;
 
                 } else {

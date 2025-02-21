@@ -167,14 +167,17 @@ class FichajeController extends Controller
             $request->validate([
                 'fecha' => 'nullable|date',
                 'id_usuario' => 'nullable|integer|exists:users,id',
+                'id_empresa' => 'required|integer|exists:empresas,id_empresa', // Validamos que se envíe la empresa
             ]);
 
             // Obtener la fecha de la solicitud o la fecha actual por defecto
             $fecha = $request->input('fecha', now()->toDateString());
-            Log::info("Fecha recibida: " . $fecha);  // Registramos la fecha para verificar
+            $idUsuario = $request->input('id_usuario');
+            $idEmpresa = $request->input('id_empresa');
 
-            $idUsuario = $request->id_usuario;
-            Log::info("ID de usuario: " . $idUsuario);  // También registramos el ID de usuario si está disponible
+            Log::info("Fecha recibida: " . $fecha);
+            Log::info("ID de usuario: " . $idUsuario);
+            Log::info("ID de empresa: " . $idEmpresa);
 
             // Realizamos la consulta
             $fichajes = Fichaje::when($fecha, function ($query, $fecha) {
@@ -183,14 +186,19 @@ class FichajeController extends Controller
                 ->when($idUsuario, function ($query, $idUsuario) {
                     return $query->where('id_usuario', $idUsuario);
                 })
+                ->whereHas('usuario', function ($query) use ($idEmpresa) {
+                    $query->where('id_empresa', $idEmpresa); // Filtrar por empresa
+                })
                 ->with('usuario')  // Cargar la información del usuario asociado
                 ->orderBy('fecha')
                 ->orderBy('hora')
                 ->get();
-                Log::info($fichajes);
+
+            Log::info($fichajes);
+
             // Verificar que la consulta trae datos
             if ($fichajes->isEmpty()) {
-                Log::warning("No se encontraron fichajes para la fecha: " . $fecha);
+                Log::warning("No se encontraron fichajes para la fecha: " . $fecha . " en la empresa: " . $idEmpresa);
             }
 
             return response()->json($fichajes);
@@ -201,6 +209,7 @@ class FichajeController extends Controller
             return response()->json(['message' => 'Error al obtener fichajes: ' . $e->getMessage()], 500);
         }
     }
+
 
     public function obtenerUltimoFichaje(Request $request)
     {
@@ -221,27 +230,39 @@ class FichajeController extends Controller
         return response()->json($ultimoFichaje);
     }
 
-
+    // Obtiene los empleados que no han fichado entrada en la fecha consultada o el día actual en su defecto
     public function obtenerAusentes(Request $request)
     {
-         // Si no hay fecha, usa hoy
+        // Si no hay fecha, usa hoy
         $fecha = $request->input('fecha', now()->toDateString());
-    
-        // Obtener IDs de empleados que han fichado entrada ese día
+        
+        // Obtener el ID de la empresa (asegúrate de que venga en la petición)
+        $idEmpresa = $request->input('id_empresa');
+
+        if (!$idEmpresa) {
+            return response()->json(['message' => 'ID de empresa es requerido'], 400);
+        }
+
+        // Obtener IDs de empleados que han fichado entrada ese día en la empresa
         $empleadosConEntrada = Fichaje::where('tipo_fichaje', 'entrada')
-            ->whereDate('fecha', $fecha) 
+            ->whereDate('fecha', $fecha)
+            ->whereHas('usuario', function ($query) use ($idEmpresa) {
+                $query->where('id_empresa', $idEmpresa);
+            })
             ->pluck('id_usuario');
-    
-        // Obtener empleados que NO han fichado y que fueron creados antes o el mismo día de la fecha consultada
+
+        // Obtener empleados de la empresa que NO han fichado entrada ese día
         $empleadosAusentes = User::whereNotIn('id', $empleadosConEntrada)
-        // Excluir empleados creados después de la fecha
-            ->whereDate('created_at', '<=', $fecha) 
+            ->where('id_empresa', $idEmpresa) // Filtra por empresa
+            ->whereDate('created_at', '<=', $fecha) // Excluir empleados creados después de la fecha consultada
             ->get();
-    
+
         return response()->json($empleadosAusentes);
     }
+
     
-    public function obtenerAusentesSemana($fecha)
+    // Obtiene los empleados que no han fichado para cada día de la semana correspondiente a la fecha consultada
+    public function obtenerAusentesSemana($fecha, $idEmpresa)
     {
         $fechaCarbon = Carbon::parse($fecha);
         $lunes = $fechaCarbon->startOfWeek(); // Obtiene el lunes de la semana
@@ -257,6 +278,7 @@ class FichajeController extends Controller
             // Contar empleados que fueron creados hasta ese día
             $totalEmpleados = User::where('estado', 'aceptada')
                 ->where('rol', '!=', 'maestro')
+                ->where('id_empresa', $idEmpresa)
                 ->whereDate('created_at', '<=', $dia) // Excluir empleados creados después del día consultado
                 ->count();
 
@@ -266,6 +288,9 @@ class FichajeController extends Controller
         // Obtener IDs de empleados que ficharon cada día
         $fichajes = Fichaje::whereBetween('fecha', [$lunes, $viernes])
             ->where('tipo_fichaje', 'entrada')
+            ->whereHas('usuario', function($query) use ($idEmpresa) {
+                $query->where('id_empresa', $idEmpresa); // Filtrar por empresa
+            })
             ->selectRaw('fecha as dia, COUNT(DISTINCT id_usuario) as presentes')
             ->groupBy('dia')
             ->orderBy('dia')

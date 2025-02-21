@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Credencial;
-
+use Illuminate\Support\Facades\Hash;
 class CredencialController extends Controller
 {
     // Obtener todas las credenciales
@@ -18,9 +18,26 @@ class CredencialController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_usuario' => 'required|exists:usuarios,id|unique:credenciales,id_usuario',
-            'password' => 'required|min:8',
-        ]);
+            'id_usuario' => 'required|integer|exists:usuarios,id|unique:credenciales,id_usuario',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:20',
+                'regex:/^(?=.*[A-Za-z])(?=.*\d).{8,}$/',
+            ],
+        ], [
+            'id_usuario.required' => 'El ID de usuario es obligatorio.',
+            'id_usuario.integer' => 'El ID de usuario debe ser un número entero.',
+            'id_usuario.exists' => 'El usuario no existe en la base de datos.',
+            'id_usuario.unique' => 'Este usuario ya tiene credenciales asignadas.',
+        
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.string' => 'La contraseña debe ser un texto válido.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.max' => 'La contraseña no puede superar los 20 caracteres.',
+            'password.regex' => 'La contraseña debe contener al menos una letra y un número.',
+        ]);        
 
         $credencial = Credencial::create([
             'id_usuario' => $request->id_usuario,
@@ -61,8 +78,28 @@ class CredencialController extends Controller
         // Validación de datos
         $request->validate([
             'id_usuario' => 'required|exists:credenciales,id_usuario',
-            'password_actual' => 'required',
-            'nuevo_password' => 'required|min:8|different:password_actual',
+            'password_actual' => 'required|string',
+            'nuevo_password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:50',
+                'different:password_actual',
+                'regex:/^(?=.*[A-Za-z])(?=.*\d).{8,}$/',
+            ],
+        ], [
+            'id_usuario.required' => 'El ID de usuario es obligatorio.',
+            'id_usuario.exists' => 'El usuario no tiene credenciales registradas.',
+    
+            'password_actual.required' => 'Debes ingresar tu contraseña actual.',
+            'password_actual.string' => 'La contraseña actual debe ser un texto válido.',
+    
+            'nuevo_password.required' => 'Debes ingresar una nueva contraseña.',
+            'nuevo_password.string' => 'La nueva contraseña debe ser un texto válido.',
+            'nuevo_password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'nuevo_password.max' => 'La nueva contraseña no puede superar los 50 caracteres.',
+            'nuevo_password.different' => 'La nueva contraseña debe ser diferente de la actual.',
+            'nuevo_password.regex' => 'La nueva contraseña debe contener al menos una letra y un número.',
         ]);
 
         // Buscar la credencial del usuario

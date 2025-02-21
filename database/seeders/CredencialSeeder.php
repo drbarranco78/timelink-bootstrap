@@ -14,8 +14,12 @@ class CredencialSeeder extends Seeder
     public function run(): void
     {
         DB::table('credenciales')->insert([
-            ['id_usuario' => 1, 'password' => 'Password123', 'reset_code' => null, 'reset_code_expires' => null],
-            ['id_usuario' => 2, 'password' => 'Securepass456', 'reset_code' => null, 'reset_code_expires' => null],
+            ['id_usuario' => 1, 'password' => 'Password1', 'reset_code' => null, 'reset_code_expires' => null],
+            ['id_usuario' => 2, 'password' => 'Password1', 'reset_code' => null, 'reset_code_expires' => null],
+            ['id_usuario' => 3, 'password' => 'Password1', 'reset_code' => null, 'reset_code_expires' => null],
+            ['id_usuario' => 4, 'password' => 'Password1', 'reset_code' => null, 'reset_code_expires' => null],
+            ['id_usuario' => 5, 'password' => 'Password1', 'reset_code' => null, 'reset_code_expires' => null],
+            ['id_usuario' => 6, 'password' => 'Password1', 'reset_code' => null, 'reset_code_expires' => null],
         ]);
     }
 }
