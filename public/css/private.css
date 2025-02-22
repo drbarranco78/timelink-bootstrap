@@ -36,8 +36,19 @@
 .card-header{
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between;
-    
+    justify-content: space-between;    
+}
+.panel-container{
+    border: 5px double #ccc;
+    padding: 30px;
+    text-align: center;
+    background-color: whitesmoke;
+}
+.panel-container span{
+    font-size: 18px;
+    font-weight: 500;
+    /* text-decoration: underline; */
+    border-bottom: 1px solid black;
 }
 th{      
     text-align: left !important;
@@ -78,6 +89,7 @@ td,th{
     filter: brightness(80%);
 }
 .confirmar-accion {
+    max-width: 400px;
     position: fixed;
     top: 50%; 
     left: 50%; 

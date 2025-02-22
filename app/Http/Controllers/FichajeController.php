@@ -306,29 +306,27 @@ class FichajeController extends Controller
 
 
 
-    public function obtenerTiemposTotales($fecha)
-    {       
+    public function obtenerTiemposTotales($fecha, $idEmpresa)
+{       
+    $totalTrabajado = Fichaje::whereDate('fecha', $fecha)
+        ->where('tipo_fichaje', 'entrada')
+        ->whereHas('usuario', function($query) use ($idEmpresa) {
+            $query->where('id_empresa', $idEmpresa); // Filtrar por empresa
+        }) 
+        ->sum('duracion');
 
-        $totalTrabajado = Fichaje::whereDate('fecha', $fecha)
-            ->where('tipo_fichaje', 'entrada')
-            ->sum('duracion');
+    $totalDescanso = Fichaje::whereDate('fecha', $fecha)
+        ->where('tipo_fichaje', 'fin_descanso')
+        ->whereHas('usuario', function($query) use ($idEmpresa) {
+            $query->where('id_empresa', $idEmpresa); // Filtrar por empresa
+        })
+        ->sum('duracion');
 
-        $totalDescanso = Fichaje::whereDate('fecha', $fecha)
-            ->where('tipo_fichaje', 'fin_descanso')
-            ->sum('duracion');
-
-        $totalTrabajado = $totalTrabajado ?? 0;
-        $totalDescanso = $totalDescanso ?? 0;
-
-        // if ($totalTrabajado === 0 && $totalDescanso === 0) {
-        //     return response()->json(['message' => 'No hay datos para la fecha seleccionada'], 404);
-        // }
-
-        return response()->json([
-            'total_trabajado' => $totalTrabajado,
-            'total_descansos' => $totalDescanso
-        ]);
-    }
+    return response()->json([
+        'total_trabajado' => $totalTrabajado ?? 0,
+        'total_descansos' => $totalDescanso ?? 0
+    ]);
+}
 
 
 

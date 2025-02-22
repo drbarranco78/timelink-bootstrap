@@ -93,24 +93,24 @@ window.addEventListener('DOMContentLoaded', event => {
         }
 
 
-        // return {
-        //     horasExactas,
-        //     entradas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(entradas, hora) })),
-        //     descansos: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(descansos, hora) })),
-        //     salidas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(salidas, hora) }))
-        // };
         return {
             horasExactas,
-            entradas: horasExactas
-                .map(hora => ({ x: hora, y: obtenerCantidad(entradas, hora) }))
-                .filter(dato => dato.y > 0),
-            descansos: horasExactas
-                .map(hora => ({ x: hora, y: obtenerCantidad(descansos, hora) }))
-                .filter(dato => dato.y > 0),
-            salidas: horasExactas
-                .map(hora => ({ x: hora, y: obtenerCantidad(salidas, hora) }))
-                .filter(dato => dato.y > 0)
+            entradas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(entradas, hora) })),
+            descansos: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(descansos, hora) })),
+            salidas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(salidas, hora) }))
         };
+        // return {
+        //     horasExactas,
+        //     entradas: horasExactas
+        //         .map(hora => ({ x: hora, y: obtenerCantidad(entradas, hora) }))
+        //         .filter(dato => dato.y > 0),
+        //     descansos: horasExactas
+        //         .map(hora => ({ x: hora, y: obtenerCantidad(descansos, hora) }))
+        //         .filter(dato => dato.y > 0),
+        //     salidas: horasExactas
+        //         .map(hora => ({ x: hora, y: obtenerCantidad(salidas, hora) }))
+        //         .filter(dato => dato.y > 0)
+        // };
     }
     function generarGraficoFichajes() {
         let { horasExactas, entradas, descansos, salidas } = contarFichajesPorHora();
@@ -125,16 +125,16 @@ window.addEventListener('DOMContentLoaded', event => {
         const data = {
             datasets: [
                 {
-                    label: "Entrada", data: entradas, borderColor: "rgba(75, 192, 192, 0.8)", fill: false, tension: 0.1, spanGaps: false, pointRadius: 6,
+                    label: "Entrada", data: entradas, borderColor: "rgba(75, 192, 192, 0.8)", backgroundColor: "rgba(75, 192, 192, 0.2)",fill: true, tension: 0.1, spanGaps: false, pointRadius: 6,
                     pointHoverRadius: 8,
                 },
                 {
-                    label: "Inicio_descanso", data: descansos, borderColor: "rgba(54, 162, 235, 0.8)", fill: false, tension: 0.1, spanGaps: false, pointRadius: 6,
+                    label: "Inicio_descanso", data: descansos, borderColor: "rgba(54, 162, 235, 0.8)", backgroundColor:"rgba(54, 162, 235, 0.2)",fill: true, tension: 0.1, spanGaps: false, pointRadius: 6,
                     pointHoverRadius: 8,
 
                 },
                 {
-                    label: "Salida", data: salidas, borderColor: "rgba(255, 205, 86, 0.8)", fill: false, tension: 0.1, spanGaps: false, pointRadius: 6,
+                    label: "Salida", data: salidas, borderColor: "rgba(255, 205, 86, 0.8)", backgroundColor:"rgba(255, 205, 86, 0.2)",fill: true, tension: 0.1, spanGaps: false, pointRadius: 6,
                     pointHoverRadius: 8,
                 }
             ]
@@ -332,8 +332,8 @@ window.addEventListener('DOMContentLoaded', event => {
             (segundosRestantes < 10 ? '0' : '') + segundosRestantes;
     }
     function obtenerTiemposTotales(fechaSeleccionada) {
-        $.ajax({
-            url: '/api/fichajes/tiempos-totales/' + encodeURIComponent(fechaSeleccionada),
+        $.ajax({            
+            url: `/api/fichajes/tiempos-totales/${fechaSeleccionada}/${empresa.id_empresa}`,
             method: 'GET',
             contentType: 'application/json',
             success: function (response) {

@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{{ asset('css/private.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-    
+
     <link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/boxicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/quill.snow.css') }}">
@@ -52,7 +52,7 @@
 
             <div class="input-group">
                 <h3 id="mensaje-usuario"></h3>
- 
+
             </div>
         </form>
         <!-- Navbar-->
@@ -95,11 +95,11 @@
                                 {{-- <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a> --}}
                             </nav>
                         </div>
-                  
+
                         <div class="collapse" id="collapsePages" aria-labelledby="headingTwo"
                             data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                             
+
                                 <a id="link-excluded" class="nav-link collapsed" href="#"
                                     data-bs-toggle="collapse" data-bs-target="#pagesCollapseError"
                                     aria-expanded="false" aria-controls="pagesCollapseError">
@@ -120,7 +120,7 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-location"></i></div>
                             Registrar ubicación
                         </a>
-                   
+
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
@@ -490,94 +490,99 @@
                         <h2 id="nombre-empresa" class="mt-4"></h2>
                         <div class="div-fecha">
                             <h3 class="fecha-actual mt-4"></h3>
-                            <span id="span-estado">Jornada no iniciada</span>
+                            {{-- <span id="span-estado">Jornada no iniciada</span> --}}
                         </div>
-
                         {{-- <li class="breadcrumb-item active">Dashboard</li> --}}
-
                     </div>
+                    <div class="panel-container">
+                        <span id="span-estado">Jornada no iniciada</span>
+                        <div id="action-panels" class="row">
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-success text-white mb-4 panel-fichaje" data-tipo="entrada">
+                                    <div class="card-body">Entrada <i class="ico-fichaje fas fa-play"></i></div>
 
-                    <div id="action-panels" class="row">
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card bg-success text-white mb-4 panel-fichaje" data-tipo="entrada">
-                                <div class="card-body">Entrada <i class="ico-fichaje fas fa-play"></i></div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a id="detalles-entrada"
+                                            class="small text-white stretched-link toggle-detalles" href="#"
+                                            data-tipo="entrada"></a>
+                                        <div class="small text-white"><i id="ico_entrada"
+                                                class="fas fa-angle-down"></i>
+                                        </div>
+                                    </div>
+                                    <div id="ficha-entradas" class="card-body bg-success p-3 detalles-actividad">
+                                        <ul></ul>
 
-                                <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a id="detalles-entrada" class="small text-white stretched-link toggle-detalles"
-                                        href="#" data-tipo="entrada"></a>
-                                    <div class="small text-white"><i id="ico_entrada" class="fas fa-angle-down"></i>
                                     </div>
                                 </div>
-                                <div id="ficha-entradas" class="card-body bg-success p-3 detalles-actividad">
-                                    <ul></ul>
-
-                                </div>
                             </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card bg-primary text-white mb-4 panel-fichaje" data-tipo="inicio_descanso">
-                                <div class="card-body">Descanso <i class="ico-fichaje fas fa-coffee"></i></div>
-                                <div id="tarjeta-actividad"
-                                    class="card-footer d-flex align-items-center justify-content-between">
-                                    <a id="detalles-descanso" class="small text-white stretched-link toggle-detalles"
-                                        href="#" data-tipo="inicio_descanso"></a>
-                                    <div class="small text-white"><i id="ico_descanso" class="fas fa-angle-down"></i>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-primary text-white mb-4 panel-fichaje"
+                                    data-tipo="inicio_descanso">
+                                    <div class="card-body">Descanso <i class="ico-fichaje fas fa-coffee"></i></div>
+                                    <div id="tarjeta-actividad"
+                                        class="card-footer d-flex align-items-center justify-content-between">
+                                        <a id="detalles-descanso"
+                                            class="small text-white stretched-link toggle-detalles" href="#"
+                                            data-tipo="inicio_descanso"></a>
+                                        <div class="small text-white"><i id="ico_descanso"
+                                                class="fas fa-angle-down"></i>
+                                        </div>
+                                    </div>
+                                    <div id="ficha-descansos" class="card-body bg-primary p-3 detalles-actividad">
+                                        <ul></ul>
                                     </div>
                                 </div>
-                                <div id="ficha-descansos" class="card-body bg-primary p-3 detalles-actividad">
-                                    <ul></ul>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-danger text-white mb-4 panel-fichaje" data-tipo="salida">
+                                    <div class="card-body">Salida <i class="ico-fichaje fas fa-sign-out-alt"></i>
+                                    </div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a id="detalles-salida"
+                                            class="small text-white stretched-link toggle-detalles" href="#"
+                                            data-tipo="salida"></a>
+                                        <div class="small text-white"><i class="fas fa-angle-down"></i></div>
+                                    </div>
+                                    <div id="ficha-salidas" class="card-body bg-warning p-3 detalles-actividad">
+                                        <ul></ul>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card bg-danger text-white mb-4 panel-fichaje" data-tipo="salida">
-                                <div class="card-body">Salida <i class="ico-fichaje fas fa-sign-out-alt"></i></div>
-                                <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a id="detalles-salida" class="small text-white stretched-link toggle-detalles"
-                                        href="#" data-tipo="salida"></a>
-                                    <div class="small text-white"><i class="fas fa-angle-down"></i></div>
-                                </div>
-                                <div id="ficha-salidas" class="card-body bg-warning p-3 detalles-actividad">
-                                    <ul></ul>
-
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
-
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <div>
-                                <i class="fas fa-table me-1"></i>
-                                <span id="span-fecha">Historial de hoy</span>
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <div>
+                                    <i class="fas fa-table me-1"></i>
+                                    <span id="span-fecha">Historial de hoy</span>
+                                </div>
+                                <div class="div-calendar">
+                                    <span>Mostrar datos del dia: </span>
+                                    <input id="selector-fecha" class="mt-4" type="date">
+                                </div>
                             </div>
-                            <div class="div-calendar">
-                                <span>Mostrar datos del dia: </span>
-                                <input id="selector-fecha" class="mt-4" type="date">
-                            </div>
-                        </div>
 
-                        <div class="table-body">
-                            <table id="tabla-fichajes" class="table table-striped nowrap" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>Acción</th>
-                                        <th>Fecha</th>
-                                        <th>Hora</th>
-                                        <th>Ubicacion</th>
-                                        {{-- <th>Posición</th>
+                            <div class="table-body">
+                                <table id="tabla-fichajes" class="table table-striped nowrap" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Acción</th>
+                                            <th>Fecha</th>
+                                            <th>Hora</th>
+                                            <th>Ubicacion</th>
+                                            {{-- <th>Posición</th>
                                         <th>Fecha de alta</th>
                                         <th class="ver-perfil">Ver perfil</th> --}}
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
 
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
             </main>
             <footer id="footer" class="footer">
                 <div class="copyright">
@@ -606,7 +611,7 @@
         </div>
         <div class="exito-msg"></div>
         <div class="error-msg"></div>
-        
+
 
         <div id="div-registro-ubicacion">
             <div class="header-solicitudes">

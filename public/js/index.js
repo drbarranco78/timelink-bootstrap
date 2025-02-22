@@ -316,8 +316,7 @@ function solicitarUnion(datos) {
     });
 }
 
-function enviarCorreoSolicitud(datos, emailMaestro) {
-    console.log(emailMaestro);
+function enviarCorreoSolicitud(datos, emailMaestro) {    
     let datosCorreo = {
         nombre: datos['nombre'],
         apellidos: datos['apellidos'],
@@ -329,10 +328,8 @@ function enviarCorreoSolicitud(datos, emailMaestro) {
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(datosCorreo),
-        success: function (data) {
-            console.log('Correo enviado con éxito:', data.message);
+        success: function (data) {            
             mostrarMensaje("Se ha enviado la solicitud al administrador de la empresa", '.exito-msg');
-
         },
         error: function (xhr) {
             mostrarMensaje(xhr.responseJSON.message, '.error-msg');
@@ -369,7 +366,11 @@ function registrarUsuario(datos) {
                 }
             },
             error: function (xhr) {
-                mostrarMensaje(xhr.responseJSON.error, '.error-msg');
+                if (xhr.responseJSON?.errors) {                    
+                    mostrarMensaje(xhr.responseJSON?.message, '.error-msg');
+                } else {
+                    mostrarMensaje("Ocurrió un error inesperado.", '.error-msg');
+                }
             }
         });
     }
