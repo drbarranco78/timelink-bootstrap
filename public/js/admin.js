@@ -170,7 +170,7 @@ window.addEventListener('DOMContentLoaded', event => {
         // Volver a inicializar DataTable
         $('#tabla-empleados').DataTable({
             language: {
-                url: "{{ asset('js/es-ES.json') }}"
+                url: "{{ asset('js/Es-es.json') }}"
             },
             responsive: true
         });
