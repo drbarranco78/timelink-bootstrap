@@ -349,17 +349,19 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
-
+    function obtenerTotalEmpleadosActivos() {
+        return ausentesPorFecha.filter(f => f.rol !== "maestro" && f.estado === "aceptada").length;
+    }
     function generarGraficoTiempos() {
 
         numAusentes = obtenerTotalEmpleadosActivos();
-
+        const factor = 3600;
         console.log("Numero de ausentes " + numAusentes)
 
         const data = {
             labels: ['Tiempo trabajado', 'Tiempo de descanso', 'Número de ausencias'],
             datasets: [{
-                data: [tiempoTotalTrabajado, tiempoTotalDescanso, numAusentes],
+                data: [tiempoTotalTrabajado, tiempoTotalDescanso, numAusentes*factor], // Evitar valores cero
                 backgroundColor: ['rgba(75, 192, 192, 0.8)', 'rgba(54, 162, 235, 0.8)', 'rgba(255, 99, 132, 0.8)'],
             }],
         }
@@ -380,13 +382,13 @@ window.addEventListener('DOMContentLoaded', event => {
 
                             // Obtiene la etiqueta
                             var label = tooltipItem.label;
-
+                            
                             // Si el valor es un tiempo en segundos, formatearlo como HH:mm:ss
                             if (label === 'Tiempo trabajado' || label === 'Tiempo de descanso') {
                                 return label + ': ' + segundosAHora(value); // Formatear tiempo
                             } else {
                                 // Número de ausencias                              
-                                return label + ': ' + value;
+                                return label + ': ' + (value / factor);
 
                             }
                         }
@@ -406,8 +408,6 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
-    function obtenerTotalEmpleadosActivos() {
-        return ausentesPorFecha.filter(f => f.rol !== "maestro" && f.estado === "aceptada").length;
-    }
+    
 
 });

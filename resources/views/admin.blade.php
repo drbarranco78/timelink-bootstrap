@@ -552,7 +552,7 @@
                                         data-tipo="entrada">Ver Detalles</a>
                                     <div class="small text-white"><i class="fas fa-angle-down"></i></div>
                                 </div>
-                                <div id="ficha-entradas" class="card-body bg-success p-3 detalles-actividad">
+                                <div id="ficha-entradas" class="card-body bg-success p-3 detalles-actividad l-height">
                                     <ul></ul>
 
                                 </div>
@@ -568,7 +568,7 @@
                                     <div class="small text-white"><i id="icono" class="fas fa-angle-down"></i>
                                     </div>
                                 </div>
-                                <div id="ficha-descansos" class="card-body bg-primary p-3 detalles-actividad">
+                                <div id="ficha-descansos" class="card-body bg-primary p-3 detalles-actividad l-height">
                                     <ul></ul>
                                 </div>
                             </div>
@@ -581,7 +581,7 @@
                                         data-tipo="salida">Ver Detalles</a>
                                     <div class="small text-white"><i class="fas fa-angle-down"></i></div>
                                 </div>
-                                <div id="ficha-salidas" class="card-body bg-warning p-3 detalles-actividad">
+                                <div id="ficha-salidas" class="card-body bg-warning p-3 detalles-actividad l-height">
                                     <ul></ul>
 
                                 </div>
@@ -596,7 +596,7 @@
                                         data-tipo="ausencia">Ver Detalles</a>
                                     <div class="small text-white"><i class="fas fa-angle-down"></i></div>
                                 </div>
-                                <div id="ficha-ausencias" class="card-body bg-danger p-3 detalles-actividad">
+                                <div id="ficha-ausencias" class="card-body bg-danger p-3 detalles-actividad l-height">
                                     <ul></ul>
 
                                 </div>

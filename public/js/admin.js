@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 url: '/api/fichajes/fecha',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa}),
+                data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa }),
                 success: function (fichajes) {
                     // Llamar para obtener los ausentes
                     $.ajax({
@@ -69,8 +69,8 @@ window.addEventListener('DOMContentLoaded', event => {
                 // Llenar la tabla con los empleados
                 actualizarTablaEmpleados(empleados);
                 obtenerNumFichajes(fechaSeleccionada);
-                
-                
+
+
             },
             error: function (xhr) {
                 mostrarMensaje(xhr.responseJSON.message, '.error-msg');
@@ -94,7 +94,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 }
             },
             error: function (xhr, message) {
-                
+
                 if (xhr.responseJSON) {
                     mostrarMensaje(xhr.responseJSON.message, '.error-msg');
                 }
@@ -143,9 +143,9 @@ window.addEventListener('DOMContentLoaded', event => {
             $('#tabla-empleados').DataTable().destroy();
         }
         let tabla = $("#tabla-empleados tbody");
-        
+
         // Limpiamos la tabla antes de insertar datos
-        tabla.empty(); 
+        tabla.empty();
 
         empleados.forEach(empleado => {
 
@@ -237,11 +237,11 @@ window.addEventListener('DOMContentLoaded', event => {
             $('.bg-danger .card-body span').text(numeroAusentes);
 
             // Mostrar los ausentes
-            $('#ficha-ausencias ul').html(
+            $('#ficha-ausencias').html(
                 ausentes
                     // Excluye al administrador y pendientes de aceptar
                     .filter(a => a.rol !== "maestro" && a.estado === "aceptada")
-                    .map(a => `<li>${a.nombre} ${a.apellidos}</li>`)
+                    .map(a => `<span class="border-b"><i class="fas fa-user-times m-right10"></i>${a.nombre} ${a.apellidos}</span><br>`)
                     .join('') || "No hay ausencias registradas"
             );
 
@@ -257,9 +257,9 @@ window.addEventListener('DOMContentLoaded', event => {
     window.rellenarFichas = function (fichajes) {
 
         // Contenedores para cada tipo de fichaje
-        let contenedorDescansos = $('#ficha-descansos ul');
+        let contenedorDescansos = $('#ficha-descansos');
         let contenedorEntradas = $('#ficha-entradas');
-        let contenedorSalidas = $('#ficha-salidas ul');
+        let contenedorSalidas = $('#ficha-salidas');
 
         // Variables para almacenar el contenido
         let contenidoDescansos = "";
@@ -268,14 +268,20 @@ window.addEventListener('DOMContentLoaded', event => {
 
         // Recorrer los fichajes y filtrar por tipo
         fichajes.forEach(function (fichaje) {
-            let textoFichaje = `${fichaje.hora.slice(0, 5)} - ${fichaje.usuario.nombre} ${fichaje.usuario.apellidos} -  ${fichaje.ciudad}`;
+            let textoFichaje = `${fichaje.usuario.nombre} ${fichaje.usuario.apellidos} -  ${fichaje.ciudad || "Ubicación no disponible"}`;
 
-            if (fichaje.tipo_fichaje === "inicio_descanso" || fichaje.tipo_fichaje === "fin_descanso") {
-                contenidoDescansos += `<li>${textoFichaje} - ${fichaje.tipo_fichaje}</li>`;
+            if (fichaje.tipo_fichaje === "inicio_descanso") {
+                contenidoDescansos += `<span style="all: unset;"><i class="fas fa-mug-hot m-right10"></i>
+                ${fichaje.hora.slice(0, 8)}<i class="fas fa-arrow-right m-left10 m-right10"></i>Inicio de descanso</span><br><p class="border-b">${textoFichaje}</p>`;
+
+            } else if (fichaje.tipo_fichaje === "fin_descanso") {
+                contenidoDescansos += `<span style="all: unset;"><i class="fas fa-hourglass-end m-right10"></i>
+                ${fichaje.hora.slice(0, 8)}<i class="fas fa-arrow-right m-left10 m-right10"></i>Fin de descanso</span><br><p class="border-b">${textoFichaje}</p>`;
+
             } else if (fichaje.tipo_fichaje === "entrada") {
-                contenidoEntradas += `<i class="fas fa-clock m-right10"></i>${textoFichaje}<br>`;
+                contenidoEntradas += `<span style="all: unset;"><i class="fas fa-stopwatch m-right10"></i>${fichaje.hora.slice(0, 8)}</span><br><p class="border-b">${textoFichaje}</p>`;
             } else if (fichaje.tipo_fichaje === "salida") {
-                contenidoSalidas += `<li>${textoFichaje}</li>`;
+                contenidoSalidas += `<span style="all: unset;"><i class="fas fa-sign-out-alt m-right10"></i>${fichaje.hora.slice(0, 8)}</span><br><p class="border-b">${textoFichaje}</p>`;
             }
         });
 
