@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="{{ asset('css/quill.bubble.css') }}">
     <link rel="stylesheet" href="{{ asset('css/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/common.css') }}">
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">

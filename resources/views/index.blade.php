@@ -13,20 +13,20 @@
         <div class="container register" id="login">
             <div class="row">
                 <div class="col-md-3 register-left">
-                    <img src="img/timelink.webp" alt="">
+                    <img id="logo-login" src="img/timelink.webp" alt="">
                     <h3>Usuario registrado</h3>
                     <p>Accede a tu cuenta de forma segura</p>
                     <input id="enlace-registro" type="submit" name="" value="Registro" /><br />
                 </div>
                 <div class="col-md-9 register-right">
                     <h3 class="register-heading">Iniciar sesión</h3>
-                    <div class="row register-form">
+                    <div id="div-formulario-login" class="row register-form">
                         <div id= "formulario-login" class="col-md-6 offset-md-3">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="DNI *" name="dni" required />
+                                <input type="text" class="form-control input-login" placeholder="DNI *" name="dni" required />
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password *" name="password" required />
+                                <input type="password" class="form-control input-login" placeholder="Password *" name="password" required />
                             </div>
                             <input type="submit" class="btnRegister" id="btnLogin" value="Entrar" />
                         </div>
@@ -73,7 +73,7 @@
                                         <input type="password" id="employee-password2" maxlength=20 class="form-control" placeholder="Confirmar Password *"
                                             value="" />
                                     </div>
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <div class="maxl">
                                             <label class="radio inline">
                                                 <input type="radio" id="gender-male" name="gender" value="male" checked>
@@ -84,7 +84,7 @@
                                                 <span>Mujer </span>
                                             </label>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">

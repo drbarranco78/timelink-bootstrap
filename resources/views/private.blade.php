@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="{{ asset('css/quill.bubble.css') }}">
     <link rel="stylesheet" href="{{ asset('css/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/common.css') }}">
 
 
 

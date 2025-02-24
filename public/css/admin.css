@@ -1,12 +1,12 @@
-.logo-timelink{
-    width: 100px;
+/* .logo-timelink{
+    width: 7vw !important;
     margin-top: 150px;
     margin-left: 30px;
     margin-right: 80px;
     margin-bottom: 50px;
     border-radius: 50%;
     cursor: pointer;
-}
+} */
 .cabecera{
     display: flex !important;
     flex-direction: row;
@@ -183,9 +183,10 @@ td,th{
 }
 
 .input-email-invitado{
-    height: 30px;
+    height: 40px;
     text-align: center;
-    margin-top: 20px !important;
+    margin-top: 10px !important;
+    border-radius: 5px;
 }
 
 .btn-aceptar, .btn-rechazar, .btn-perfil-exc ,#btn-enviar-invitacion{
@@ -194,6 +195,10 @@ td,th{
     border: none;
     cursor: pointer;
     border-radius: 5px;
+}
+#btn-enviar-invitacion{
+    width: 50%;
+    margin: 0 auto;
 }
 
 .btn-aceptar {

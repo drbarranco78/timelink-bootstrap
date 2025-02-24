@@ -1,0 +1,203 @@
+@media (max-width: 1650px) {
+    .chart-canvas {
+        height: 30vh !important;
+    }
+}
+
+@media (max-width: 1400px) {
+    #login {
+        width: 60% !important;
+    }
+
+}
+
+
+@media (max-width: 1200px) {
+
+    .fecha-actual {
+        font-size: 14px !important;
+    }
+
+    #span-fecha {
+
+        font-size: 12px !important;
+    }
+
+}
+
+@media (max-width: 1000px) {
+    .logo-timelink {
+        transform: translateY(-50px);
+    }
+
+    #nombre-empresa {
+        font-size: 18px !important;
+    }
+
+    #sidebarToggle {
+        float: left !important;
+    }
+
+    #div-solicitudes-acceso {
+        width: 50vw;
+    }
+
+    #div-registro-ubicacion {
+        width: 50vw;
+    }
+    .btnRegister {
+        min-width: fit-content;
+        padding: 10px;
+       
+        /* align-self: center !important; */
+    }
+    .register .nav-tabs {
+        width: fit-content !important;
+        padding: 0 5px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .cabecera {
+        flex-direction: column;
+    }
+
+    .chart-body {
+        min-height: 250px !important;
+    }
+
+    #div-registro-ubicacion {
+        width: 80vw;
+    }
+
+    /* .chart-canvas{
+        height: 25vh !important;
+    } */
+
+}
+
+@media (max-width: 768px) {
+    header{
+        border-bottom: 1px solid whitesmoke;
+    }
+    .contenedor-principal {
+        height: 83vh !important;
+        
+        /* position: relative; */
+    }
+
+    .register-left{
+        height: 100% !important;
+    }
+
+    #logo-login {
+        display: none;
+    }    
+
+    .register-left i {
+        display: none;
+        /* margin: 0 !important; */
+    }
+
+    .register-left p {
+        padding-top: 10% !important;
+        padding-bottom: 0 !important;
+    }
+
+    #enlace-login {
+        margin-top: 0px;
+    }
+
+    .register-right {
+        background: #f8f9fa;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        margin-left: 20px !important;
+        /* width: 90vw !important; */
+        /* display: block !important;
+        margin: 20px 50px; 
+         height: 80vh;
+        min-height: fit-content !important; */
+    }
+
+    .register-left img {
+        width: 20%;
+        border-radius: 50%;
+    }
+    
+
+    #enlace-registro {
+        margin: 10px auto;
+    }
+
+    .container {
+        border-radius: 0;
+    }
+
+    #div-formulario-login {
+
+        width: 70vw !important;
+
+    }
+
+    #login {
+        width: 80% !important;
+    }
+
+    .input-login {
+        width: 80% !important;
+    }
+
+    .register-heading {
+        font-size: 18px !important;
+        text-align: start;
+        margin-top: 20px !important;
+        font-weight: bold;
+    }
+
+    .btnRegister {
+        min-width: fit-content;
+        padding: 10px;
+       
+        /* align-self: center !important; */
+    }
+
+    .register .nav-tabs {
+        width: fit-content !important;
+        padding: 0 5px !important;
+    }
+
+    /* .tab-content>.active{
+        width: 500px  !important;
+    } */
+    .form-group {
+        width: 70vw !important;
+    }
+
+    /* #enlace-login,
+    #enlace-registro {
+        position: fixed;
+        bottom: 10px; 
+        left: 50%;
+        transform: translateX(-50%);
+    } */ 
+    
+}
+
+.div-calendar {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center !important;
+    margin: 0 !important;
+    justify-content: center !important;
+}
+
+.logo-timelink {
+    width: 5vw !important;
+    margin-top: 150px;
+    margin-left: 30px;
+    margin-right: 80px;
+    margin-bottom: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+}
