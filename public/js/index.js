@@ -12,6 +12,7 @@ let passwordLogin;
 let empresas = [];
 let idEmpresa;
 let urlParams = new URLSearchParams(window.location.search);
+var apiKey='3c77c751-e6a3-44d0-8979-de6f46250650';
 
 // Captura los valores de los parámetros
 let emailInvitado = urlParams.get('email');
@@ -109,6 +110,9 @@ $("#btnLogin").click(function (event) {
         $.ajax({
             url: '/api/login',
             method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             data: {
                 dni: identificador,
                 password: passwordLogin
@@ -144,6 +148,9 @@ function cargarEmpresas() {
     $.ajax({
         url: '/api/empresas',
         method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + apiKey
+        },
         success: function (data) {
             // Guarda las empresas en una variable global
             empresas = data.array;
@@ -267,6 +274,9 @@ $(".btnRegister").on("click", function (e) {
             url: '/api/empresas',
             type: 'POST',
             contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             data: JSON.stringify(empresa),
             success: function (response) {
 
@@ -305,6 +315,9 @@ function solicitarUnion(datos) {
     $.ajax({
         url: `/api/empresa/${idEmpresa}/maestro`,
         method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + apiKey
+        },
         success: function (response) {
             const emailMaestro = response.email;
             // Llama a la función para enviar el correo
@@ -327,6 +340,9 @@ function enviarCorreoSolicitud(datos, emailMaestro) {
         url: '/api/enviar-solicitud',
         method: 'POST',
         contentType: 'application/json',
+        headers: {
+            'Authorization': 'Bearer ' + apiKey
+        },
         data: JSON.stringify(datosCorreo),
         success: function (data) {            
             mostrarMensaje("Se ha enviado la solicitud al administrador de la empresa", '.exito-msg');
@@ -348,6 +364,9 @@ function registrarUsuario(datos) {
             url: '/api/usuarios',
             type: 'POST',
             contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             data: JSON.stringify(datos),
             success: function (response) {
                 mostrarMensaje(response.message, '.exito-msg');

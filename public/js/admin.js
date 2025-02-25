@@ -8,6 +8,9 @@ window.addEventListener('DOMContentLoaded', event => {
                 url: '/api/fichajes/fecha',
                 method: 'POST',
                 contentType: 'application/json',
+                headers: {
+                    'Authorization': 'Bearer ' + apiKey
+                },
                 data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa }),
                 success: function (fichajes) {
                     // Llamar para obtener los ausentes
@@ -15,6 +18,9 @@ window.addEventListener('DOMContentLoaded', event => {
                         url: '/api/fichajes/ausentes',
                         method: 'POST',
                         contentType: 'application/json',
+                        headers: {
+                            'Authorization': 'Bearer ' + apiKey
+                        },
                         data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa }),
                         success: function (ausentes) {
                             // Resolvemos ambos datos en un solo objeto
@@ -64,6 +70,9 @@ window.addEventListener('DOMContentLoaded', event => {
         $.ajax({
             url: `/api/empresa/${empresa.id_empresa}/usuarios`,
             method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             success: function (response) {
                 empleados = response;
                 // Llenar la tabla con los empleados
@@ -83,6 +92,9 @@ window.addEventListener('DOMContentLoaded', event => {
         $.ajax({
             url: '/api/usuarios/inactivos',
             method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             data: { id_empresa: empresa.id_empresa },
             success: function (response) {
                 $('#excluded-number').text(response.inactivos.length);
@@ -296,6 +308,9 @@ window.addEventListener('DOMContentLoaded', event => {
         $.ajax({
             url: "/api/solicitudes-pendientes",
             method: "GET",
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             success: function (data) {
                 if (data.pendientes.length > 0) {
                     $('#ico-users').addClass('fa-user-plus').removeClass('fa-users');
@@ -369,6 +384,9 @@ window.addEventListener('DOMContentLoaded', event => {
             url: `/api/usuarios/${userId}/estado`,
             method: 'PATCH',
             contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             data: JSON.stringify({ estado: estado }),
             success: function (data) {
                 mostrarMensaje(data.message, '.exito-msg');
@@ -412,6 +430,9 @@ window.addEventListener('DOMContentLoaded', event => {
             url: 'api/enviar-invitacion',
             method: 'POST',
             contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             data: JSON.stringify({
                 id_empresa: empresa.id_empresa,
                 email: emailInvitado,
@@ -428,6 +449,9 @@ window.addEventListener('DOMContentLoaded', event => {
                                 url: 'api/enviar-invitacion',
                                 method: 'POST',
                                 contentType: 'application/json',
+                                headers: {
+                                    'Authorization': 'Bearer ' + apiKey
+                                },
                                 data: JSON.stringify({
                                     id_empresa: empresa.id_empresa,
                                     email: emailInvitado,

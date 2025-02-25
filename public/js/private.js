@@ -37,6 +37,9 @@ function obtenerTiemposEmpleado() {
         url: '/api/fichajes/tiempos',
         method: 'POST',
         contentType: 'application/json',
+        headers: {
+            'Authorization': 'Bearer ' + apiKey
+        },
         data: JSON.stringify({
             id_usuario: empleado.id,
         }),
@@ -62,6 +65,9 @@ function obtenerFichajesEmpleado(fecha) {
         url: '/api/fichajes/fecha',
         method: 'POST',
         contentType: 'application/json',
+        headers: {
+            'Authorization': 'Bearer ' + apiKey
+        },
         data: JSON.stringify({ fecha: fecha, id_usuario: empleado.id, id_empresa: empresa.id_empresa }),
         success: function (fichajes) {
             actualizarTablaFichajes(fichajes);
@@ -238,6 +244,9 @@ function enviarFichaje(tipo, fecha, hora, ubicacion, ciudad, lat, lng, duracion 
     $.ajax({
         url: '/api/fichajes',
         method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + apiKey
+        },
         data: {
             id_usuario: empleado.id,
             tipo_fichaje: tipo,
@@ -339,6 +348,10 @@ function obtenerFichajesHoy() {
         url: '/api/fichajes/fecha',
         method: 'POST',
         contentType: 'application/json',
+        headers: {
+            'Authorization': 'Bearer ' + apiKey
+        },
+        
         data: JSON.stringify({
             id_usuario: empleado.id,
             fecha: hoy,

@@ -6,7 +6,7 @@ let dataTable;
 let selectorFecha;
 let fechaSeleccionada;
 let fechaHoy;
-
+var apiKey='3c77c751-e6a3-44d0-8979-de6f46250650';
 
 window.addEventListener('DOMContentLoaded', event => {
     window.formatearFecha=function (fecha) {
@@ -63,7 +63,9 @@ window.addEventListener('DOMContentLoaded', event => {
         $.ajax({
             url: `/api/empresas/${idEmpresa}`,
             method: "GET",
-            dataType: "json",
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             success: function (empresa) {
                 cargarPerfilEmpresa(empresa);
             },
@@ -112,7 +114,9 @@ window.addEventListener('DOMContentLoaded', event => {
         $.ajax({
             url: `/api/usuarios/${idEmpleado}`,
             method: "GET",
-            dataType: "json",
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             success: function (empleado) {
                 cargarPerfil(empleado);
             },
@@ -252,6 +256,9 @@ window.addEventListener('DOMContentLoaded', event => {
                     url: "/api/empresa/update",
                     method: "PUT",
                     contentType: "application/json",
+                    headers: {
+                        'Authorization': 'Bearer ' + apiKey
+                    },
                     data: JSON.stringify(datos),
                     success: function (response) {
                         mostrarMensaje(response.message, ".exito-msg");
@@ -280,6 +287,9 @@ window.addEventListener('DOMContentLoaded', event => {
                     url: "/api/usuarios/update",
                     method: "PUT",
                     contentType: "application/json",
+                    headers: {
+                        'Authorization': 'Bearer ' + apiKey
+                    },
                     data: JSON.stringify(datos),
                     success: function (response) {
                         mostrarMensaje(response.message, ".exito-msg");
@@ -319,6 +329,9 @@ window.addEventListener('DOMContentLoaded', event => {
             url: "/api/cambiar-password",
             method: "PUT",
             contentType: "application/json",
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             data: JSON.stringify({
                 id_usuario: idUsuario,
                 password_actual: passwordActual,
@@ -375,7 +388,9 @@ window.addEventListener('DOMContentLoaded', event => {
                         url: `api/empresas/${empresaId}`,
                         method: 'DELETE',
                         contentType: "application/json",
-
+                        headers: {
+                            'Authorization': 'Bearer ' + apiKey
+                        },
                         success: function (response) {
                             mostrarMensaje(response.message, ".exito-msg");
                             window.location.href = response.redirect;
@@ -396,7 +411,9 @@ window.addEventListener('DOMContentLoaded', event => {
                         url: `api/usuarios/${userId}`,
                         method: 'delete',
                         contentType: "application/json",
-
+                        headers: {
+                            'Authorization': 'Bearer ' + apiKey
+                        },
                         success: function (response) {
                             mostrarMensaje(response.message, ".exito-msg");
                             $('#contenedor-principal').show();
@@ -423,6 +440,9 @@ window.addEventListener('DOMContentLoaded', event => {
                 $.ajax({
                     url: '/api/logout',
                     method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + apiKey
+                    },
                     success: function (response) {
                         localStorage.removeItem('usuario');
                         localStorage.removeItem('empresa');

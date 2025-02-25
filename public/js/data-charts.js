@@ -206,6 +206,9 @@ window.addEventListener('DOMContentLoaded', event => {
             $.ajax({
                 url: `/api/fichajes/ausencias-semana/${fechaSeleccionada}/${empresa.id_empresa}`,
                 method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + apiKey
+                },
                 success: function (data) {
                     console.log("AusentesPorfecha: ", data);
                     let hoy = new Date().toISOString().split('T')[0];
@@ -336,6 +339,9 @@ window.addEventListener('DOMContentLoaded', event => {
             url: `/api/fichajes/tiempos-totales/${fechaSeleccionada}/${empresa.id_empresa}`,
             method: 'GET',
             contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
             success: function (response) {
 
                 tiempoTotalTrabajado = response.total_trabajado;
