@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 //use Illuminate\Support\Carbon;
 use Carbon\Carbon;
+use App\Events\FichajeRealizado;
 
 class FichajeController extends Controller
 {
@@ -112,7 +113,7 @@ class FichajeController extends Controller
                 'duracion' => $duracion, // Se almacena solo en fin_descanso
                 'comentarios' => $comentarios
             ]);
-
+            event(new FichajeRealizado($fichaje));
             return response()->json(['message' => 'Fichaje registrado correctamente', 'fichaje' => $fichaje], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error al registrar fichaje', 'error' => $e->getMessage()], 500);

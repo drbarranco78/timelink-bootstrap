@@ -8,7 +8,9 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Panel de control - Timelink</title>
-
+    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
     <!-- Estilos para el Cluster del mapa-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
@@ -16,12 +18,12 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    
+
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">    
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">    
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/boxicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/quill.snow.css') }}">
@@ -569,7 +571,8 @@
                                     <div class="small text-white"><i id="icono" class="fas fa-angle-down"></i>
                                     </div>
                                 </div>
-                                <div id="ficha-descansos" class="card-body bg-primary p-3 detalles-actividad l-height">
+                                <div id="ficha-descansos"
+                                    class="card-body bg-primary p-3 detalles-actividad l-height">
                                     <ul></ul>
                                 </div>
                             </div>
@@ -612,8 +615,8 @@
                                     Fichajes por Fecha
                                     <i id="show-lineChart" class="fas fa-angle-up toggle-chart"></i>
                                 </div>
-                                <div id="chartContainer" class="card-body chart-body"><canvas class="chart-canvas" id="multiLineChart"
-                                        width="100%" height="40"></canvas></div>
+                                <div id="chartContainer" class="card-body chart-body"><canvas class="chart-canvas"
+                                        id="multiLineChart" width="100%" height="40"></canvas></div>
                             </div>
                         </div>
                         <div class="col-xl-6">
@@ -637,8 +640,8 @@
                                     Ausencias por Semana
                                     <i id="show-lineChart" class="fas fa-angle-down toggle-chart"></i>
                                 </div>
-                                <div class="card-body chart-body" style="display: none;"><canvas class="chart-canvas" id="myBarChart" width="100%"
-                                        height="40"></canvas></div>
+                                <div class="card-body chart-body" style="display: none;"><canvas class="chart-canvas"
+                                        id="myBarChart" width="100%" height="40"></canvas></div>
                             </div>
                         </div>
 
@@ -649,8 +652,8 @@
                                     Totales por Fecha
                                     <i id="show-lineChart" class="fas fa-angle-down toggle-chart"></i>
                                 </div>
-                                <div class="card-body chart-body" style="display: none;"><canvas class="chart-canvas" id="myPieChart" width="100%"
-                                        height="40"></canvas></div>
+                                <div class="card-body chart-body" style="display: none;"><canvas class="chart-canvas"
+                                        id="myPieChart" width="100%" height="40"></canvas></div>
                             </div>
                         </div>
                     </div>
@@ -718,7 +721,7 @@
     </div>
     <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>
- 
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -727,14 +730,16 @@
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     {{-- <script src="{{ asset('js/app.js') }}"></script>  
     <script src="{{ asset('js/bootstrap.js') }}"></script>   --}}
+
+    {{-- @vite(['resources/js/app.js']) --}}
     <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/admin.js') }}"></script>
-    
+
     <script src="{{ asset('js/index.js') }}"></script>
     <script src="{{ asset('js/tinymce.min.js') }}"></script>
-    <script src="{{ asset('js/main.js') }}"></script>    
+    <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/data-charts.js') }}"></script>
-        
+
 
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.js"></script>

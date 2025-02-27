@@ -1,3 +1,15 @@
+// import './echo';
+
+// console.log('Escuchando eventos en admin...');
+
+// window.Echo.channel('fichajes')
+//     .listen('.fichaje.realizado', (e) => {
+//         console.log('Evento recibido:', e);
+        
+//         alert('¡Evento recibido en admin.js!');
+//     });
+
+
 window.addEventListener('DOMContentLoaded', event => {
     $(document).on('click', '#cerrar-solicitudes', function () {
         $('#div-solicitudes-acceso').hide();
