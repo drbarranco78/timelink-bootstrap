@@ -16,7 +16,8 @@ export default defineConfig({
             input: [
                 'resources/js/app.js',
                 'resources/js/echo.js',
-                'public/js/admin.js',
+                'resources/js/admin.js',
+                'resources/js/data-charts.js',
                 'resources/css/app.css'
             ],
             refresh: true,

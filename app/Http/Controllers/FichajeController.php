@@ -113,7 +113,10 @@ class FichajeController extends Controller
                 'duracion' => $duracion, // Se almacena solo en fin_descanso
                 'comentarios' => $comentarios
             ]);
+            Log::info('Emitiendo evento FichajeRealizado', ['fichaje' => $fichaje]);
+            //FichajeRealizado::dispatch($fichaje);
             event(new FichajeRealizado($fichaje));
+            Log::info('Después de emitir el evento');
             return response()->json(['message' => 'Fichaje registrado correctamente', 'fichaje' => $fichaje], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error al registrar fichaje', 'error' => $e->getMessage()], 500);

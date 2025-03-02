@@ -1,54 +1,59 @@
-// import './echo';
+import './echo';
 
-// console.log('Escuchando eventos en admin...');
+console.log('Escuchando eventos en admin...');
+window.cargarFichajesYAusentes = cargarFichajesYAusentes;
+function cargarFichajesYAusentes(fecha) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '/api/fichajes/fecha',
+            method: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            },
+            data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa }),
+            success: function (fichajes) {
+                // Llamar para obtener los ausentes
+                $.ajax({
+                    url: '/api/fichajes/ausentes',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': 'Bearer ' + apiKey
+                    },
+                    data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa }),
+                    success: function (ausentes) {
+                        // Resolvemos ambos datos en un solo objeto
+                        resolve({ fichajes, ausentes });
+                    },
+                    error: function (xhr) {
+                        reject("Error al obtener ausentes: " + xhr.responseJSON.message);
+                    }
+                });
+            },
+            error: function (xhr) {
+                reject("Error al cargar los fichajes: " + xhr.responseJSON.message);
+            }
+        });
+    });
+}
+window.Echo.channel('fichajes').listenToAll((event, data) => {
+    console.log('Evento recibido en fichajes:', event, data);
+});
+window.Echo.channel('fichajes')
+    .listen('.fichajeRealizado', (e) => {
+        console.log('Evento recibido:', e);
 
-// window.Echo.channel('fichajes')
-//     .listen('.fichaje.realizado', (e) => {
-//         console.log('Evento recibido:', e);
-        
-//         alert('¡Evento recibido en admin.js!');
-//     });
+        alert('¡Evento recibido en admin.js!');
+    });
 
-
+    console.log('Echo conectado:', window.Echo);
 window.addEventListener('DOMContentLoaded', event => {
     $(document).on('click', '#cerrar-solicitudes', function () {
         $('#div-solicitudes-acceso').hide();
     });
-    window.cargarFichajesYAusentes = function (fecha) {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url: '/api/fichajes/fecha',
-                method: 'POST',
-                contentType: 'application/json',
-                headers: {
-                    'Authorization': 'Bearer ' + apiKey
-                },
-                data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa }),
-                success: function (fichajes) {
-                    // Llamar para obtener los ausentes
-                    $.ajax({
-                        url: '/api/fichajes/ausentes',
-                        method: 'POST',
-                        contentType: 'application/json',
-                        headers: {
-                            'Authorization': 'Bearer ' + apiKey
-                        },
-                        data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa }),
-                        success: function (ausentes) {
-                            // Resolvemos ambos datos en un solo objeto
-                            resolve({ fichajes, ausentes });
-                        },
-                        error: function (xhr) {
-                            reject("Error al obtener ausentes: " + xhr.responseJSON.message);
-                        }
-                    });
-                },
-                error: function (xhr) {
-                    reject("Error al cargar los fichajes: " + xhr.responseJSON.message);
-                }
-            });
-        });
-    }
+    
+
     actualizarNotificaciones();
     obtenerFechaHora();
     // Llamada para obtener los fichajes de hoy

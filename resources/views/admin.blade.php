@@ -8,9 +8,11 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Panel de control - Timelink</title>
+    {{-- @vite(['resources/js/admin.js']) --}}
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/js/app.js', 'resources/js/admin.js','resources/js/data-charts.js'])
     @endif
+    
     <!-- Estilos para el Cluster del mapa-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
@@ -733,20 +735,21 @@
 
     {{-- @vite(['resources/js/app.js']) --}}
     <script src="{{ asset('js/common.js') }}"></script>
-    <script src="{{ asset('js/admin.js') }}"></script>
-
+    {{-- <script src="{{ asset('js/admin.js') }}"></script> --}}
+    
     <script src="{{ asset('js/index.js') }}"></script>
     <script src="{{ asset('js/tinymce.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
-    <script src="{{ asset('js/data-charts.js') }}"></script>
+    
 
 
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    {{-- <script src="{{ asset('js/data-charts.js') }}"></script> --}}
+
 </body>
 
 </html>

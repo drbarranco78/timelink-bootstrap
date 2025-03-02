@@ -23,6 +23,7 @@ window.addEventListener('DOMContentLoaded', event => {
         // Cambia el icono de dirección
         $(this).toggleClass('fa-angle-up fa-angle-down');
     });
+    
 
     window.actualizarCharts = function () {
         cargarDatosFichajes(fechaSelect).then(() => {
@@ -56,7 +57,7 @@ window.addEventListener('DOMContentLoaded', event => {
         return cargarFichajesYAusentes(fecha).then(data => {
             fichajesPorFecha = data.fichajes;
             ausentesPorFecha = data.ausentes;
-            console.log("Ausentes: ", ausentesPorFecha);
+           
 
         }).catch(error => {
             console.error("Error al obtener fichajes y ausentes:", error);
@@ -210,7 +211,7 @@ window.addEventListener('DOMContentLoaded', event => {
                     'Authorization': 'Bearer ' + apiKey
                 },
                 success: function (data) {
-                    console.log("AusentesPorfecha: ", data);
+                    
                     let hoy = new Date().toISOString().split('T')[0];
 
                     // Filtrar fechas menores o iguales a hoy
@@ -233,8 +234,6 @@ window.addEventListener('DOMContentLoaded', event => {
                     });
                     generarGraficoAusencias();
 
-                    console.log("Fechas filtradas: ", fechasFiltradas);
-                    console.log("Valores de ausencias: ", valoresAusencias);
                 },
                 error: function (xhr, status, error) {
                     console.error("Error cargando ausencias:", error);
@@ -362,7 +361,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
         numAusentes = obtenerTotalEmpleadosActivos();
         const factor = 3600;
-        console.log("Numero de ausentes " + numAusentes)
+        
 
         const data = {
             labels: ['Tiempo trabajado', 'Tiempo de descanso', 'Número de ausencias'],

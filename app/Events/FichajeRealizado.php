@@ -38,20 +38,20 @@ class FichajeRealizado implements ShouldBroadcast
     }
     public function broadcastAs()
     {
-        return 'fichaje.realizado';
+        return 'fichajeRealizado';
     }
-    public function broadcastWith()
-    {
-        return [
-            'fichaje' => [
-                'id_usuario' => $this->fichaje->id_usuario,
-                'tipo_fichaje' => $this->fichaje->tipo_fichaje,
-                'fecha' => $this->fichaje->fecha,
-                'hora' => $this->fichaje->hora,
-                'ubicacion' => $this->fichaje->ubicacion,
-                'ciudad' => $this->fichaje->ciudad,
-                // Omite latitud, longitud, duracion, comentarios si no los necesitas
-            ]
-        ];
-    }
+    // public function broadcastWith()
+    // {
+    //     return [
+    //         'fichaje' => [
+    //             'id_usuario' => $this->fichaje->id_usuario,
+    //             'tipo_fichaje' => $this->fichaje->tipo_fichaje,
+    //             'fecha' => $this->fichaje->fecha,
+    //             'hora' => $this->fichaje->hora,
+    //             'ubicacion' => $this->fichaje->ubicacion,
+    //             'ciudad' => $this->fichaje->ciudad,
+    //             // Omite latitud, longitud, duracion, comentarios si no los necesitas
+    //         ]
+    //     ];
+    // }
 }
