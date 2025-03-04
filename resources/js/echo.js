@@ -5,11 +5,13 @@ window.Pusher = Pusher;
 
 window.Echo = new Echo({
     broadcaster: 'reverb',
-    key: import.meta.env.VITE_REVERB_APP_KEY,
-    wsHost: import.meta.env.VITE_REVERB_HOST,
-    wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-    wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
-    // forceTLS: false,
-    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
-    enabledTransports: ['ws', 'wss'],
+    host: import.meta.env.VITE_REVERB_HOST, // Usa el host de Railway
+    client: new Pusher(import.meta.env.VITE_REVERB_APP_KEY, {
+        cluster: 'mt1', // Obligatorio pero no se usa en Reverb
+        wsHost: import.meta.env.VITE_REVERB_HOST, // Usa Railway o el dominio de tu backend
+        wsPort: 80,
+        wssPort: 443,
+        forceTLS: true,
+        enabledTransports: ['ws', 'wss'], // Permite WebSockets seguros
+    }),
 });

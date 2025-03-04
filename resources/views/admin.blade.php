@@ -9,10 +9,11 @@
     <meta name="author" content="" />
     <title>Panel de control - Timelink</title>
     {{-- @vite(['resources/js/admin.js']) --}}
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+    {{-- @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/js/app.js', 'resources/js/admin.js','resources/js/data-charts.js'])
-    @endif
-    
+    @endif --}}
+    @vite(['resources/js/app.js', 'resources/js/admin.js', 'resources/js/data-charts.js'])
+
     <!-- Estilos para el Cluster del mapa-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
