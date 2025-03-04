@@ -34,7 +34,9 @@ class FichajeRealizado implements ShouldBroadcast
         // return [
         //     new PrivateChannel('channel-name'),
         // ];
-        return new Channel('fichajes');
+        return [
+            new Channel('fichajes'),
+        ];
     }
     public function broadcastAs()
     {
