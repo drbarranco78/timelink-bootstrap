@@ -14,6 +14,9 @@ window.addEventListener('DOMContentLoaded', event => {
     let totalEmpleadosActivos;
     let numAusentes;
     let valoresAusencias, etiquetasDias;
+    let tableHead = $("#report-table thead");
+    let tableBody = $("#report-table tbody");
+    let filaHead, filaBody;
 
 
     $(document).on('click', '.toggle-chart', function () {
@@ -405,7 +408,7 @@ window.addEventListener('DOMContentLoaded', event => {
     $(".report-card").click(function () {
         // Obtener el título del informe clickeado
         let reportTitle = $(this).find(".report-title").text();
-        fechaInformes=fechaHoy;
+        fechaInformes = fechaHoy;
         // Llamar a la función para generar el informe
         elegirInforme(reportTitle);
     });
@@ -425,14 +428,13 @@ window.addEventListener('DOMContentLoaded', event => {
             $('#report-modal').show();
             $('.modal-title').text(titulo);
             // $('.lock-screen').addClass('activo');
-            let tableHead = $("#report-table thead");
-            let tableBody = $("#report-table tbody");
+
             tableHead.empty();
             tableBody.empty();
             switch (titulo) {
                 case "Informe de fichajes diarios":
                     console.log(fichajesPorFecha);
-                    let filaHead = `<tr>
+                    filaHead = `<tr>
                         <th>ID Empleado</th>
                         <th>Nombre</th>
                         <th>Tipo de Fichaje</th>
@@ -443,7 +445,7 @@ window.addEventListener('DOMContentLoaded', event => {
                     tableHead.append(filaHead);
                     fichajesPorFecha.forEach(fichaje => {
                         let nombreCompleto = `${fichaje.usuario.nombre} ${fichaje.usuario.apellidos}`.trim();
-                        let filaBody = `<tr>
+                        filaBody = `<tr>
                         <td>${fichaje.usuario.dni}</td>
                         <td>${nombreCompleto}</td>
                         <td>${fichaje.tipo_fichaje}</td>
@@ -455,9 +457,28 @@ window.addEventListener('DOMContentLoaded', event => {
                     });
                     generarInforme(fichajesPorFecha);
                     break;
-                case "Informe de ausencias semanales":
-
-                    
+                case "Informe de ausencias diárias":
+                    console.log(ausentesPorFecha);
+                    filaHead = `<tr>
+                        <th>ID Empleado</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Cargo</th>
+                                               
+                    </tr>`;
+                    tableHead.append(filaHead);
+                    ausentesPorFecha.forEach(empleado => {
+                        let nombreCompleto = `${empleado.nombre} ${empleado.apellidos}`.trim();
+                        filaBody = `<tr>
+                        <td>${empleado.dni}</td>
+                        <td>${nombreCompleto}</td>
+                        <td>${empleado.email}</td>
+                        <td>${empleado.cargo}</td>
+                        
+                    </tr>`;
+                        tableBody.append(filaBody);
+                    });
+                    generarInforme(fichajesPorFecha);
 
                     break;
                 case "Tiempo total de descanso":
@@ -478,7 +499,7 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
     function generarInforme(datos) {
-        
+
         dataTable = $('#report-table').DataTable({
             responsive: true,
             autoWidth: false,

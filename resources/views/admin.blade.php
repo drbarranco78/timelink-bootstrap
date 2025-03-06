@@ -702,9 +702,8 @@
                             <div class="report-icon">
                                 <i class="far fa-calendar-times"></i>
                             </div>
-                            <h5 class="report-title">Informe de ausencias semanales</h5>
-                            <p class="report-desc">Lista los empleados que no han registrado fichajes durante la
-                                semana.</p>
+                            <h5 class="report-title">Informe de ausencias diárias</h5>
+                            <p class="report-desc">Lista los empleados que no han registrado fichajes en el día seleccionado</p>
                         </div>
 
                         <div class="report-card">
