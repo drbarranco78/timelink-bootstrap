@@ -4,6 +4,7 @@ window.addEventListener('DOMContentLoaded', event => {
     let fichajesPorFecha;
     let ausentesPorFecha;
     let fechaSelect = $('#selector-fecha').val();
+    let fechaInformes = $('#selector-fecha').val();
     let horasExactas = [];
     let entradas = [];
     let descansos = [];
@@ -23,7 +24,6 @@ window.addEventListener('DOMContentLoaded', event => {
         // Cambia el icono de dirección
         $(this).toggleClass('fa-angle-up fa-angle-down');
     });
-    
 
     window.actualizarCharts = function () {
         cargarDatosFichajes(fechaSelect).then(() => {
@@ -31,8 +31,6 @@ window.addEventListener('DOMContentLoaded', event => {
             cargarMapa(fichajesPorFecha);
             obtenerAusenciasSemana(fechaSelect);
             obtenerTiemposTotales(fechaSelect);
-
-
         });
     }
     actualizarCharts();
@@ -57,7 +55,7 @@ window.addEventListener('DOMContentLoaded', event => {
         return cargarFichajesYAusentes(fecha).then(data => {
             fichajesPorFecha = data.fichajes;
             ausentesPorFecha = data.ausentes;
-           
+
 
         }).catch(error => {
             console.error("Error al obtener fichajes y ausentes:", error);
@@ -69,12 +67,10 @@ window.addEventListener('DOMContentLoaded', event => {
         fichajesPorFecha.forEach(fichaje => {
             let fechaFichaje = new Date(fechaSelect).toISOString().split('T')[0];
             let fechaCompleta = `${fechaFichaje}T${fichaje.hora}`;
-
             horasExactas.push(fechaCompleta);
 
             // Agrupar por tipo de fichaje
             if (fichaje.tipo_fichaje === "entrada") {
-
                 entradas.push(fechaCompleta);
             }
             if (fichaje.tipo_fichaje === "inicio_descanso") {
@@ -92,8 +88,6 @@ window.addEventListener('DOMContentLoaded', event => {
         function obtenerCantidad(fichajes, hora) {
             return fichajes.filter(f => f === hora).length;
         }
-
-
         return {
             horasExactas,
             entradas: horasExactas.map(hora => ({ x: hora, y: obtenerCantidad(entradas, hora) })),
@@ -126,16 +120,16 @@ window.addEventListener('DOMContentLoaded', event => {
         const data = {
             datasets: [
                 {
-                    label: "Entrada", data: entradas, borderColor: "rgba(75, 192, 192, 0.8)", backgroundColor: "rgba(75, 192, 192, 0.2)",fill: true, tension: 0.1, spanGaps: false, pointRadius: 6,
+                    label: "Entrada", data: entradas, borderColor: "rgba(75, 192, 192, 0.8)", backgroundColor: "rgba(75, 192, 192, 0.2)", fill: true, tension: 0.1, spanGaps: false, pointRadius: 6,
                     pointHoverRadius: 8,
                 },
                 {
-                    label: "Inicio_descanso", data: descansos, borderColor: "rgba(54, 162, 235, 0.8)", backgroundColor:"rgba(54, 162, 235, 0.2)",fill: true, tension: 0.1, spanGaps: false, pointRadius: 6,
+                    label: "Inicio_descanso", data: descansos, borderColor: "rgba(54, 162, 235, 0.8)", backgroundColor: "rgba(54, 162, 235, 0.2)", fill: true, tension: 0.1, spanGaps: false, pointRadius: 6,
                     pointHoverRadius: 8,
 
                 },
                 {
-                    label: "Salida", data: salidas, borderColor: "rgba(255, 205, 86, 0.8)", backgroundColor:"rgba(255, 205, 86, 0.2)",fill: true, tension: 0.1, spanGaps: false, pointRadius: 6,
+                    label: "Salida", data: salidas, borderColor: "rgba(255, 205, 86, 0.8)", backgroundColor: "rgba(255, 205, 86, 0.2)", fill: true, tension: 0.1, spanGaps: false, pointRadius: 6,
                     pointHoverRadius: 8,
                 }
             ]
@@ -201,7 +195,6 @@ window.addEventListener('DOMContentLoaded', event => {
             options: options
         });
     }
-
     async function obtenerAusenciasSemana(fechaSeleccionada) {
         try {
             $.ajax({
@@ -211,7 +204,7 @@ window.addEventListener('DOMContentLoaded', event => {
                     'Authorization': 'Bearer ' + apiKey
                 },
                 success: function (data) {
-                    
+
                     let hoy = new Date().toISOString().split('T')[0];
 
                     // Filtrar fechas menores o iguales a hoy
@@ -243,7 +236,6 @@ window.addEventListener('DOMContentLoaded', event => {
             console.error("Error inesperado:", error);
         }
 
-        
         function generarGraficoAusencias(params) {
             // Configurar datos para la gráfica
             const chartData = {
@@ -284,7 +276,6 @@ window.addEventListener('DOMContentLoaded', event => {
                 }
             });
         }
-
     }
 
     function cargarMapa(fichajesPorFecha) {
@@ -334,7 +325,7 @@ window.addEventListener('DOMContentLoaded', event => {
             (segundosRestantes < 10 ? '0' : '') + segundosRestantes;
     }
     function obtenerTiemposTotales(fechaSeleccionada) {
-        $.ajax({            
+        $.ajax({
             url: `/api/fichajes/tiempos-totales/${fechaSeleccionada}/${empresa.id_empresa}`,
             method: 'GET',
             contentType: 'application/json',
@@ -353,20 +344,17 @@ window.addEventListener('DOMContentLoaded', event => {
             }
         });
     }
-
     function obtenerTotalEmpleadosActivos() {
         return ausentesPorFecha.filter(f => f.rol !== "maestro" && f.estado === "aceptada").length;
     }
     function generarGraficoTiempos() {
-
         numAusentes = obtenerTotalEmpleadosActivos();
         const factor = 3600;
-        
 
         const data = {
             labels: ['Tiempo trabajado', 'Tiempo de descanso', 'Número de ausencias'],
             datasets: [{
-                data: [tiempoTotalTrabajado, tiempoTotalDescanso, numAusentes*factor], // Evitar valores cero
+                data: [tiempoTotalTrabajado, tiempoTotalDescanso, numAusentes * factor], // Evitar valores cero
                 backgroundColor: ['rgba(75, 192, 192, 0.8)', 'rgba(54, 162, 235, 0.8)', 'rgba(255, 99, 132, 0.8)'],
             }],
         }
@@ -387,7 +375,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
                             // Obtiene la etiqueta
                             var label = tooltipItem.label;
-                            
+
                             // Si el valor es un tiempo en segundos, formatearlo como HH:mm:ss
                             if (label === 'Tiempo trabajado' || label === 'Tiempo de descanso') {
                                 return label + ': ' + segundosAHora(value); // Formatear tiempo
@@ -400,7 +388,6 @@ window.addEventListener('DOMContentLoaded', event => {
                     }
                 }
             },
-
         };
         var ctx = document.getElementById("myPieChart").getContext("2d");
         if (pieChart) {
@@ -413,6 +400,94 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
-    
 
+    // Zona de informes 
+    $(".report-card").click(function () {
+        // Obtener el título del informe clickeado
+        let reportTitle = $(this).find(".report-title").text();
+        fechaInformes=fechaHoy;
+        // Llamar a la función para generar el informe
+        elegirInforme(reportTitle);
+    });
+
+    $('#selector-fecha-informes').change(function () {
+        fechaInformes = $(this).val();
+        elegirInforme($('.modal-title').text());
+    });
+
+    // Función para manejar la generación del informe
+    function elegirInforme(titulo) {
+        if ($.fn.DataTable.isDataTable('#report-table')) {
+            $('#report-table').DataTable().destroy();
+        }
+        $('#selector-fecha-informes').val(fechaInformes);
+        cargarDatosFichajes(fechaInformes).then(() => {
+            $('#report-modal').show();
+            $('.modal-title').text(titulo);
+            // $('.lock-screen').addClass('activo');
+            let tableHead = $("#report-table thead");
+            let tableBody = $("#report-table tbody");
+            tableHead.empty();
+            tableBody.empty();
+            switch (titulo) {
+                case "Informe de fichajes diarios":
+                    console.log(fichajesPorFecha);
+                    let filaHead = `<tr>
+                        <th>ID Empleado</th>
+                        <th>Nombre</th>
+                        <th>Tipo de Fichaje</th>
+                        <th>Hora</th>
+                        <th>Ubicación</th>
+                        <th>Ciudad</th>                        
+                    </tr>`;
+                    tableHead.append(filaHead);
+                    fichajesPorFecha.forEach(fichaje => {
+                        let nombreCompleto = `${fichaje.usuario.nombre} ${fichaje.usuario.apellidos}`.trim();
+                        let filaBody = `<tr>
+                        <td>${fichaje.usuario.dni}</td>
+                        <td>${nombreCompleto}</td>
+                        <td>${fichaje.tipo_fichaje}</td>
+                        <td>${fichaje.hora}</td>
+                        <td>${fichaje.ubicacion}</td>
+                        <td>${fichaje.ciudad}</td>
+                    </tr>`;
+                        tableBody.append(filaBody);
+                    });
+                    generarInforme(fichajesPorFecha);
+                    break;
+                case "Informe de ausencias semanales":
+
+                    
+
+                    break;
+                case "Tiempo total de descanso":
+
+                    break;
+                case "Porcentaje de horas trabajadas":
+
+                    break;
+                case "Retrasos en fichajes":
+                    console.log("Generando informe de retrasos en fichajes...");
+                    break;
+                case "Tiempo total trabajado":
+                    console.log("Generando informe de tiempo total trabajado...");
+                    break;
+                default:
+                    console.log("Informe desconocido");
+            }
+        });
+    }
+    function generarInforme(datos) {
+        
+        dataTable = $('#report-table').DataTable({
+            responsive: true,
+            autoWidth: false,
+            pageLength: 10, // Cantidad de filas por página
+            lengthMenu: [5, 10, 25, 50], // Opciones de paginación
+            language: {
+                "url": "/js/Es-es.json"
+            }
+        });
+
+    }
 });

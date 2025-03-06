@@ -356,15 +356,20 @@ window.addEventListener('DOMContentLoaded', event => {
     $('#enlace-perfil').click(function () {
         consultarEmpleado(usuarioActivo.id);
         $('#contenedor-principal').hide();
+        $('#report-container').hide();
         $('#seccion-perfil').show();
+       
     });
 
     $('#perfil-empresa').click(function () {
+        $('#report-container').hide();
         consultarEmpresa(empresa.id_empresa);
+        
     })
     $('#dashboard-inicio').click(function () {
         $('#contenedor-principal').show();
         $('#seccion-perfil').hide();
+        $('#report-container').hide();
     });
     $('#remove-employee-form').submit(function (event) {
         event.preventDefault();

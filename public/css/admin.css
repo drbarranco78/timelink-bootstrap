@@ -69,7 +69,7 @@
 } */
 
 #selector-fecha{
-    padding: 0 !important;
+    
     margin: 0 !important;
     height: 30px !important;
     padding: 10px !important;
@@ -335,3 +335,167 @@ td,th{
 text-align: center !important;
 } */
 
+
+
+/* ZONA DE INFORMES */
+
+#reports{
+    margin-top: 50px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    
+}
+#reports h2{
+    margin-left: 20px;
+    /* font-weight: bold; */
+}
+#report-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas de igual tamaño */
+    gap: 30px; /* Espaciado entre elementos */
+    background-color: whitesmoke;
+    place-items: center;
+    margin: 20px 50px;
+    width: 80%; /* Asegura que ocupe todo el ancho del contenedor padre */
+    height: 100%;
+    padding: 50px;
+    border-radius: 15px;
+}
+.report-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start !important;
+    
+    cursor: pointer;
+    width: 95%;
+    height: 220px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.report-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px; 
+    height: 50px !important;
+    margin-bottom: 20px;
+    background-color: #D5F9EE; 
+    border-radius: 40%;
+    font-size: 20px; 
+    /* border: 2px solid #333; */
+}
+
+.report-icon i {
+    font-size: 50px; 
+    color: white !important; 
+    -webkit-text-stroke: 2px blue !important;
+}
+
+
+.report-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.report-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.report-desc {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Ventana de informes 
+.lock-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    z-index: 10;
+}
+.lock-screen.activo {
+    visibility: visible;
+    opacity: 1;
+} */
+/* Estilos para la ventana emergente de información */
+#report-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: whitesmoke;
+    padding: 15px 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: none;
+    text-align: center;
+    z-index: 6;
+}
+
+.modal-lg {
+    max-width: 100% !important;
+}
+#report-table {
+    width: 100% !important;
+}
+.dataTables_wrapper {
+    width: 100% !important;
+}
+
+/* Estilos para el botón de cerrar (X) */
+.btn-close {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    float: right;
+    border: none;
+    background: none;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    color: black; 
+}
+
+.btn-close:hover{
+    color: red;
+}
+
+.modal-header{
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+.div-calendar-informes{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 20px;
+    
+}
+#selector-fecha-informes{
+    padding: 0 10px;
+    border-radius: 5px;
+}

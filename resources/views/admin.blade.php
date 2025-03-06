@@ -150,7 +150,7 @@
                             </nav>
                         </div>
                         {{-- <div class="sb-sidenav-menu-heading">Addons</div> --}}
-                        <a class="nav-link" href="charts.html">
+                        <a id="report-link" class="nav-link" href="#">
                             <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                             Informes
                         </a>
@@ -685,7 +685,106 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="reports" class="mt-4">
+                    <h2>Informes</h2>
+                    <div id="report-container">
+
+                        <div class="report-card">
+                            <div class="report-icon">
+                                <i class="far fa-clock"></i>
+                            </div>
+                            <h5 class="report-title">Informe de fichajes diarios</h5>
+                            <p class="report-desc">Muestra los fichajes diarios de todos los empleados</p>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-icon">
+                                <i class="far fa-calendar-times"></i>
+                            </div>
+                            <h5 class="report-title">Informe de ausencias semanales</h5>
+                            <p class="report-desc">Lista los empleados que no han registrado fichajes durante la
+                                semana.</p>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-icon">
+                                <i class="far fa-pause-circle"></i>
+                            </div>
+                            <h5 class="report-title">Tiempo total de descanso</h5>
+                            <p class="report-desc">Calcula el tiempo acumulado en pausas de cada empleado.</p>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <h5 class="report-title">Porcentaje de horas trabajadas</h5>
+                            <p class="report-desc">Muestra la relación entre horas trabajadas y la jornada laboral
+                                total.</p>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-icon">
+                                <i class="far fa-bell"></i>
+                            </div>
+                            <h5 class="report-title">Retrasos en fichajes</h5>
+                            <p class="report-desc">Registra los fichajes realizados fuera del horario establecido.</p>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-icon">
+                                <i class="far fa-hourglass"></i>
+                            </div>
+                            <h5 class="report-title">Tiempo total trabajado</h5>
+                            <p class="report-desc">Calcula el tiempo total de trabajo de cada empleado
+                                laboral.</p>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
             </main>
+            <!-- Modal para mostrar el informe -->
+            {{-- <div class="lock-screen"> --}}
+            <div id="report-modal" aria-labelledby="reportModalLabel">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reportModalLabel">Informe de Fichajes</h5>
+                            <div class="div-calendar-informes">
+                                <span class="mt-4">Mostrar datos del dia: </span>
+                                <input id="selector-fecha-informes" class="mt-4" type="date">
+                            </div>
+                           
+                            <button type="button" class="btn-close"><span id="span-close">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table id="report-table" class="table table-striped table-bordered nowrap" style="width:100%">
+
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Empleado</th>
+                                        <th>Fecha</th>
+                                        <th>Hora Entrada</th>
+                                        <th>Hora Salida</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Datos de la tabla -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- </div> --}}
+
+
+
             <footer id="footer" class="footer">
                 <div class="copyright">
                     &copy; Copyright <strong><span>TimeLink</span></strong>. All Rights Reserved
@@ -737,18 +836,19 @@
     {{-- @vite(['resources/js/app.js']) --}}
     <script src="{{ asset('js/common.js') }}"></script>
     {{-- <script src="{{ asset('js/admin.js') }}"></script> --}}
-    
+
     <script src="{{ asset('js/index.js') }}"></script>
     <script src="{{ asset('js/tinymce.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
-    
+
 
 
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
+    </script>
     {{-- <script src="{{ asset('js/data-charts.js') }}"></script> --}}
 
 </body>

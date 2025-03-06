@@ -98,7 +98,7 @@ function actualizarTablaFichajes(fichajes) {
     // Volver a inicializar DataTable
     $('#tabla-fichajes').DataTable({
         language: {
-            "url": "/js/es-ES.json"
+            "url": "/js/Es-es.json"
         },
         responsive: true
     });
