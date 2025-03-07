@@ -22,10 +22,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     {{-- <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" /> --}}
 
-    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.2/b-3.2.2/b-html5-3.2.2/b-print-3.2.2/r-3.0.4/datatables.min.css" rel="stylesheet" integrity="sha384-Lyca+jsk9Q+XLYmuTBriITsVJpOxGXNqWAWFFT5SdYRiDsUSGoaekwOTIO9kgfem" crossorigin="anonymous">
- 
-    
-    
+    <link
+        href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.2/b-3.2.2/b-html5-3.2.2/b-print-3.2.2/r-3.0.4/datatables.min.css"
+        rel="stylesheet" integrity="sha384-Lyca+jsk9Q+XLYmuTBriITsVJpOxGXNqWAWFFT5SdYRiDsUSGoaekwOTIO9kgfem"
+        crossorigin="anonymous">
+
+
+
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
@@ -616,7 +619,7 @@
                     <div class="row">
                         <div class="col-xl-6">
                             <div class="card mb-4">
-                                <div class="card-header">
+                                <div class="card-header chart-header c-pointer">
                                     <i class="fas fa-chart-area me-1"></i>
                                     Fichajes por Fecha
                                     <i id="show-lineChart" class="fas fa-angle-up toggle-chart"></i>
@@ -627,7 +630,7 @@
                         </div>
                         <div class="col-xl-6">
                             <div class="card mb-4">
-                                <div class="card-header">
+                                <div class="card-header chart-header c-pointer">
                                     <i class="fas fa-chart-area me-1"></i>
                                     Mapa de fichajes
                                     <i id="show-lineChart" class="fas fa-angle-up toggle-chart"></i>
@@ -641,7 +644,7 @@
                         </div>
                         <div class="col-xl-6">
                             <div class="card mb-4">
-                                <div class="card-header">
+                                <div class="card-header chart-header c-pointer">
                                     <i class="fas fa-chart-bar me-1"></i>
                                     Ausencias por Semana
                                     <i id="show-lineChart" class="fas fa-angle-down toggle-chart"></i>
@@ -653,7 +656,7 @@
 
                         <div class="col-xl-6">
                             <div class="card mb-4">
-                                <div class="card-header">
+                                <div class="card-header chart-header c-pointer">
                                     <i class="fas fa-chart-area me-1"></i>
                                     Totales por Fecha
                                     <i id="show-lineChart" class="fas fa-angle-down toggle-chart"></i>
@@ -706,7 +709,8 @@
                                 <i class="far fa-calendar-times"></i>
                             </div>
                             <h5 class="report-title">Informe de ausencias</h5>
-                            <p class="report-desc">Lista los empleados que no han registrado fichajes en el día seleccionado</p>
+                            <p class="report-desc">Lista los empleados que no han registrado fichajes en el día
+                                seleccionado</p>
                         </div>
 
                         <div class="report-card">
@@ -731,7 +735,8 @@
                                 <i class="far fa-hourglass"></i>
                             </div>
                             <h5 class="report-title">Tiempo extra trabajado</h5>
-                            <p class="report-desc">Detalla las horas trabajadas por empleado que superan la jornada laboral estándar</p>
+                            <p class="report-desc">Detalla las horas trabajadas por empleado que superan la jornada
+                                laboral estándar</p>
                         </div>
 
                         <div class="report-card">
@@ -750,42 +755,50 @@
                                 {{-- <i class="fas fa-map"></i>  --}}
                             </div>
                             <h5 class="report-title">Fichajes en ruta</h5>
-                            <p class="report-desc">Registra los fichajes realizados por empleados fuera de su ubicación habitual</p>
+                            <p class="report-desc">Registra los fichajes realizados por empleados fuera de su ubicación
+                                habitual</p>
                         </div>
-                        
+
                         <div class="report-card">
                             <div class="report-icon">
                                 <i class="far fa-user-circle"></i>
                                 {{-- <i class="fas fa-user-slash"></i> --}}
                             </div>
                             <h5 class="report-title">Empleados inactivos</h5>
-                            <p class="report-desc">Lista a los empleados en baja, vacaciones o con estado pendiente de aceptar o rechazados</p>
+                            <p class="report-desc">Lista a los empleados en baja, vacaciones o con estado pendiente de
+                                aceptar o rechazados</p>
                         </div>
-                        
+
                         <div class="report-card">
                             <div class="report-icon">
                                 <i class="far fa-id-card"></i>
                                 {{-- <i class="fas fa-users"></i> --}}
                             </div>
                             <h5 class="report-title">Total de plantilla</h5>
-                            <p class="report-desc">Listado de todos los empleados registrados, tanto activos como inactivos</p>
+                            <p class="report-desc">Listado de todos los empleados registrados, tanto activos como
+                                inactivos</p>
                         </div>
                     </div>
                     <div id="report-details" aria-labelledby="reportModalLabel">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="reportModalLabel">Informe de Fichajes</h5>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fas fa-arrow-left close-report c-pointer"></i>
+
+                                        <h5 class="modal-title" id="reportModalLabel">Informe de Fichajes</h5>
+                                    </div>
                                     <div class="div-calendar-informes">
-                                        <span class="mt-4">Mostrar datos del dia: </span>
+                                        <span class="mt-4">Mostrando datos de: </span>
                                         <input id="selector-fecha-informes" class="mt-4" type="date">
                                     </div>
-                                   
+
                                     <button type="button" class="btn-close"><span id="span-close"></span></button>
                                 </div>
                                 <div class="modal-body">
-                                    <table id="report-table" class="table table-striped table-bordered nowrap" style="width:100%">
-        
+                                    <table id="report-table" class="table table-striped table-bordered nowrap"
+                                        style="width:100%">
+
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -811,7 +824,7 @@
             </main>
             <!-- Modal para mostrar el informe -->
             {{-- <div class="lock-screen"> --}}
-            
+
             {{-- </div> --}}
 
 
@@ -871,9 +884,16 @@
     <script src="{{ asset('js/index.js') }}"></script>
     <script src="{{ asset('js/tinymce.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.2/b-3.2.2/b-html5-3.2.2/b-print-3.2.2/r-3.0.4/datatables.min.js" integrity="sha384-/wsDbsz8pRfwq3zQ5D36rGcm7HGUCCg0WxzK0y3yxeRsF7+PKBoPEorAVw441sbW" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"
+        integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"
+        integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous">
+    </script>
+    <script
+        src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.2/b-3.2.2/b-html5-3.2.2/b-print-3.2.2/r-3.0.4/datatables.min.js"
+        integrity="sha384-/wsDbsz8pRfwq3zQ5D36rGcm7HGUCCg0WxzK0y3yxeRsF7+PKBoPEorAVw441sbW" crossorigin="anonymous">
+    </script>
 
 
     {{-- <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>

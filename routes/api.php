@@ -14,7 +14,7 @@ Route::middleware([ApiKeyMiddleware::class])->group(function () {
     Route::post('/empresas', [EmpresaController::class, 'store']);
     Route::get('/empresas/{id}', [EmpresaController::class, 'show']);
     Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy']);
-    Route::get('/empresa/{idEmpresa}/maestro', [UserController::class, 'obtenerEmailMaestro']);
+    Route::get('/empresa/{idEmpresa}/maestro', [UserController::class, 'obtenerEmailMaestro']);    
     Route::get('/empresa/{idEmpresa}/usuarios', [UserController::class, 'obtenerUsuariosPorEmpresa']);
     Route::put('/empresa/update', [EmpresaController::class, 'update']);
 

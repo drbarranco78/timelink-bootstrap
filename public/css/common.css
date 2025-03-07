@@ -15,7 +15,7 @@
 @media (max-width: 1200px) {
 
     .fecha-actual {
-        font-size: 14px !important;
+        font-size: 16px !important;
     }
 
     #span-fecha {
@@ -34,9 +34,9 @@
         transform: translateY(-50px);
     }
 
-    #nombre-empresa {
+    /* #nombre-empresa {
         font-size: 18px !important;
-    }
+    } */
 
     #sidebarToggle {
         float: left !important;
@@ -72,6 +72,9 @@
 
     #div-registro-ubicacion {
         width: 80vw;
+    }
+    #span-fecha{
+        display: none;
     }
 
     /* .chart-canvas{

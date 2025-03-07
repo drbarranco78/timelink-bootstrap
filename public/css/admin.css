@@ -495,6 +495,8 @@ text-align: center !important;
     float: right;
 }
 .dt-paging{
-    width: fit-content !important;
-    
+    width: fit-content !important;    
+}
+.c-pointer {
+    cursor: pointer;
 }

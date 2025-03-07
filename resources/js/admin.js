@@ -507,6 +507,8 @@ window.addEventListener('DOMContentLoaded', event => {
             // $('#report-container').show();
             // $('#reports h2').show();
             $('#reports').show();
+            $('#report-details').hide();
+            $('#report-container').show();
             $('#contenedor-principal').hide(); 
             $('#seccion-perfil').hide();       
     });

@@ -177,13 +177,15 @@ class UserController extends Controller
         }
     }
     
-    public function obtenerUsuariosPorEmpresa($idEmpresa) 
+    public function obtenerUsuariosPorEmpresa($idEmpresa, Request $request)
     {
-        $usuarios = User::where('id_empresa', $idEmpresa)->get();
+        $fecha = $request->query('fecha', now()->toDateString());
+        $usuarios = User::where('id_empresa', $idEmpresa)
+            ->whereDate('created_at', '<=', $fecha)
+            ->get();
 
-        return response()->json($usuarios, 200); 
+        return response()->json($usuarios, 200);
     }
-
 
     public function obtenerUsuarioPorId($id)
     {
