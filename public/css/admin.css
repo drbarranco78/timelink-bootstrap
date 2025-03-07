@@ -456,7 +456,7 @@ text-align: center !important;
 }
 
 .modal-lg {
-    max-width: 100% !important;
+    max-width: 90%;
 }
 #report-table {
     width: 100% !important;
@@ -469,7 +469,7 @@ text-align: center !important;
 .btn-close {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    
     float: right;
     border: none;
     background: none;
@@ -487,6 +487,7 @@ text-align: center !important;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
+    border-bottom: 1px solid black;
 }
 .div-calendar-informes{
     display: flex;
@@ -498,4 +499,27 @@ text-align: center !important;
 #selector-fecha-informes{
     padding: 0 10px;
     border-radius: 5px;
+}
+.dt-buttons{
+    
+    margin-top: 30px;
+}
+
+.dt-buttons button{
+    margin: 10px 20px;
+    font-size: 20px;
+    border-radius: 10px !important;
+    padding: 10px 20px;
+}
+.dt-info{
+    margin-top: 20px;
+}
+.dt-search{
+    margin-bottom: 10px;
+    width: fit-content !important;
+    float: right;
+}
+.dt-paging{
+    width: fit-content !important;
+    
 }

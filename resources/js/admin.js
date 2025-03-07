@@ -1,41 +1,46 @@
 // import './echo';
 
+$(document).on('mousedown', function (e) {
+    if (!$(e.target).closest('#div-solicitudes-acceso').length) {
+        $('#div-solicitudes-acceso').css("display", "none");            
+    }
+});
 //console.log('Escuchando eventos en admin...');
 window.cargarFichajesYAusentes = cargarFichajesYAusentes;
+// Función optimizada para obtener fichajes y ausentes en paralelo
 function cargarFichajesYAusentes(fecha) {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url: '/api/fichajes/fecha',
-            method: 'POST',
-            contentType: 'application/json',
-            headers: {
-                'Authorization': 'Bearer ' + apiKey
-            },
-            data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa }),
-            success: function (fichajes) {
-                // Llamar para obtener los ausentes
-                $.ajax({
-                    url: '/api/fichajes/ausentes',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    headers: {
-                        'Authorization': 'Bearer ' + apiKey
-                    },
-                    data: JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa }),
-                    success: function (ausentes) {
-                        // Resolvemos ambos datos en un solo objeto
-                        resolve({ fichajes, ausentes });
-                    },
-                    error: function (xhr) {
-                        reject("Error al obtener ausentes: " + xhr.responseJSON.message);
-                    }
-                });
-            },
-            error: function (xhr) {
-                reject("Error al cargar los fichajes: " + xhr.responseJSON.message);
-            }
-        });
+    // Preparamos los datos en formato JSON
+    const payload = JSON.stringify({ fecha: fecha, id_empresa: empresa.id_empresa });
+
+    // Creamos dos promesas para las peticiones AJAX
+    let pFichajes = $.ajax({
+        url: '/api/fichajes/fecha',
+        method: 'POST',
+        contentType: 'application/json',
+        headers: { 'Authorization': 'Bearer ' + apiKey },
+        data: payload
     });
+
+    let pAusentes = $.ajax({
+        url: '/api/fichajes/ausentes',
+        method: 'POST',
+        contentType: 'application/json',
+        headers: { 'Authorization': 'Bearer ' + apiKey },
+        data: payload
+    });
+
+    // Usamos Promise.all para esperar a que ambas peticiones se completen
+    return Promise.all([pFichajes, pAusentes])
+        .then(results => {
+            // results[0] contiene la respuesta de fichajes
+            // results[1] contiene la respuesta de ausentes
+            return { fichajes: results[0], ausentes: results[1] };
+        })
+        .catch(error => {
+            console.error("Error al obtener fichajes o ausentes:", error);
+            // Rechazamos la promesa para que se pueda manejar en el .catch del llamador
+            throw error;
+        });
 }
 // window.Echo.channel('fichajes').listenToAll((event, data) => {
 //     console.log('Evento recibido en fichajes:', event, data);
@@ -50,6 +55,7 @@ function cargarFichajesYAusentes(fecha) {
 // console.log('Echo conectado:', window.Echo);
 window.addEventListener('DOMContentLoaded', event => {
     $('#report-container').hide();
+    $('#reports h2').hide();
     $(document).on('click', '#cerrar-solicitudes', function () {
         $('#div-solicitudes-acceso').hide();
     });
@@ -499,6 +505,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
     $(document).on('click', '#report-link', function (event) {      
             $('#report-container').show();
+            $('#reports h2').show();
             $('#contenedor-principal').hide(); 
             $('#seccion-perfil').hide();       
     });

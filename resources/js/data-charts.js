@@ -17,6 +17,13 @@ window.addEventListener('DOMContentLoaded', event => {
     let tableHead = $("#report-table thead");
     let tableBody = $("#report-table tbody");
     let filaHead, filaBody;
+    let usuariosTiempos = [];
+    $(document).on('mousedown', function (e) {
+        if (!$(e.target).closest('#report-modal').length) {
+            $('#report-modal').css("display", "none");
+        }
+    });
+    $('#selector-fecha-informes').attr('max', new Date().toISOString().split("T")[0]);
 
 
     $(document).on('click', '.toggle-chart', function () {
@@ -44,13 +51,6 @@ window.addEventListener('DOMContentLoaded', event => {
         descansos = [];
         salidas = [];
         actualizarCharts();
-        // cargarDatosFichajes(fechaSelect).then(() => {
-        //     generarGraficoFichajes();
-        //     generarGraficoAusencias(fechaSelect);
-        //     cargarMapa(fichajesPorFecha);
-        //     obtenerTiemposTotales(fechaSelect);
-
-        // });
     });
 
     function cargarDatosFichajes(fecha) {
@@ -62,6 +62,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
         }).catch(error => {
             console.error("Error al obtener fichajes y ausentes:", error);
+            throw error;
         });
     }
 
@@ -327,24 +328,23 @@ window.addEventListener('DOMContentLoaded', event => {
             (minutos < 10 ? '0' : '') + minutos + ':' +
             (segundosRestantes < 10 ? '0' : '') + segundosRestantes;
     }
+
     function obtenerTiemposTotales(fechaSeleccionada) {
-        $.ajax({
+        return $.ajax({
             url: `/api/fichajes/tiempos-totales/${fechaSeleccionada}/${empresa.id_empresa}`,
             method: 'GET',
             contentType: 'application/json',
             headers: {
                 'Authorization': 'Bearer ' + apiKey
-            },
-            success: function (response) {
-
-                tiempoTotalTrabajado = response.total_trabajado;
-                tiempoTotalDescanso = response.total_descansos;
-
-                generarGraficoTiempos(fechaSeleccionada);
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON?.message || 'Error desconocido');
             }
+        }).then(response => {
+            tiempoTotalTrabajado = response.total_trabajado;
+            tiempoTotalDescanso = response.total_descansos;
+            usuariosTiempos = response.usuarios;
+            generarGraficoTiempos(fechaSeleccionada);
+        }).catch(xhr => {
+            console.error(xhr.responseJSON?.message || 'Error desconocido');
+            throw xhr; // Propaga el error para que Promise.all lo maneje
         });
     }
     function obtenerTotalEmpleadosActivos() {
@@ -415,7 +415,17 @@ window.addEventListener('DOMContentLoaded', event => {
 
     $('#selector-fecha-informes').change(function () {
         fechaInformes = $(this).val();
-        elegirInforme($('.modal-title').text());
+
+        Promise.all([
+            cargarDatosFichajes(fechaInformes),
+            obtenerTiemposTotales(fechaInformes)
+        ])
+            .then(() => {
+                elegirInforme($('.modal-title').text());
+            })
+            .catch(error => {
+                console.error("Error al actualizar los datos:", error);
+            });
     });
 
     // Función para manejar la generación del informe
@@ -435,7 +445,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 case "Informe de fichajes diarios":
                     console.log(fichajesPorFecha);
                     filaHead = `<tr>
-                        <th>ID Empleado</th>
+                        <th>Identificador</th>
                         <th>Nombre</th>
                         <th>Tipo de Fichaje</th>
                         <th>Hora</th>
@@ -460,11 +470,10 @@ window.addEventListener('DOMContentLoaded', event => {
                 case "Informe de ausencias diárias":
                     console.log(ausentesPorFecha);
                     filaHead = `<tr>
-                        <th>ID Empleado</th>
+                        <th>Identificador</th>
                         <th>Nombre</th>
                         <th>Email</th>
-                        <th>Cargo</th>
-                                               
+                        <th>Cargo</th>                                               
                     </tr>`;
                     tableHead.append(filaHead);
                     ausentesPorFecha.forEach(empleado => {
@@ -473,25 +482,97 @@ window.addEventListener('DOMContentLoaded', event => {
                         <td>${empleado.dni}</td>
                         <td>${nombreCompleto}</td>
                         <td>${empleado.email}</td>
-                        <td>${empleado.cargo}</td>
-                        
+                        <td>${empleado.cargo}</td>                        
                     </tr>`;
                         tableBody.append(filaBody);
                     });
                     generarInforme(fichajesPorFecha);
-
                     break;
                 case "Tiempo total de descanso":
 
-                    break;
-                case "Porcentaje de horas trabajadas":
+                    filaHead = `<tr>
+                    <th>Identificador</th>
+                    <th>Nombre</th>
+                    <th>Tiempo de descanso</th>                        
+                </tr>`;
+                    tableHead.append(filaHead);
+                    usuariosTiempos.forEach(usuario => {
+                        let tiempoTotalDescanso = segundosAHora(`${usuario.total_descansos}`);
+                        let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
+                        filaBody = `<tr>
+                    <td>${usuario.dni}</td>
+                    <td>${nombreCompleto}</td>
+                    <td>${tiempoTotalDescanso} min</td>                        
+                </tr>`;
+                        tableBody.append(filaBody);
+                    });
+                    generarInforme(usuariosTiempos);
+
 
                     break;
-                case "Retrasos en fichajes":
-                    console.log("Generando informe de retrasos en fichajes...");
+                case "Porcentaje de horas trabajadas":
+                    const jornadaSegundos = 8 * 60 * 60; // 28800 segundos para una jornada de 8 horas
+                    filaHead = `<tr>
+                                    <th>Identificador</th>
+                                    <th>Nombre</th>
+                                    <th>Porcentaje trabajado</th>
+                                </tr>`;
+                    tableHead.append(filaHead);
+                    usuariosTiempos.forEach(usuario => {
+                        let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
+                        let tiempoTrabajadoSegundos = usuario.total_trabajado;
+                        let porcentaje = (tiempoTrabajadoSegundos / jornadaSegundos) * 100;
+                        let porcentajeFormateado = porcentaje.toFixed(2) + '%';
+                        filaBody = `<tr>
+                                    <td>${usuario.dni}</td>
+                                    <td>${nombreCompleto}</td>
+                                    <td>${porcentajeFormateado}</td>
+                                </tr>`;
+                        tableBody.append(filaBody);
+                    });
+                    generarInforme(usuariosTiempos);
+
+                    break;
+                case "Tiempo extra trabajado":
+                    let jornadaEstandar = 8 * 60 * 60; // 28800 segundos para una jornada de 8 horas
+                    filaHead = `<tr>
+                            <th>Identificador</th>
+                            <th>Nombre</th>
+                            <th>Horas extra trabajadas</th>
+                        </tr>`;
+                    tableHead.append(filaHead);
+                    usuariosTiempos.forEach(usuario => {
+                        let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
+                        let tiempoTrabajadoSegundos = usuario.total_trabajado;
+                        let tiempoExtraSegundos = Math.max(tiempoTrabajadoSegundos - jornadaEstandar, 0);
+                        let tiempoExtraFormateado = segundosAHora(tiempoExtraSegundos);
+                        filaBody = `<tr>
+                                <td>${usuario.dni}</td>
+                                <td>${nombreCompleto}</td>
+                                <td>${tiempoExtraFormateado}</td>
+                            </tr>`;
+                        tableBody.append(filaBody);
+                    });
+                    generarInforme(usuariosTiempos);
                     break;
                 case "Tiempo total trabajado":
-                    console.log("Generando informe de tiempo total trabajado...");
+                    filaHead = `<tr>
+                    <th>Identificador</th>
+                    <th>Nombre</th>
+                    <th>Tiempo trabajado</th>                        
+                </tr>`;
+                    tableHead.append(filaHead);
+                    usuariosTiempos.forEach(usuario => {
+                        let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
+                        let tiempoTotalTrabajado = segundosAHora(`${usuario.total_trabajado}`);
+                        filaBody = `<tr>
+                    <td>${usuario.dni}</td>
+                    <td>${nombreCompleto}</td>
+                    <td>${tiempoTotalTrabajado} min</td>                        
+                </tr>`;
+                        tableBody.append(filaBody);
+                    });
+                    generarInforme(usuariosTiempos);
                     break;
                 default:
                     console.log("Informe desconocido");
@@ -507,7 +588,29 @@ window.addEventListener('DOMContentLoaded', event => {
             lengthMenu: [5, 10, 25, 50], // Opciones de paginación
             language: {
                 "url": "/js/Es-es.json"
-            }
+            },
+            dom: 'pfrtiB',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fas fa-file-excel"></i> ',
+                    titleAttr: 'Exportar a Excel',
+                    className: 'btn btn-success'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fas fa-file-pdf"></i> ',
+                    titleAttr: 'Exportar a PDF',
+                    className: 'btn btn-danger'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> ',
+                    titleAttr: 'Imprimir',
+                    className: 'btn btn-info'
+                },
+            ]
+
         });
 
     }

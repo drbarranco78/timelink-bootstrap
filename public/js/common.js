@@ -9,6 +9,8 @@ let fechaHoy;
 var apiKey='3c77c751-e6a3-44d0-8979-de6f46250650';
 
 window.addEventListener('DOMContentLoaded', event => {
+    
+            
     window.formatearFecha=function (fecha) {
         let partesFecha = fecha.split("-");
         let fechaFormateada = `${partesFecha[2]}/${partesFecha[1]}/${partesFecha[0]}`;

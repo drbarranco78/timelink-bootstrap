@@ -115,7 +115,7 @@ class FichajeController extends Controller
             ]);
             Log::info('Emitiendo evento FichajeRealizado', ['fichaje' => $fichaje]);
             //FichajeRealizado::dispatch($fichaje);
-            event(new FichajeRealizado($fichaje));
+            //event(new FichajeRealizado($fichaje));
             Log::info('Después de emitir el evento');
             return response()->json(['message' => 'Fichaje registrado correctamente', 'fichaje' => $fichaje], 201);
         } catch (\Exception $e) {
@@ -311,26 +311,40 @@ class FichajeController extends Controller
 
 
     public function obtenerTiemposTotales($fecha, $idEmpresa)
-{       
-    $totalTrabajado = Fichaje::whereDate('fecha', $fecha)
-        ->where('tipo_fichaje', 'entrada')
-        ->whereHas('usuario', function($query) use ($idEmpresa) {
-            $query->where('id_empresa', $idEmpresa); // Filtrar por empresa
-        }) 
-        ->sum('duracion');
+    {       
+        $totalTrabajado = Fichaje::whereDate('fecha', $fecha)
+            ->where('tipo_fichaje', 'entrada')
+            ->whereHas('usuario', function($query) use ($idEmpresa) {
+                $query->where('id_empresa', $idEmpresa); // Filtrar por empresa
+            }) 
+            ->sum('duracion');
 
-    $totalDescanso = Fichaje::whereDate('fecha', $fecha)
-        ->where('tipo_fichaje', 'fin_descanso')
-        ->whereHas('usuario', function($query) use ($idEmpresa) {
-            $query->where('id_empresa', $idEmpresa); // Filtrar por empresa
-        })
-        ->sum('duracion');
+        $totalDescanso = Fichaje::whereDate('fecha', $fecha)
+            ->where('tipo_fichaje', 'fin_descanso')
+            ->whereHas('usuario', function($query) use ($idEmpresa) {
+                $query->where('id_empresa', $idEmpresa); // Filtrar por empresa
+            })
+            ->sum('duracion');
 
-    return response()->json([
-        'total_trabajado' => $totalTrabajado ?? 0,
-        'total_descansos' => $totalDescanso ?? 0
-    ]);
-}
+         // Obtener los usuarios con sus fichajes
+        $usuarios = User::where('id_empresa', $idEmpresa)
+        ->with(['fichajes' => function($query) use ($fecha) {
+            $query->whereDate('fecha', $fecha);
+        }])
+        ->get()
+            ->map(function ($usuario) {
+                $usuarioArray = $usuario->toArray(); // Convertir a array para incluir todos los datos
+                $usuarioArray['total_trabajado'] = $usuario->fichajes->where('tipo_fichaje', 'entrada')->sum('duracion');
+                $usuarioArray['total_descansos'] = $usuario->fichajes->where('tipo_fichaje', 'fin_descanso')->sum('duracion');
+                return $usuarioArray;
+            });
+
+        return response()->json([
+            'total_trabajado' => $totalTrabajado ?? 0,
+            'total_descansos' => $totalDescanso ?? 0,
+            'usuarios' => $usuarios
+        ]);
+    }
 
 
 

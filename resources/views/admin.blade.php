@@ -20,9 +20,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    {{-- <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" /> --}}
 
-
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.2/b-3.2.2/b-html5-3.2.2/b-print-3.2.2/r-3.0.4/datatables.min.css" rel="stylesheet" integrity="sha384-Lyca+jsk9Q+XLYmuTBriITsVJpOxGXNqWAWFFT5SdYRiDsUSGoaekwOTIO9kgfem" crossorigin="anonymous">
+ 
+    
+    
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
@@ -35,8 +38,8 @@
     <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css"> --}}
 
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
@@ -154,10 +157,10 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                             Informes
                         </a>
-                        <a class="nav-link" href="tables.html">
+                        {{-- <a class="nav-link" href="tables.html">
                             <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                             Tables
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
@@ -692,7 +695,7 @@
 
                         <div class="report-card">
                             <div class="report-icon">
-                                <i class="far fa-clock"></i>
+                                <i class="far fa-clipboard"></i>
                             </div>
                             <h5 class="report-title">Informe de fichajes diarios</h5>
                             <p class="report-desc">Muestra los fichajes diarios de todos los empleados</p>
@@ -725,15 +728,15 @@
 
                         <div class="report-card">
                             <div class="report-icon">
-                                <i class="far fa-bell"></i>
+                                <i class="far fa-hourglass"></i>
                             </div>
-                            <h5 class="report-title">Retrasos en fichajes</h5>
-                            <p class="report-desc">Registra los fichajes realizados fuera del horario establecido.</p>
+                            <h5 class="report-title">Tiempo extra trabajado</h5>
+                            <p class="report-desc">Detalla las horas trabajadas por empleado que superan la jornada laboral estándar</p>
                         </div>
 
                         <div class="report-card">
                             <div class="report-icon">
-                                <i class="far fa-hourglass"></i>
+                                <i class="far fa-clock"></i>
                             </div>
                             <h5 class="report-title">Tiempo total trabajado</h5>
                             <p class="report-desc">Calcula el tiempo total de trabajo de cada empleado
@@ -748,7 +751,7 @@
             </main>
             <!-- Modal para mostrar el informe -->
             {{-- <div class="lock-screen"> --}}
-            <div id="report-modal" aria-labelledby="reportModalLabel">
+            <div id="report-modal" class="popup" aria-labelledby="reportModalLabel">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -839,13 +842,15 @@
     <script src="{{ asset('js/index.js') }}"></script>
     <script src="{{ asset('js/tinymce.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.2/b-3.2.2/b-html5-3.2.2/b-print-3.2.2/r-3.0.4/datatables.min.js" integrity="sha384-/wsDbsz8pRfwq3zQ5D36rGcm7HGUCCg0WxzK0y3yxeRsF7+PKBoPEorAVw441sbW" crossorigin="anonymous"></script>
 
 
-
-    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+    {{-- <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
     </script>
     {{-- <script src="{{ asset('js/data-charts.js') }}"></script> --}}
