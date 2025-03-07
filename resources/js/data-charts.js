@@ -468,7 +468,7 @@ window.addEventListener('DOMContentLoaded', event => {
                     });
                     generarInforme(fichajesPorFecha);
                     break;
-                case "Informe de ausencias diárias":
+                case "Informe de ausencias":
                     console.log(ausentesPorFecha);
                     filaHead = `<tr>
                         <th>Identificador</th>
@@ -609,6 +609,12 @@ window.addEventListener('DOMContentLoaded', event => {
                     text: '<i class="fa fa-print"></i> ',
                     titleAttr: 'Imprimir',
                     className: 'btn btn-info'
+                },
+                {
+                    extend: 'copy',
+                    text: '<i class="fa fa-copy"></i> ',
+                    titleAttr: 'Copiar al portapapeles',
+                    className: 'btn btn-secondary'
                 },
             ]
 

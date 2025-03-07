@@ -243,11 +243,11 @@
 
                                         <div class="tab-pane fade show active profile-overview" id="profile-overview"
                                             role="tabpanel">
-                                            <h5 class="card-title">About</h5>
+                                            {{-- <h5 class="card-title">About</h5>
                                             <p class="small fst-italic">Sunt est soluta temporibus accusantium neque
                                                 nam maiores cumque temporibus. Tempora libero non est unde veniam est
                                                 qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis
-                                                odit. Fuga sequi sed ea saepe at unde.</p>
+                                                odit. Fuga sequi sed ea saepe at unde.</p> --}}
 
                                             <h5 class="card-title">Detalles</h5>
 
@@ -666,7 +666,7 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <i class="fas fa-table me-1"></i>
-                            Tabla de empleados
+                            Empleados Activos
                         </div>
                         <div class="table-body">
                             <table id="tabla-empleados" class="table table-striped nowrap" style="width:100%">
@@ -705,7 +705,7 @@
                             <div class="report-icon">
                                 <i class="far fa-calendar-times"></i>
                             </div>
-                            <h5 class="report-title">Informe de ausencias diárias</h5>
+                            <h5 class="report-title">Informe de ausencias</h5>
                             <p class="report-desc">Lista los empleados que no han registrado fichajes en el día seleccionado</p>
                         </div>
 
@@ -742,6 +742,34 @@
                             <p class="report-desc">Calcula el tiempo total de trabajo de cada empleado
                                 laboral.</p>
                         </div>
+                        <div class="report-card">
+                            <div class="report-icon">
+                                <i class="far fa-address-book"></i>
+                                {{-- <i class="fas fa-map-marker-alt"></i> --}}
+
+                                {{-- <i class="fas fa-map"></i>  --}}
+                            </div>
+                            <h5 class="report-title">Fichajes en ruta</h5>
+                            <p class="report-desc">Registra los fichajes realizados por empleados fuera de su ubicación habitual</p>
+                        </div>
+                        
+                        <div class="report-card">
+                            <div class="report-icon">
+                                <i class="far fa-user-circle"></i>
+                                {{-- <i class="fas fa-user-slash"></i> --}}
+                            </div>
+                            <h5 class="report-title">Empleados inactivos</h5>
+                            <p class="report-desc">Lista a los empleados en baja, vacaciones o con estado pendiente de aceptar o rechazados</p>
+                        </div>
+                        
+                        <div class="report-card">
+                            <div class="report-icon">
+                                <i class="far fa-id-card"></i>
+                                {{-- <i class="fas fa-users"></i> --}}
+                            </div>
+                            <h5 class="report-title">Total de plantilla</h5>
+                            <p class="report-desc">Listado de todos los empleados registrados, tanto activos como inactivos</p>
+                        </div>
                     </div>
                     <div id="report-details" aria-labelledby="reportModalLabel">
                         <div class="modal-dialog modal-lg">
@@ -753,7 +781,7 @@
                                         <input id="selector-fecha-informes" class="mt-4" type="date">
                                     </div>
                                    
-                                    <button type="button" class="btn-close"><span id="span-close">&times;</span></button>
+                                    <button type="button" class="btn-close"><span id="span-close"></span></button>
                                 </div>
                                 <div class="modal-body">
                                     <table id="report-table" class="table table-striped table-bordered nowrap" style="width:100%">

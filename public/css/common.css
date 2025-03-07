@@ -22,6 +22,10 @@
 
         font-size: 12px !important;
     }
+    #report-container {
+        
+        grid-template-columns: repeat(2, 1fr);
+    }
 
 }
 
@@ -173,6 +177,23 @@
     .form-group {
         width: 70vw !important;
     }
+    #report-container {
+        align-self: center !important;
+        /* margin: 20px !important; */
+        grid-template-columns: 1fr;
+    }
+    .modal-header{
+        flex-direction: column;
+    }
+    .btn-close{
+        position: fixed;
+        top:100px;
+        right: 10px;
+    }
+    .logo-timelink {
+        width: 50px !important;
+        
+    }
 
     /* #enlace-login,
     #enlace-registro {
@@ -193,7 +214,7 @@
 }
 
 .logo-timelink {
-    width: 5vw !important;
+    width: 5%;
     margin-top: 150px;
     margin-left: 30px;
     margin-right: 80px;

@@ -344,24 +344,28 @@ text-align: center !important;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    max-width: 100%;
 
     
 }
 #reports h2{
     margin-left: 20px;
+    margin-bottom: 30px;
     /* font-weight: bold; */
 }
 #report-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columnas de igual tamaño */
-    gap: 30px; /* Espaciado entre elementos */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 30px; 
     background-color: whitesmoke;
     place-items: center;
-    margin: 20px 50px;
-    width: 80%; /* Asegura que ocupe todo el ancho del contenedor padre */
+    align-self: center !important;
+    /* margin: 20px 50px 20px 100px; */
+    width: 80%;
     height: 100%;
     padding: 50px;
     border-radius: 15px;
+    overflow-y: auto;
 }
 .report-card {
     display: flex;
@@ -370,7 +374,7 @@ text-align: center !important;
     
     cursor: pointer;
     width: 95%;
-    height: 220px;
+    height: auto;
     background: #fff;
     padding: 20px;
     border-radius: 10px;
@@ -415,45 +419,6 @@ text-align: center !important;
     margin-bottom: 15px;
 }
 
-/* Ventana de informes 
-.lock-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease, visibility 0.3s;
-    z-index: 10;
-}
-.lock-screen.activo {
-    visibility: visible;
-    opacity: 1;
-} */
-/* Estilos para la ventana emergente de información */
-/* #report-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60%;
-    height: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-    background-color: whitesmoke;
-    padding: 15px 15px;
-    border: 1px solid black;
-    border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    display: none;
-    text-align: center;
-    z-index: 6;
-} */
 #report-details{
     display: none;
 }
@@ -462,13 +427,14 @@ text-align: center !important;
 }
 #report-table {
     width: 100% !important;
+    background: whitesmoke;
 }
 .dataTables_wrapper {
     width: 100% !important;
 }
 
 /* Estilos para el botón de cerrar (X) */
-.btn-close {
+/* .btn-close {
     display: flex;
     align-items: center;
     
@@ -479,13 +445,18 @@ text-align: center !important;
     font-weight: bold;
     cursor: pointer;
     color: black; 
+} */
+.btn-close{
+    position: fixed;
+    top:120px;
+    right: 100px;
 }
-
 .btn-close:hover{
-    color: red;
+    color: red !important;
 }
 
 .modal-header{
+    width: 100% !important;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
@@ -496,10 +467,12 @@ text-align: center !important;
     flex-direction: row;
     gap: 10px;
     margin-bottom: 20px;
+    float: right;
     
 }
 #selector-fecha-informes{
     padding: 0 10px;
+    height: auto;
     border-radius: 5px;
 }
 .dt-buttons{
@@ -508,7 +481,7 @@ text-align: center !important;
 }
 
 .dt-buttons button{
-    margin: 10px 20px;
+    margin-right:20px;
     font-size: 20px;
     border-radius: 10px !important;
     padding: 10px 20px;
