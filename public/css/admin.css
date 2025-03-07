@@ -436,7 +436,7 @@ text-align: center !important;
     opacity: 1;
 } */
 /* Estilos para la ventana emergente de información */
-#report-modal {
+/* #report-modal {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -453,8 +453,10 @@ text-align: center !important;
     display: none;
     text-align: center;
     z-index: 6;
+} */
+#report-details{
+    display: none;
 }
-
 .modal-lg {
     max-width: 90%;
 }

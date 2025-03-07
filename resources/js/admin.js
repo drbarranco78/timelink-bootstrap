@@ -54,8 +54,8 @@ function cargarFichajesYAusentes(fecha) {
 
 // console.log('Echo conectado:', window.Echo);
 window.addEventListener('DOMContentLoaded', event => {
-    $('#report-container').hide();
-    $('#reports h2').hide();
+    $('#reports').hide();
+    // $('#reports h2').hide();
     $(document).on('click', '#cerrar-solicitudes', function () {
         $('#div-solicitudes-acceso').hide();
     });
@@ -504,15 +504,16 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
     $(document).on('click', '#report-link', function (event) {      
-            $('#report-container').show();
-            $('#reports h2').show();
+            // $('#report-container').show();
+            // $('#reports h2').show();
+            $('#reports').show();
             $('#contenedor-principal').hide(); 
             $('#seccion-perfil').hide();       
     });
 
-    $(document).on('click', '.btn-close', function (event) {      
-        event.preventDefault();
-        $('#report-modal').hide();
-    });
+    // $(document).on('click', '.btn-close', function (event) {      
+    //     event.preventDefault();
+    //     $('#report-modal').hide();
+    // });
     
 });

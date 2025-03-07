@@ -435,7 +435,8 @@ window.addEventListener('DOMContentLoaded', event => {
         }
         $('#selector-fecha-informes').val(fechaInformes);
         cargarDatosFichajes(fechaInformes).then(() => {
-            $('#report-modal').show();
+            $('#report-container').hide();
+            $('#report-details').show();
             $('.modal-title').text(titulo);
             // $('.lock-screen').addClass('activo');
 
@@ -614,4 +615,9 @@ window.addEventListener('DOMContentLoaded', event => {
         });
 
     }
+    $(document).on('click', '.btn-close', function () {
+        $('#report-container').show();
+        $('#report-details').hide();
+
+    });
 });

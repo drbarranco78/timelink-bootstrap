@@ -742,47 +742,48 @@
                             <p class="report-desc">Calcula el tiempo total de trabajo de cada empleado
                                 laboral.</p>
                         </div>
-
-
                     </div>
+                    <div id="report-details" aria-labelledby="reportModalLabel">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="reportModalLabel">Informe de Fichajes</h5>
+                                    <div class="div-calendar-informes">
+                                        <span class="mt-4">Mostrar datos del dia: </span>
+                                        <input id="selector-fecha-informes" class="mt-4" type="date">
+                                    </div>
+                                   
+                                    <button type="button" class="btn-close"><span id="span-close">&times;</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table id="report-table" class="table table-striped table-bordered nowrap" style="width:100%">
+        
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Empleado</th>
+                                                <th>Fecha</th>
+                                                <th>Hora Entrada</th>
+                                                <th>Hora Salida</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Datos de la tabla -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
 
 
             </main>
             <!-- Modal para mostrar el informe -->
             {{-- <div class="lock-screen"> --}}
-            <div id="report-modal" class="popup" aria-labelledby="reportModalLabel">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="reportModalLabel">Informe de Fichajes</h5>
-                            <div class="div-calendar-informes">
-                                <span class="mt-4">Mostrar datos del dia: </span>
-                                <input id="selector-fecha-informes" class="mt-4" type="date">
-                            </div>
-                           
-                            <button type="button" class="btn-close"><span id="span-close">&times;</span></button>
-                        </div>
-                        <div class="modal-body">
-                            <table id="report-table" class="table table-striped table-bordered nowrap" style="width:100%">
-
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Empleado</th>
-                                        <th>Fecha</th>
-                                        <th>Hora Entrada</th>
-                                        <th>Hora Salida</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Datos de la tabla -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             {{-- </div> --}}
 
 
