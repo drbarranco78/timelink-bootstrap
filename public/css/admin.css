@@ -497,6 +497,15 @@ text-align: center !important;
 .dt-paging{
     width: fit-content !important;    
 }
+/* .dt-empty {
+    span: 3;
+} */
 .c-pointer {
     cursor: pointer;
+}
+#loading-gif {
+    text-align: center;
+    font-size: 24px;
+    
+    
 }

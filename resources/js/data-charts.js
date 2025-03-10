@@ -19,6 +19,7 @@ window.addEventListener('DOMContentLoaded', event => {
     let filaHead, filaBody;
     let usuariosTiempos = [];
     let usuariosEmpresa = [];
+    let filas = '';
     obtenerUsuariosPorEmpresa(empresa.id_empresa, fechaInformes);
     $(document).on('mousedown', function (e) {
         if (!$(e.target).closest('#report-modal').length) {
@@ -434,6 +435,9 @@ window.addEventListener('DOMContentLoaded', event => {
 
     $('#selector-fecha-informes').change(function () {
         fechaInformes = $(this).val();
+        $('#report-details').fadeOut(300);
+        $('#loading-gif').show();
+
 
         Promise.all([
             cargarDatosFichajes(fechaInformes),
@@ -449,23 +453,37 @@ window.addEventListener('DOMContentLoaded', event => {
     });
 
     // Función para manejar la generación del informe
+
     function elegirInforme(titulo) {
         if ($.fn.DataTable.isDataTable('#report-table')) {
             $('#report-table').DataTable().destroy();
         }
         $('#selector-fecha-informes').val(fechaInformes);
-        cargarDatosFichajes(fechaInformes).then(() => {
-            $('#report-container').hide();
-            $('#report-details').show();
-            $('.modal-title').text(titulo);
-            // $('.lock-screen').addClass('activo');
 
-            tableHead.empty();
-            tableBody.empty();
-            switch (titulo) {
-                case "Informe de fichajes diarios":
-                    console.log(fichajesPorFecha);
-                    filaHead = `<tr>
+        //cargarDatosFichajes(fechaInformes).then(() => {
+        // cargarFichajesYAusentes(fechaInformes).then(data => {
+        //     fichajesPorFecha = data.fichajes;
+        //     ausentesPorFecha = data.ausentes;
+        $('#report-container').hide();
+        $('#loading-gif').show();
+        //$('#report-content').hide(); 
+
+        // Simula una carga de datos (puedes reemplazarlo por tu lógica de carga de datos)
+        setTimeout(function () {
+           
+            $('#loading-gif').hide(); 
+            $('#report-details').fadeIn(200);  
+        }, 100);  
+        //$('#report-table_wrapper').fadeIn(5000);
+        $('.modal-title').text(titulo);
+        // $('.lock-screen').addClass('activo');
+
+        tableHead.empty();
+        tableBody.empty();
+        switch (titulo) {
+            case "Informe de fichajes diarios":
+                console.log(fichajesPorFecha);
+                filaHead = `<tr>
                                 <th>Identificador</th>
                                 <th>Nombre</th>
                                 <th>Tipo de Fichaje</th>
@@ -473,10 +491,11 @@ window.addEventListener('DOMContentLoaded', event => {
                                 <th>Ubicación</th>
                                 <th>Ciudad</th>                        
                             </tr>`;
-                    tableHead.append(filaHead);
-                    fichajesPorFecha.forEach(fichaje => {
-                        let nombreCompleto = `${fichaje.usuario.nombre} ${fichaje.usuario.apellidos}`.trim();
-                        filaBody = `<tr>
+                tableHead.append(filaHead);
+                filas = '';
+                fichajesPorFecha.forEach(fichaje => {
+                    let nombreCompleto = `${fichaje.usuario.nombre} ${fichaje.usuario.apellidos}`.trim();
+                    filas += `<tr>
                                     <td>${fichaje.usuario.dni}</td>
                                     <td>${nombreCompleto}</td>
                                     <td>${fichaje.tipo_fichaje}</td>
@@ -484,118 +503,130 @@ window.addEventListener('DOMContentLoaded', event => {
                                     <td>${fichaje.ubicacion}</td>
                                     <td>${fichaje.ciudad}</td>
                                 </tr>`;
-                        tableBody.append(filaBody);
-                    });
-                    generarInforme();
-                    break;
-                case "Informe de ausencias":
-                    console.log(ausentesPorFecha);
-                    filaHead = `<tr>
+                    // tableBody.append(filaBody);
+
+                });
+                tableBody.html(filas);
+                generarInforme();
+                break;
+            case "Informe de ausencias":
+                console.log(ausentesPorFecha);
+                filaHead = `<tr>
                                 <th>Identificador</th>
                                 <th>Nombre</th>
                                 <th>Email</th>
                                 <th>Cargo</th>                                               
                             </tr>`;
-                    tableHead.append(filaHead);
-                    ausentesPorFecha.forEach(empleado => {
-                        let nombreCompleto = `${empleado.nombre} ${empleado.apellidos}`.trim();
-                        filaBody = `<tr>
+                tableHead.append(filaHead);
+                filas = '';
+                ausentesPorFecha.forEach(empleado => {
+                    let nombreCompleto = `${empleado.nombre} ${empleado.apellidos}`.trim();
+                    filas += `<tr>
                                     <td>${empleado.dni}</td>
                                     <td>${nombreCompleto}</td>
                                     <td>${empleado.email}</td>
                                     <td>${empleado.cargo}</td>                        
                                 </tr>`;
-                        tableBody.append(filaBody);
-                    });
-                    generarInforme();
-                    break;
-                case "Tiempo total de descanso":
+                    // tableBody.append(filaBody);
+                });
+                tableBody.html(filas);
+                generarInforme();
+                break;
+            case "Tiempo total de descanso":
 
-                    filaHead = `<tr>
+                filaHead = `<tr>
                                 <th>Identificador</th>
                                 <th>Nombre</th>
                                 <th>Tiempo de descanso</th>                        
                             </tr>`;
-                    tableHead.append(filaHead);
-                    usuariosTiempos.forEach(usuario => {
-                        let tiempoTotalDescanso = segundosAHora(`${usuario.total_descansos}`);
-                        let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
-                        filaBody = `<tr>
+                tableHead.append(filaHead);
+                filas = '';
+                usuariosTiempos.forEach(usuario => {
+                    let tiempoTotalDescanso = segundosAHora(`${usuario.total_descansos}`);
+                    let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
+                    filas += `<tr>
                                     <td>${usuario.dni}</td>
                                     <td>${nombreCompleto}</td>
                                     <td>${tiempoTotalDescanso} min</td>                        
                                 </tr>`;
-                        tableBody.append(filaBody);
-                    });
-                    generarInforme();
+                    // tableBody.append(filaBody);
+                });
+                tableBody.html(filas);
+                generarInforme();
 
-                    break;
-                case "Porcentaje de horas trabajadas":
-                    const jornadaSegundos = 8 * 60 * 60; // 28800 segundos para una jornada de 8 horas
-                    filaHead = `<tr>
+                break;
+            case "Porcentaje de horas trabajadas":
+                const jornadaSegundos = 8 * 60 * 60; // 28800 segundos para una jornada de 8 horas
+                filaHead = `<tr>
                                     <th>Identificador</th>
                                     <th>Nombre</th>
                                     <th>Porcentaje trabajado</th>
                                 </tr>`;
-                    tableHead.append(filaHead);
-                    usuariosTiempos.forEach(usuario => {
-                        let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
-                        let tiempoTrabajadoSegundos = usuario.total_trabajado;
-                        let porcentaje = (tiempoTrabajadoSegundos / jornadaSegundos) * 100;
-                        let porcentajeFormateado = porcentaje.toFixed(2) + '%';
-                        filaBody = `<tr>
+                tableHead.append(filaHead);
+                filas = '';
+                usuariosTiempos.forEach(usuario => {
+                    let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
+                    let tiempoTrabajadoSegundos = usuario.total_trabajado;
+                    let porcentaje = (tiempoTrabajadoSegundos / jornadaSegundos) * 100;
+                    let porcentajeFormateado = porcentaje.toFixed(2) + '%';
+                    filas += `<tr>
                                     <td>${usuario.dni}</td>
                                     <td>${nombreCompleto}</td>
                                     <td>${porcentajeFormateado}</td>
                                 </tr>`;
-                        tableBody.append(filaBody);
-                    });
-                    generarInforme();
+                    // tableBody.append(filaBody);
+                });
+                tableBody.html(filas);
+                generarInforme();
 
-                    break;
-                case "Tiempo extra trabajado":
-                    let jornadaEstandar = 8 * 60 * 60; // 28800 segundos para una jornada de 8 horas
-                    filaHead = `<tr>
+                break;
+            case "Tiempo extra trabajado":
+                let jornadaEstandar = 8 * 60 * 60; // 28800 segundos para una jornada de 8 horas
+                filaHead = `<tr>
                                 <th>Identificador</th>
                                 <th>Nombre</th>
                                 <th>Horas extra trabajadas</th>
                             </tr>`;
-                    tableHead.append(filaHead);
-                    usuariosTiempos.forEach(usuario => {
-                        let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
-                        let tiempoTrabajadoSegundos = usuario.total_trabajado;
-                        let tiempoExtraSegundos = Math.max(tiempoTrabajadoSegundos - jornadaEstandar, 0);
-                        let tiempoExtraFormateado = segundosAHora(tiempoExtraSegundos);
-                        filaBody = `<tr>
+                tableHead.append(filaHead);
+                filas = '';
+                usuariosTiempos.forEach(usuario => {
+                    let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
+                    let tiempoTrabajadoSegundos = usuario.total_trabajado;
+                    let tiempoExtraSegundos = Math.max(tiempoTrabajadoSegundos - jornadaEstandar, 0);
+                    let tiempoExtraFormateado = segundosAHora(tiempoExtraSegundos);
+                    filas += `<tr>
                                 <td>${usuario.dni}</td>
                                 <td>${nombreCompleto}</td>
                                 <td>${tiempoExtraFormateado}</td>
                             </tr>`;
-                        tableBody.append(filaBody);
-                    });
-                    generarInforme();
-                    break;
-                case "Tiempo total trabajado":
-                    filaHead = `<tr>
+                    // tableBody.append(filaBody);
+                });
+                tableBody.html(filas);
+                generarInforme();
+                break;
+            case "Tiempo total trabajado":
+                filaHead = `<tr>
                                 <th>Identificador</th>
                                 <th>Nombre</th>
                                 <th>Tiempo trabajado</th>                        
                             </tr>`;
-                    tableHead.append(filaHead);
-                    usuariosTiempos.forEach(usuario => {
-                        let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
-                        let tiempoTotalTrabajado = segundosAHora(`${usuario.total_trabajado}`);
-                        filaBody = `<tr>
+                tableHead.append(filaHead);
+                filas = '';
+                usuariosTiempos.forEach(usuario => {
+                    let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
+                    let tiempoTotalTrabajado = segundosAHora(`${usuario.total_trabajado}`);
+                    filas += `<tr>
                                     <td>${usuario.dni}</td>
                                     <td>${nombreCompleto}</td>
                                     <td>${tiempoTotalTrabajado} min</td>                        
                                 </tr>`;
-                        tableBody.append(filaBody);
-                    });
-                    generarInforme(usuariosTiempos);
-                    break;
-                case "Fichajes en ruta":
-                    filaHead = `<tr>
+                    // tableBody.append(filaBody);
+                });
+                tableBody.html(filas);
+                generarInforme(usuariosTiempos);
+                break;
+            case "Fichajes en ruta":
+                filaHead = `<tr>
                                 <th>Identificador</th>
                                 <th>Nombre</th>
                                 <th>Hora</th>  
@@ -603,11 +634,12 @@ window.addEventListener('DOMContentLoaded', event => {
                                 <th>Ciudad</th>
                                 <th>Comentarios</th>                    
                             </tr>`;
-                    tableHead.append(filaHead);
-                    fichajesPorFecha.forEach(fichaje => {
-                        if (fichaje.tipo_fichaje === "registro") {
-                            let nombreCompleto = `${fichaje.usuario.nombre} ${fichaje.usuario.apellidos}`.trim();
-                            filaBody = `<tr>
+                tableHead.append(filaHead);
+                filas = '';
+                fichajesPorFecha.forEach(fichaje => {
+                    if (fichaje.tipo_fichaje === "registro") {
+                        let nombreCompleto = `${fichaje.usuario.nombre} ${fichaje.usuario.apellidos}`.trim();
+                        filas += `<tr>
                                         <td>${fichaje.usuario.dni}</td>
                                         <td>${nombreCompleto}</td>
                                         <td>${fichaje.hora}</td>
@@ -615,73 +647,83 @@ window.addEventListener('DOMContentLoaded', event => {
                                         <td>${fichaje.ciudad}</td>
                                         <td>${fichaje.comentarios}</td>
                                     </tr>`;
-                            tableBody.append(filaBody);
-                        }
-                    });
-                    generarInforme();
-                    break;
-                case "Empleados inactivos":
-                    filaHead = `<tr>
+                        // tableBody.append(filaBody);
+                    }
+                });
+                tableBody.html(filas);
+                generarInforme();
+                break;
+            case "Empleados inactivos":
+                filaHead = `<tr>
                                 <th>Identificador</th>
                                 <th>Nombre</th>
                                 <th>Email</th>  
                                 <th>Cargo</th>  
                                 <th>Estado</th>                                                   
                             </tr>`;
-                    tableHead.append(filaHead);
-                    const empleadosInactivos = usuariosEmpresa.filter(usuario => usuario.estado !== "aceptada");
-                    empleadosInactivos.forEach(usuario => {
-                        let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
-                        filaBody = `<tr>
+                tableHead.append(filaHead);
+                filas = '';
+                const empleadosInactivos = usuariosEmpresa.filter(usuario => usuario.estado !== "aceptada");
+                empleadosInactivos.forEach(usuario => {
+                    let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
+                    filas += `<tr>
                                     <td>${usuario.dni}</td>
                                     <td>${nombreCompleto}</td>
                                     <td>${usuario.email}</td>
                                     <td>${usuario.cargo || "Sin cargo"}</td>
                                     <td>${usuario.estado}</td>
                                 </tr>`;
-                        tableBody.append(filaBody);
-                    });
-                    generarInforme();
-                    break;
-                case "Total de plantilla":
-                    filaHead = `<tr>
+                    // tableBody.append(filaBody);
+                });
+                tableBody.html(filas);
+                generarInforme();
+                break;
+            case "Total de plantilla":
+                filaHead = `<tr>
                                 <th>Identificador</th>
                                 <th>Nombre</th>
                                 <th>Email</th>  
                                 <th>Cargo</th>  
                                 <th>Estado</th>                                                   
                             </tr>`;
-                    tableHead.append(filaHead);
-                    usuariosEmpresa.forEach(usuario => {
-                        let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
-                        filaBody = `<tr>
+                tableHead.append(filaHead);
+                filas = '';
+                usuariosEmpresa.forEach(usuario => {
+                    let nombreCompleto = `${usuario.nombre} ${usuario.apellidos}`.trim();
+                    filas += `<tr>
                             <td>${usuario.dni}</td>
                             <td>${nombreCompleto}</td>
                             <td>${usuario.email}</td>
                             <td>${usuario.cargo || "Sin cargo"}</td>
                             <td>${usuario.estado}</td>
                         </tr>`;
-                        tableBody.append(filaBody);
-                    });
-                    generarInforme(usuariosEmpresa);
+                    // tableBody.append(filaBody);
+                });
+                tableBody.html(filas);
+                generarInforme(usuariosEmpresa);
 
 
-                    break;
+                break;
 
-                default:
-                    console.log("Informe desconocido");
-            }
-        });
+            default:
+                console.log("Informe desconocido");
+        }
+
+        //});
     }
+
     function generarInforme() {
 
         dataTable = $('#report-table').DataTable({
             responsive: true,
             autoWidth: false,
+            deferRender: true,           
             pageLength: 10, // Cantidad de filas por página
             lengthMenu: [5, 10, 25, 50], // Opciones de paginación
             language: {
-                "url": "/js/Es-es.json"
+                "url": "/js/Es-es.json",                
+                "emptyTable": "Ningún dato disponible en esta tabla"
+                
             },
             dom: 'pfrtiB',
             buttons: [
@@ -712,6 +754,7 @@ window.addEventListener('DOMContentLoaded', event => {
             ]
 
         });
+        //$('#report-table_wrapper').fadeIn(5000);
 
     }
     $(document).on('click', '.btn-close , .close-report', function () {

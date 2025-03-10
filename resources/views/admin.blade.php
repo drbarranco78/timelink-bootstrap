@@ -779,7 +779,11 @@
                                 inactivos</p>
                         </div>
                     </div>
+                    <div id="loading-gif">                       
+                        <i class="fa fa-spinner fa-spin"></i> Cargando...
+                    </div>
                     <div id="report-details" aria-labelledby="reportModalLabel">
+                        
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">

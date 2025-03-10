@@ -264,6 +264,7 @@ window.addEventListener('DOMContentLoaded', event => {
                     data: JSON.stringify(datos),
                     success: function (response) {
                         mostrarMensaje(response.message, ".exito-msg");
+                        consultarEmpresa(datos.id_empresa);
                     },
                     error: function (xhr) {
                         mostrarMensaje(xhr.responseJSON.message, '.error-msg');
@@ -295,6 +296,7 @@ window.addEventListener('DOMContentLoaded', event => {
                     data: JSON.stringify(datos),
                     success: function (response) {
                         mostrarMensaje(response.message, ".exito-msg");
+                        consultarEmpleado(datos.id);
                         if (usuarioActivo.rol === "maestro") {
                             obtenerEmpleados();
                         }
